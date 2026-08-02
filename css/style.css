@@ -87,3 +87,34 @@ footer h3{color:var(--gold2);margin-bottom:8px}
 .modal-close{position:absolute;right:14px;top:10px;border:0;background:none;font-size:1.7rem;cursor:pointer}
 .price-row{display:flex;justify-content:space-between;gap:14px;padding:10px 0;border-bottom:1px dashed #d7cdbb}
 .price-row strong{color:#9d6c0b}
+
+/* Fase 1 — Visual Premium */
+.nav{backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.06)}
+.nav-inner{height:84px}
+.nav-links a{position:relative}
+.nav-links a::after{content:"";position:absolute;left:0;right:100%;bottom:-8px;height:2px;background:linear-gradient(90deg,var(--gold2),var(--gold));transition:.25s}
+.nav-links a:hover::after{right:0}
+.hero{min-height:760px;position:relative;overflow:hidden;background:linear-gradient(90deg,rgba(0,0,0,.97),rgba(0,0,0,.82),rgba(0,0,0,.25)),url("../img/gallery/salao-1.jpg") center/cover no-repeat}
+.hero::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 80% 20%,rgba(239,193,92,.14),transparent 30%)}
+.hero-content{position:relative;z-index:2;animation:heroFade .85s ease both}
+@keyframes heroFade{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+.hero h1{font-size:clamp(3.6rem,7vw,6.6rem);letter-spacing:-.05em}
+.hero h1 em{background:linear-gradient(90deg,#fff1bf,var(--gold2),#a96d04);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-badges{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:26px}
+.hero-badges span{border:1px solid rgba(239,193,92,.35);background:rgba(0,0,0,.35);color:#f4e1aa;padding:8px 11px;border-radius:999px;font-size:.75rem}
+.trust-strip{padding:24px 0 0}
+.trust-grid{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid #eee;border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 14px 34px rgba(0,0,0,.06)}
+.trust-grid div{padding:20px;border-right:1px solid #eee}
+.trust-grid div:last-child{border-right:0}
+.trust-grid b{display:block;color:#9b6a0b;margin-bottom:5px}
+.trust-grid span{font-size:.82rem;color:#707070}
+.service-card img{transition:.45s}
+.service-card:hover img{transform:scale(1.06)}
+.plans-section{background:radial-gradient(circle at 80% 10%,rgba(201,147,29,.09),transparent 25%),linear-gradient(180deg,#fbf8f1,#f2ede2)}
+.plan-card{box-shadow:0 18px 36px rgba(0,0,0,.15)}
+.testimonials-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.testimonial-card{border:1px solid #eee;border-radius:14px;padding:25px;background:#fff;box-shadow:0 14px 28px rgba(0,0,0,.06)}
+.stars{color:#d49b1f;letter-spacing:.12em;margin-bottom:12px}
+.testimonial-card p{color:#505050;font-style:italic;margin-bottom:14px}
+.reveal{opacity:0;transform:translateY(22px);transition:.55s ease}
+.reveal.visible{opacity:1;transform:none}

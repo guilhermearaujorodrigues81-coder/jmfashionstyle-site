@@ -15,3 +15,7 @@ Site oficial do Studio JM.
    - Folder: / (root)
 
 WhatsApp configurado: (11) 95477-3332
+
+
+## Fase 1 — Visual Premium
+Hero redesenhado, navegação refinada, cards premium, diferenciais, depoimentos e animações.

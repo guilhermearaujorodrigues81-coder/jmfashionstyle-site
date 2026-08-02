@@ -20,3 +20,15 @@
   .booking-form .full{grid-column:auto}
   .gallery-track img{flex-basis:86%}
 }
+
+@media(max-width:1000px){
+  .trust-grid{grid-template-columns:repeat(2,1fr)}
+  .testimonials-grid{grid-template-columns:1fr}
+}
+@media(max-width:720px){
+  .hero{min-height:700px}
+  .hero h1{font-size:clamp(3rem,15vw,4.4rem)}
+  .hero-badges{display:none}
+  .trust-grid{grid-template-columns:1fr}
+  .trust-grid div{border-right:0;border-bottom:1px solid #eee}
+}

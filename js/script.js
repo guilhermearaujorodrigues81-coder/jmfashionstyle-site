@@ -72,3 +72,10 @@ Por favor, confirme a disponibilidade.`
   );
   window.open(`https://wa.me/${WHATSAPP}?text=${msg}`,"_blank");
 });
+
+const revealObserver=new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting) entry.target.classList.add("visible");
+  });
+},{threshold:.08});
+document.querySelectorAll(".reveal").forEach(el=>revealObserver.observe(el));

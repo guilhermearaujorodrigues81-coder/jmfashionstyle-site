@@ -40,9 +40,10 @@
 
   <header class="hero" id="inicio">
     <div class="container hero-content">
-      <span class="eyebrow">Centro de beleza completo</span>
-      <h1>Beleza, estilo <em>e confiança</em></h1>
-      <p>Barbearia, cabeleireiro, manicure, pedicure, podologia, maquiagem e depilação em um único espaço.</p>
+      <span class="eyebrow">Experiência completa em beleza</span>
+      <h1>Seu estilo.<br><em>Sua melhor versão.</em></h1>
+      <p>Um espaço completo para cuidar do visual, da autoestima e da confiança, com atendimento personalizado para toda a família.</p>
+      <div class="hero-badges"><span>Atendimento personalizado</span><span>Ambiente climatizado</span><span>Agendamento fácil</span></div>
       <div class="hero-actions">
         <a class="btn btn-gold" href="#agendar">Agendar agora</a>
         <a class="btn btn-outline" href="#planos">Conheça os planos</a>
@@ -59,6 +60,15 @@
     </div>
   </section>
 
+  <section class="trust-strip">
+    <div class="container trust-grid">
+      <div><b>Profissionais qualificados</b><span>Cuidado em cada detalhe</span></div>
+      <div><b>Produtos de qualidade</b><span>Resultados com segurança</span></div>
+      <div><b>Ambiente acolhedor</b><span>Conforto para toda a família</span></div>
+      <div><b>Agendamento online</b><span>Praticidade pelo WhatsApp</span></div>
+    </div>
+  </section>
+
   <section id="servicos">
     <div class="container">
       <div class="section-heading">
@@ -67,49 +77,49 @@
       </div>
 
       <div class="services-grid">
-        <article class="service-card">
+        <article class="service-card reveal">
           <img src="./img/services/barbearia.jpg" alt="Barbearia">
           <h3>Barbearia</h3>
           <p>Cortes, barba, acabamento e estilo masculino.</p>
           <button class="btn btn-gold service-button" data-category="barbearia">Ver serviços</button>
         </article>
 
-        <article class="service-card">
+        <article class="service-card reveal">
           <img src="./img/services/cabeleireiro.jpg" alt="Cabeleireiro">
           <h3>Cabeleireiro</h3>
           <p>Tratamentos, coloração e transformação capilar.</p>
           <button class="btn btn-gold service-button" data-category="cabelo">Ver serviços</button>
         </article>
 
-        <article class="service-card">
+        <article class="service-card reveal">
           <img src="./img/services/manicure.jpg" alt="Manicure">
           <h3>Manicure</h3>
           <p>Cuidados completos para as mãos.</p>
           <button class="btn btn-gold service-button" data-category="unhas">Ver serviços</button>
         </article>
 
-        <article class="service-card">
+        <article class="service-card reveal">
           <img src="./img/services/pedicure.jpg" alt="Pedicure">
           <h3>Pedicure</h3>
           <p>Esmaltação e cuidados para os pés.</p>
           <button class="btn btn-gold service-button" data-category="unhas">Ver serviços</button>
         </article>
 
-        <article class="service-card">
+        <article class="service-card reveal">
           <img src="./img/services/podologia.jpg" alt="Podologia">
           <h3>Podologia</h3>
           <p>Avaliação e cuidados especializados.</p>
           <button class="btn btn-gold service-button" data-category="podologia">Ver serviços</button>
         </article>
 
-        <article class="service-card">
+        <article class="service-card reveal">
           <img src="./img/services/maquiagem.jpg" alt="Maquiagem">
           <h3>Maquiagem</h3>
           <p>Produções sociais e ocasiões especiais.</p>
           <button class="btn btn-gold service-button" data-category="maquiagem">Ver serviços</button>
         </article>
 
-        <article class="service-card">
+        <article class="service-card reveal">
           <img src="./img/services/depilacao.jpg" alt="Depilação">
           <h3>Depilação</h3>
           <p>Atendimento por área e necessidade.</p>
@@ -127,7 +137,7 @@
       </div>
 
       <div class="plans-grid">
-        <article class="plan-card">
+        <article class="plan-card reveal">
           <h3>Bronze</h3>
           <div class="price">R$ 79,90/mês</div>
           <p>Para quem quer manter o corte sempre em dia.</p>
@@ -139,7 +149,7 @@
           <button class="btn btn-gold plan-button" data-plan="Bronze">Quero este plano</button>
         </article>
 
-        <article class="plan-card featured">
+        <article class="plan-card featured reveal">
           <span class="tag">Mais escolhido</span>
           <h3>Prata</h3>
           <div class="price">R$ 129,90/mês</div>
@@ -153,7 +163,7 @@
           <button class="btn btn-gold plan-button" data-plan="Prata">Quero este plano</button>
         </article>
 
-        <article class="plan-card">
+        <article class="plan-card reveal">
           <h3>VIP</h3>
           <div class="price">R$ 219,90/mês</div>
           <p>Plano individual para quem frequenta toda semana.</p>
@@ -168,7 +178,7 @@
           <button class="btn btn-gold plan-button" data-plan="VIP">Quero este plano</button>
         </article>
 
-        <article class="plan-card family">
+        <article class="plan-card family reveal">
           <span class="tag family-tag">Plano família</span>
           <h3>Family VIP</h3>
           <div class="price">R$ 299,90/mês</div>
@@ -203,6 +213,21 @@
       <div class="gallery-controls">
         <button id="prevGallery" aria-label="Foto anterior">‹</button>
         <button id="nextGallery" aria-label="Próxima foto">›</button>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="testimonials-section">
+    <div class="container">
+      <div class="section-heading">
+        <span class="eyebrow">Quem conhece recomenda</span>
+        <h2>Experiências no Studio JM</h2>
+      </div>
+      <div class="testimonials-grid">
+        <article class="testimonial-card"><div class="stars">★★★★★</div><p>“Atendimento excelente, ambiente agradável e resultado impecável.”</p><strong>Cliente Studio JM</strong></article>
+        <article class="testimonial-card"><div class="stars">★★★★★</div><p>“Profissionais atenciosos e muita facilidade para agendar.”</p><strong>Cliente Studio JM</strong></article>
+        <article class="testimonial-card"><div class="stars">★★★★★</div><p>“Um espaço completo para toda a família cuidar do visual.”</p><strong>Cliente Studio JM</strong></article>
       </div>
     </div>
   </section>
