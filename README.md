@@ -19,3 +19,16 @@ WhatsApp configurado: (11) 95477-3332
 
 ## Fase 1 — Visual Premium
 Hero redesenhado, navegação refinada, cards premium, diferenciais, depoimentos e animações.
+
+
+## Fase 2
+Hero com vídeos otimizados e agendamento em cinco etapas com confirmação pelo WhatsApp.
+
+## Fase 2.1 — Correções
+
+- Reprodução automática dos vídeos com fallback para imagem
+- Calendário visual com dias clicáveis
+- Domingos e datas anteriores bloqueados
+- Redirecionamento confiável para o WhatsApp na mesma aba
+- Link alternativo para abrir o WhatsApp
+- Verificação de sintaxe do JavaScript concluída

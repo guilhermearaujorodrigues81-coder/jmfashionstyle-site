@@ -32,3 +32,21 @@
   .trust-grid{grid-template-columns:1fr}
   .trust-grid div{border-right:0;border-bottom:1px solid #eee}
 }
+
+@media(max-width:720px){
+  .hero-video-overlay{background:linear-gradient(to right,rgba(0,0,0,.88),rgba(0,0,0,.48)),linear-gradient(to top,rgba(0,0,0,.62),transparent)}
+  .wizard-panel{padding:25px 16px}
+  .choice-grid,.service-choice,.date-time-grid,.wizard-client-grid{grid-template-columns:1fr}
+  .wizard-client-grid .full{grid-column:auto}
+  .time-buttons{grid-template-columns:repeat(3,1fr)}
+  .wizard-actions{position:sticky;bottom:-25px;background:#111;padding:15px 0 5px}
+}
+@media(prefers-reduced-motion:reduce){
+  .hero-video{display:none}
+  .video-hero{background:linear-gradient(90deg,rgba(0,0,0,.95),rgba(0,0,0,.55)),url("../img/gallery/salao-1.jpg") center/cover}
+}
+
+@media(max-width:760px){
+  .calendar-time-layout{grid-template-columns:1fr}
+  .calendar-day{min-height:39px}
+}

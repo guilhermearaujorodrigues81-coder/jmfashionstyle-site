@@ -38,16 +38,34 @@
     </div>
   </nav>
 
-  <header class="hero" id="inicio">
+  <header class="hero video-hero" id="inicio">
+    <div class="hero-video-stack" aria-hidden="true">
+      <video class="hero-video active" autoplay muted playsinline preload="auto" poster="./img/gallery/salao-1.jpg">
+        <source src="./video/hero-1.mp4" type="video/mp4">
+      </video>
+      <video class="hero-video" muted playsinline preload="auto" poster="./img/gallery/salao-1.jpg">
+        <source src="./video/hero-2.mp4" type="video/mp4">
+      </video>
+      <video class="hero-video" muted playsinline preload="auto" poster="./img/gallery/salao-1.jpg">
+        <source src="./video/hero-3.mp4" type="video/mp4">
+      </video>
+    </div>
+    <div class="hero-video-overlay"></div>
     <div class="container hero-content">
       <span class="eyebrow">Experiência completa em beleza</span>
       <h1>Seu estilo.<br><em>Sua melhor versão.</em></h1>
       <p>Um espaço completo para cuidar do visual, da autoestima e da confiança, com atendimento personalizado para toda a família.</p>
-      <div class="hero-badges"><span>Atendimento personalizado</span><span>Ambiente climatizado</span><span>Agendamento fácil</span></div>
+      <div class="hero-badges">
+        <span>Atendimento personalizado</span>
+        <span>Ambiente climatizado</span>
+        <span>Agendamento fácil</span>
+      </div>
       <div class="hero-actions">
-        <a class="btn btn-gold" href="#agendar">Agendar agora</a>
+        <button class="btn btn-gold open-booking">Agendar agora</button>
         <a class="btn btn-outline" href="#planos">Conheça os planos</a>
       </div>
+      <div class="video-progress" id="videoProgress"><span class="active"></span><span></span><span></span></div>
+      <div class="video-status" id="videoStatus" hidden>Vídeo indisponível — exibindo imagem de fundo.</div>
     </div>
   </header>
 
@@ -237,10 +255,11 @@
       <div>
         <span class="eyebrow">Agendamento</span>
         <h2>Solicite seu horário</h2>
-        <p>Preencha os dados e confirme diretamente pelo WhatsApp.</p>
+        <p>Escolha o serviço, data e horário em poucos passos. A confirmação final será feita pelo WhatsApp.</p>
+        <button class="btn btn-gold booking-launch open-booking">Iniciar agendamento</button>
       </div>
 
-      <form id="bookingForm" class="booking-form">
+      <form id="bookingForm" class="booking-form legacy-form">
         <label>Nome<input id="name" required></label>
         <label>Telefone<input id="phone" required></label>
 
@@ -271,6 +290,92 @@
   </footer>
 
   <a class="floating-whatsapp" target="_blank" href="https://wa.me/5511954773332">WhatsApp</a>
+
+
+  <div class="booking-wizard" id="bookingWizard" aria-hidden="true">
+    <div class="wizard-panel">
+      <button class="wizard-close" id="closeBooking" aria-label="Fechar">×</button>
+      <div class="wizard-header">
+        <span class="eyebrow">Agendamento Studio JM</span>
+        <h2>Reserve seu atendimento</h2>
+        <div class="wizard-steps" id="wizardSteps"><span class="active">1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
+      </div>
+      <form id="wizardForm">
+        <section class="wizard-page active" data-step="1">
+          <h3>Escolha a categoria</h3>
+          <div class="choice-grid category-choice" id="categoryChoice">
+            <button type="button" data-category="barbearia">💈<b>Barbearia</b></button>
+            <button type="button" data-category="cabelo">✂️<b>Cabeleireiro</b></button>
+            <button type="button" data-category="unhas">💅<b>Manicure e pedicure</b></button>
+            <button type="button" data-category="podologia">👣<b>Podologia</b></button>
+            <button type="button" data-category="maquiagem">💄<b>Maquiagem</b></button>
+            <button type="button" data-category="depilacao">✨<b>Depilação</b></button>
+          </div>
+        </section>
+        <section class="wizard-page" data-step="2"><h3>Escolha o serviço</h3><div class="service-choice" id="wizardServiceChoice"></div></section>
+        <section class="wizard-page" data-step="3">
+          <h3>Escolha o profissional</h3>
+          <div class="choice-grid professional-choice">
+            <button type="button" data-professional="Sem preferência"><span class="professional-avatar">★</span><b>Sem preferência</b><small>Primeiro profissional disponível</small></button>
+            <button type="button" data-professional="Profissional de preferência"><span class="professional-avatar">JM</span><b>Profissional de preferência</b><small>Informe nas observações</small></button>
+          </div>
+        </section>
+        <section class="wizard-page" data-step="4">
+          <h3>Escolha data e horário</h3>
+
+          <div class="calendar-time-layout">
+            <div class="calendar-card">
+              <div class="calendar-header">
+                <button type="button" id="calendarPrev" aria-label="Mês anterior">‹</button>
+                <strong id="calendarTitle"></strong>
+                <button type="button" id="calendarNext" aria-label="Próximo mês">›</button>
+              </div>
+
+              <div class="calendar-weekdays">
+                <span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span>
+                <span>Qui</span><span>Sex</span><span>Sáb</span>
+              </div>
+
+              <div class="calendar-days" id="calendarDays"></div>
+              <p class="calendar-selected" id="calendarSelected">Selecione uma data disponível.</p>
+            </div>
+
+            <div class="time-selection">
+              <span class="field-label">Horário desejado</span>
+              <div class="time-buttons" id="timeButtons">
+                <button type="button" data-time="09:00">09:00</button>
+                <button type="button" data-time="10:00">10:00</button>
+                <button type="button" data-time="11:00">11:00</button>
+                <button type="button" data-time="12:00">12:00</button>
+                <button type="button" data-time="13:00">13:00</button>
+                <button type="button" data-time="14:00">14:00</button>
+                <button type="button" data-time="15:00">15:00</button>
+                <button type="button" data-time="16:00">16:00</button>
+                <button type="button" data-time="17:00">17:00</button>
+                <button type="button" data-time="18:00">18:00</button>
+              </div>
+              <small class="availability-note">O horário escolhido será confirmado pela equipe no WhatsApp.</small>
+            </div>
+          </div>
+        </section>
+        <section class="wizard-page" data-step="5">
+          <h3>Seus dados e confirmação</h3>
+          <div class="wizard-client-grid">
+            <label>Nome<input id="wizardName" required placeholder="Seu nome"></label>
+            <label>Telefone<input id="wizardPhone" required placeholder="(11) 99999-9999"></label>
+            <label class="full">Observações<textarea id="wizardNotes" placeholder="Preferência de profissional ou detalhes do serviço"></textarea></label>
+          </div>
+          <div class="booking-summary" id="bookingSummary"></div>
+          <a class="whatsapp-fallback" id="whatsappFallback" href="https://wa.me/5511954773332" target="_self">Abrir WhatsApp diretamente</a>
+        </section>
+        <div class="wizard-actions">
+          <button type="button" class="btn wizard-back" id="wizardBack">Voltar</button>
+          <button type="button" class="btn btn-gold wizard-next" id="wizardNext">Continuar</button>
+          <button type="submit" class="btn btn-whatsapp wizard-submit" id="wizardSubmit">Confirmar pelo WhatsApp</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <div class="modal" id="serviceModal">
     <div class="modal-content">
