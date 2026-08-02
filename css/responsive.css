@@ -1,0 +1,22 @@
+
+@media(max-width:1000px){
+  .services-grid{grid-template-columns:repeat(2,1fr)}
+  .plans-grid{grid-template-columns:repeat(2,1fr)}
+  .booking-grid{grid-template-columns:1fr}
+  .gallery-track img{flex-basis:calc(50% - 7px)}
+}
+@media(max-width:720px){
+  .desktop-whatsapp{display:none}
+  .menu-button{display:block}
+  .nav-links{display:none;position:absolute;top:78px;left:0;right:0;background:#080808;flex-direction:column;padding:20px}
+  .nav-links.open{display:flex}
+  .brand small{display:none}
+  .hero{min-height:610px;background-position:60% center}
+  .metrics-grid{grid-template-columns:1fr 1fr}
+  .metrics-grid div:nth-child(2){border-right:0}
+  .metrics-grid div:nth-child(-n+2){border-bottom:1px solid #443512}
+  .services-grid,.plans-grid,.footer-grid{grid-template-columns:1fr}
+  .booking-form{grid-template-columns:1fr}
+  .booking-form .full{grid-column:auto}
+  .gallery-track img{flex-basis:86%}
+}

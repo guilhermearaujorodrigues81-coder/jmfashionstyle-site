@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#080808">
+  <meta name="description" content="Studio JM — centro de beleza completo em São Paulo.">
+  <meta property="og:title" content="Studio JM">
+  <meta property="og:description" content="Beleza, estilo e confiança em um só lugar.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://jmfashionstyle.com.br/">
+  <link rel="icon" href="./img/brand/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/responsive.css">
+  <title>Studio JM | Centro de Beleza</title>
+</head>
+<body>
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="#inicio">
+        <img src="./img/brand/logo.jpg" alt="Logo Studio JM">
+        <span><strong>STUDIO JM</strong><small>Centro de beleza</small></span>
+      </a>
+
+      <button class="menu-button" id="menuButton" aria-label="Abrir menu">☰</button>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#inicio">Início</a></li>
+        <li><a href="#servicos">Serviços</a></li>
+        <li><a href="#planos">Planos</a></li>
+        <li><a href="#galeria">Galeria</a></li>
+        <li><a href="#agendar">Agendar</a></li>
+      </ul>
+
+      <a class="btn btn-whatsapp desktop-whatsapp" target="_blank"
+         href="https://wa.me/5511954773332">WhatsApp</a>
+    </div>
+  </nav>
+
+  <header class="hero" id="inicio">
+    <div class="container hero-content">
+      <span class="eyebrow">Centro de beleza completo</span>
+      <h1>Beleza, estilo <em>e confiança</em></h1>
+      <p>Barbearia, cabeleireiro, manicure, pedicure, podologia, maquiagem e depilação em um único espaço.</p>
+      <div class="hero-actions">
+        <a class="btn btn-gold" href="#agendar">Agendar agora</a>
+        <a class="btn btn-outline" href="#planos">Conheça os planos</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="metrics">
+    <div class="container metrics-grid">
+      <div><strong>+7</strong><span>Categorias</span></div>
+      <div><strong>09h–19h</strong><span>Atendimento</span></div>
+      <div><strong>100%</strong><span>Cuidado personalizado</span></div>
+      <div><strong>Família</strong><span>Masculino e feminino</span></div>
+    </div>
+  </section>
+
+  <section id="servicos">
+    <div class="container">
+      <div class="section-heading">
+        <span class="eyebrow">Nossos serviços</span>
+        <h2>Escolha a categoria</h2>
+      </div>
+
+      <div class="services-grid">
+        <article class="service-card">
+          <img src="./img/services/barbearia.jpg" alt="Barbearia">
+          <h3>Barbearia</h3>
+          <p>Cortes, barba, acabamento e estilo masculino.</p>
+          <button class="btn btn-gold service-button" data-category="barbearia">Ver serviços</button>
+        </article>
+
+        <article class="service-card">
+          <img src="./img/services/cabeleireiro.jpg" alt="Cabeleireiro">
+          <h3>Cabeleireiro</h3>
+          <p>Tratamentos, coloração e transformação capilar.</p>
+          <button class="btn btn-gold service-button" data-category="cabelo">Ver serviços</button>
+        </article>
+
+        <article class="service-card">
+          <img src="./img/services/manicure.jpg" alt="Manicure">
+          <h3>Manicure</h3>
+          <p>Cuidados completos para as mãos.</p>
+          <button class="btn btn-gold service-button" data-category="unhas">Ver serviços</button>
+        </article>
+
+        <article class="service-card">
+          <img src="./img/services/pedicure.jpg" alt="Pedicure">
+          <h3>Pedicure</h3>
+          <p>Esmaltação e cuidados para os pés.</p>
+          <button class="btn btn-gold service-button" data-category="unhas">Ver serviços</button>
+        </article>
+
+        <article class="service-card">
+          <img src="./img/services/podologia.jpg" alt="Podologia">
+          <h3>Podologia</h3>
+          <p>Avaliação e cuidados especializados.</p>
+          <button class="btn btn-gold service-button" data-category="podologia">Ver serviços</button>
+        </article>
+
+        <article class="service-card">
+          <img src="./img/services/maquiagem.jpg" alt="Maquiagem">
+          <h3>Maquiagem</h3>
+          <p>Produções sociais e ocasiões especiais.</p>
+          <button class="btn btn-gold service-button" data-category="maquiagem">Ver serviços</button>
+        </article>
+
+        <article class="service-card">
+          <img src="./img/services/depilacao.jpg" alt="Depilação">
+          <h3>Depilação</h3>
+          <p>Atendimento por área e necessidade.</p>
+          <button class="btn btn-gold service-button" data-category="depilacao">Ver serviços</button>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="plans-section" id="planos">
+    <div class="container">
+      <div class="section-heading">
+        <span class="eyebrow">Clube Studio JM</span>
+        <h2>Planos por assinatura</h2>
+      </div>
+
+      <div class="plans-grid">
+        <article class="plan-card">
+          <h3>Bronze</h3>
+          <div class="price">R$ 79,90/mês</div>
+          <p>Para quem quer manter o corte sempre em dia.</p>
+          <ul>
+            <li>2 cortes por mês</li>
+            <li>Agendamento conforme disponibilidade</li>
+            <li>5% OFF em serviços adicionais</li>
+          </ul>
+          <button class="btn btn-gold plan-button" data-plan="Bronze">Quero este plano</button>
+        </article>
+
+        <article class="plan-card featured">
+          <span class="tag">Mais escolhido</span>
+          <h3>Prata</h3>
+          <div class="price">R$ 129,90/mês</div>
+          <p>Mais liberdade entre corte e barba.</p>
+          <ul>
+            <li>2 cortes + 2 barbas</li>
+            <li>Ou 4 serviços por mês</li>
+            <li>1 freestyle gratuito</li>
+            <li>10% OFF em serviços adicionais</li>
+          </ul>
+          <button class="btn btn-gold plan-button" data-plan="Prata">Quero este plano</button>
+        </article>
+
+        <article class="plan-card">
+          <h3>VIP</h3>
+          <div class="price">R$ 219,90/mês</div>
+          <p>Plano individual para quem frequenta toda semana.</p>
+          <ul>
+            <li>Até 12 atendimentos por mês</li>
+            <li>Use em corte e/ou barba</li>
+            <li>1 hidratação capilar premium</li>
+            <li>Prioridade máxima na agenda</li>
+            <li>20% OFF em serviços adicionais</li>
+          </ul>
+          <small>Limite de 1 atendimento por dia, mediante agendamento.</small>
+          <button class="btn btn-gold plan-button" data-plan="VIP">Quero este plano</button>
+        </article>
+
+        <article class="plan-card family">
+          <span class="tag family-tag">Plano família</span>
+          <h3>Family VIP</h3>
+          <div class="price">R$ 299,90/mês</div>
+          <p>Créditos compartilhados por até 4 pessoas.</p>
+          <ul>
+            <li>8 créditos mensais</li>
+            <li>1 corte = 1 crédito</li>
+            <li>1 barba = 1 crédito</li>
+            <li>2 hidratações premium</li>
+            <li>15% OFF em serviços adicionais</li>
+          </ul>
+          <button class="btn btn-gold plan-button" data-plan="Family VIP">Quero este plano</button>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="galeria">
+    <div class="container">
+      <div class="section-heading">
+        <span class="eyebrow">Nosso espaço</span>
+        <h2>Conheça o Studio JM</h2>
+      </div>
+
+      <div class="gallery-track" id="galleryTrack">
+        <img src="./img/gallery/salao-1.jpg" alt="Salão Studio JM">
+        <img src="./img/gallery/salao-2.jpg" alt="Interior do Studio JM">
+        <img src="./img/gallery/salao-1.jpg" alt="Ambiente do Studio JM">
+        <img src="./img/gallery/salao-2.jpg" alt="Estações de atendimento">
+      </div>
+
+      <div class="gallery-controls">
+        <button id="prevGallery" aria-label="Foto anterior">‹</button>
+        <button id="nextGallery" aria-label="Próxima foto">›</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="booking-section" id="agendar">
+    <div class="container booking-grid">
+      <div>
+        <span class="eyebrow">Agendamento</span>
+        <h2>Solicite seu horário</h2>
+        <p>Preencha os dados e confirme diretamente pelo WhatsApp.</p>
+      </div>
+
+      <form id="bookingForm" class="booking-form">
+        <label>Nome<input id="name" required></label>
+        <label>Telefone<input id="phone" required></label>
+
+        <label class="full">Serviço<select id="service" required></select></label>
+
+        <label>Data<input id="date" type="date" required></label>
+        <label>Horário
+          <select id="time" required>
+            <option value="">Selecione</option>
+            <option>09:00</option><option>10:00</option><option>11:00</option>
+            <option>12:00</option><option>13:00</option><option>14:00</option>
+            <option>15:00</option><option>16:00</option><option>17:00</option><option>18:00</option>
+          </select>
+        </label>
+
+        <label class="full">Observações<textarea id="notes"></textarea></label>
+        <button class="btn btn-whatsapp full" type="submit">Enviar pelo WhatsApp</button>
+      </form>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container footer-grid">
+      <div><h3>Studio JM</h3><p>Beleza, estilo e confiança em um só lugar.</p></div>
+      <div><h3>Contato</h3><p>(11) 95477-3332</p></div>
+      <div><h3>Funcionamento</h3><p>Segunda a sábado, das 09h às 19h.</p></div>
+    </div>
+  </footer>
+
+  <a class="floating-whatsapp" target="_blank" href="https://wa.me/5511954773332">WhatsApp</a>
+
+  <div class="modal" id="serviceModal">
+    <div class="modal-content">
+      <button class="modal-close" id="closeModal">×</button>
+      <h2 id="modalTitle"></h2>
+      <div id="modalPrices"></div>
+    </div>
+  </div>
+
+  <script src="./js/services.js"></script>
+  <script src="./js/script.js"></script>
+</body>
+</html>
