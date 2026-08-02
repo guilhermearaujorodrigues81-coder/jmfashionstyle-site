@@ -39,3 +39,10 @@ Hero com vídeos otimizados e agendamento em cinco etapas com confirmação pelo
 - Vídeos continuam visíveis em computadores e celulares
 - Nova tentativa automática de reprodução ao carregar ou retornar para a aba
 - Fallback para imagem somente em erro real do arquivo
+
+## Fase 2.3 — Plano Ouro
+
+- Plano VIP renomeado para Plano Ouro
+- Valor mantido em R$ 219,90/mês
+- Benefícios mantidos
+- Mensagem de interesse pelo WhatsApp atualizada automaticamente
