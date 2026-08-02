@@ -122,7 +122,9 @@ function playHeroVideo(index) {
   clearTimeout(videoFallbackTimer);
   videoFallbackTimer = setTimeout(() => {
     const current = heroVideos[index];
-    if (!current || current.readyState < 2) markVideoFailure();
+    if (current && current.readyState >= 1) {
+      current.play().catch(() => {});
+    }
   }, 5000);
 }
 
@@ -504,3 +506,19 @@ whatsappFallback.addEventListener("click", event => {
 });
 
 renderCalendar();
+
+/* Nova tentativa quando a aba volta ao foco */
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden && heroVideos[heroVideoIndex]) {
+    heroVideos[heroVideoIndex].muted = true;
+    heroVideos[heroVideoIndex].play().catch(() => {});
+  }
+});
+
+window.addEventListener("load", () => {
+  const activeVideo = heroVideos.find(video => video.classList.contains("active"));
+  if (activeVideo) {
+    activeVideo.muted = true;
+    activeVideo.play().catch(() => {});
+  }
+});

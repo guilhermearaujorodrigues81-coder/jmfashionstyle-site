@@ -42,7 +42,21 @@
   .wizard-actions{position:sticky;bottom:-25px;background:#111;padding:15px 0 5px}
 }
 @media(prefers-reduced-motion:reduce){
-  .hero-video{display:none}
+  .hero-video{
+    display:block !important;
+    transition:opacity .25s ease !important;
+    transform:none !important;
+  }
+  .hero-video.active{
+    opacity:1;
+    transform:none !important;
+  }
+  .reveal{
+    opacity:1;
+    transform:none;
+    transition:none;
+  }
+}
   .video-hero{background:linear-gradient(90deg,rgba(0,0,0,.95),rgba(0,0,0,.55)),url("../img/gallery/salao-1.jpg") center/cover}
 }
 

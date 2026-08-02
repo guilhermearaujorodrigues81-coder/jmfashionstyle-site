@@ -260,3 +260,16 @@ body.modal-open{overflow:hidden}
   font-size:.82rem;
   text-decoration:underline;
 }
+
+/* Fase 2.2 — correção de vídeo em computadores */
+.hero-video-stack{
+  display:block !important;
+  visibility:visible !important;
+}
+.hero-video{
+  display:block;
+  visibility:visible;
+}
+.video-hero.video-fallback .hero-video-stack{
+  display:block !important;
+}

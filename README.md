@@ -32,3 +32,10 @@ Hero com vídeos otimizados e agendamento em cinco etapas com confirmação pelo
 - Redirecionamento confiável para o WhatsApp na mesma aba
 - Link alternativo para abrir o WhatsApp
 - Verificação de sintaxe do JavaScript concluída
+
+## Fase 2.2 — vídeo no computador
+
+- Removido o bloqueio que ocultava os vídeos quando o Windows estava com redução de animações ativa
+- Vídeos continuam visíveis em computadores e celulares
+- Nova tentativa automática de reprodução ao carregar ou retornar para a aba
+- Fallback para imagem somente em erro real do arquivo
