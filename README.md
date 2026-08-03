@@ -74,3 +74,29 @@ Hero com vídeos otimizados e agendamento em cinco etapas com confirmação pelo
 - Ouro destacado como mais vantajoso
 - Botão de adesão para cada plano
 - Rolagem horizontal orientada no celular
+
+## Fase 4 — Google e localização
+
+- Perfil da Studio JM no Google integrado
+- Nota 5,0 e 23 avaliações
+- Endereço e telefone reais
+- Google Maps incorporado
+- Botões para rota, perfil e avaliação
+- Seção de reputação e confiança
+- Correção do Plano Ouro para 2 freestyles por mês
+
+## Fase 4.1 — Links organizados
+
+- Agendar abre o calendário interno
+- Como chegar abre a rota no Google Maps
+- Ver no Google abre o perfil da Studio JM
+- Ver avaliações abre a pesquisa focada nas avaliações
+- Avaliar abre o perfil para o cliente selecionar a opção Avaliar
+
+## Fase 4.2 — Links finais do Google
+
+- Como chegar usa a rota direta fornecida
+- Ver no Google abre o perfil principal
+- Ver avaliações abre a página de comentários
+- Avaliar a Studio JM abre o link específico de avaliação
+- Agendamento continua usando o calendário interno

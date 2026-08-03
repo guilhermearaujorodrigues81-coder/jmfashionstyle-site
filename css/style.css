@@ -558,3 +558,229 @@ body.modal-open{overflow:hidden}
   background:#101010;
   color:#fff;
 }
+
+/* ===== FASE 4 — GOOGLE E LOCALIZAÇÃO ===== */
+.google-section{
+  background:
+    radial-gradient(circle at 10% 15%,rgba(201,147,29,.08),transparent 28%),
+    linear-gradient(180deg,#fff,#f8f4eb);
+}
+.google-profile-grid{
+  display:grid;
+  grid-template-columns:.92fr 1.08fr;
+  gap:20px;
+  align-items:stretch;
+}
+.google-business-card,
+.google-map-card{
+  border-radius:18px;
+  overflow:hidden;
+  border:1px solid #e7dcc7;
+  box-shadow:0 18px 38px rgba(0,0,0,.09);
+}
+.google-business-card{
+  padding:28px;
+  background:#0a0a0a;
+  color:#fff;
+}
+.google-brand-line{
+  display:flex;
+  align-items:center;
+  gap:13px;
+  padding-bottom:20px;
+  border-bottom:1px solid #292929;
+}
+.google-mark{
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:#fff;
+  color:#4285f4;
+  font-size:1.55rem;
+  font-weight:1000;
+}
+.google-brand-line span{
+  color:#aaa;
+  font-size:.75rem;
+}
+.google-brand-line h3{
+  color:var(--gold2);
+  font-size:1.6rem;
+}
+.google-rating{
+  display:flex;
+  align-items:center;
+  gap:15px;
+  margin:23px 0;
+}
+.google-rating>strong{
+  font-size:3.2rem;
+  line-height:1;
+}
+.google-stars{
+  color:#fbbc04;
+  letter-spacing:.13em;
+  font-size:1.05rem;
+}
+.google-rating span{
+  color:#bbb;
+  font-size:.8rem;
+}
+.business-details{
+  display:grid;
+  gap:13px;
+}
+.business-details>div{
+  display:flex;
+  gap:11px;
+  align-items:flex-start;
+  padding:13px;
+  border:1px solid #303030;
+  border-radius:11px;
+  background:#151515;
+}
+.detail-icon{
+  width:34px;
+  height:34px;
+  border-radius:9px;
+  display:grid;
+  place-items:center;
+  background:#221a09;
+  flex:0 0 auto;
+}
+.business-details p{
+  color:#ccc;
+  font-size:.85rem;
+}
+.business-details p strong{
+  display:block;
+  color:#fff;
+  margin-bottom:3px;
+}
+.google-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px;
+  margin-top:20px;
+}
+.google-route-button{
+  background:#fff;
+  color:#111;
+}
+.google-view-button{
+  border:1px solid #555;
+  color:#fff;
+  background:transparent;
+}
+.google-map-card{
+  min-height:500px;
+  background:#ddd;
+}
+.google-map-card iframe{
+  display:block;
+  min-height:500px;
+}
+.google-proof-bar{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  margin-top:20px;
+  border-radius:14px;
+  overflow:hidden;
+  background:#0a0a0a;
+  color:#fff;
+  border:1px solid #3b301a;
+  box-shadow:0 14px 30px rgba(0,0,0,.1);
+}
+.google-proof-bar>div{
+  padding:20px;
+  text-align:center;
+  border-right:1px solid #332b1a;
+}
+.google-proof-bar>div:last-child{
+  border-right:0;
+}
+.proof-icon{
+  display:block;
+  color:var(--gold2);
+  font-size:1.35rem;
+  margin-bottom:5px;
+}
+.google-proof-bar strong{
+  display:block;
+  color:#fff;
+}
+.google-proof-bar small{
+  color:#aaa;
+}
+.reviews-showcase{
+  margin-top:55px;
+}
+.review-cards{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:15px;
+}
+.review-card{
+  background:#fff;
+  border:1px solid #e7dcc7;
+  border-radius:14px;
+  padding:23px;
+  box-shadow:0 13px 27px rgba(0,0,0,.06);
+}
+.review-card p{
+  color:#58514a;
+  margin:12px 0 16px;
+  line-height:1.65;
+}
+.review-card strong{
+  color:#9b6a0b;
+  font-size:.83rem;
+}
+.review-actions{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:22px;
+}
+.google-review-button{
+  background:#fff;
+  color:#111;
+  border:1px solid #d9c69f;
+}
+
+/* Fase 4.1 — links do Google organizados */
+.google-actions a,
+.review-actions a{
+  position:relative;
+}
+.google-route-button::before{content:"↗";margin-right:7px}
+.google-view-button::before{content:"G";margin-right:7px;font-weight:1000}
+.google-review-button::before{content:"★";margin-right:7px;color:#fbbc04}
+
+/* Fase 4.2 — ações do Google organizadas */
+.google-actions,
+.review-actions{
+  align-items:center;
+}
+.google-actions .btn,
+.review-actions .btn{
+  min-height:46px;
+}
+.google-route-button{
+  background:#fff;
+  color:#111;
+  border:1px solid #ddd;
+}
+.google-view-button{
+  background:transparent;
+  color:#fff;
+  border:1px solid #555;
+}
+.google-review-button{
+  background:#fff;
+  color:#111;
+  border:1px solid #d9c69f;
+}
