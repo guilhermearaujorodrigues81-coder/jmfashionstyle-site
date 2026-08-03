@@ -64,3 +64,44 @@
   .calendar-time-layout{grid-template-columns:1fr}
   .calendar-day{min-height:39px}
 }
+
+@media(max-width:1000px){
+  .savings-calculator{grid-template-columns:1fr 1fr}
+  .calculator-result{grid-column:1/-1}
+}
+@media(max-width:720px){
+  .club-highlights,.savings-calculator{grid-template-columns:1fr}
+  .calculator-result{grid-column:auto}
+  .club-comparison{padding:16px}
+}
+
+@media(max-width:720px){
+  .comparison-heading h3{font-size:1.65rem}
+  .comparison-table{min-width:680px}
+  .comparison-row{grid-template-columns:1.22fr .9fr .9fr}
+  .comparison-row>div{padding:13px 11px}
+}
+
+@media(max-width:720px){
+  .all-plans-table{min-width:1050px}
+  .all-plans-table .comparison-row{
+    grid-template-columns:180px repeat(4,215px);
+  }
+  .comparison-scroll{
+    position:relative;
+    padding-bottom:8px;
+  }
+  .comparison-scroll::after{
+    content:"Deslize para comparar →";
+    position:sticky;
+    left:12px;
+    display:inline-block;
+    margin:10px 0 3px 12px;
+    padding:6px 10px;
+    border-radius:999px;
+    background:#111;
+    color:#fff;
+    font-size:.68rem;
+    font-weight:800;
+  }
+}

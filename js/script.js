@@ -522,3 +522,66 @@ window.addEventListener("load", () => {
     activeVideo.play().catch(() => {});
   }
 });
+
+/* Fase 3 — Clube Studio JM */
+const clubUsage={cuts:2,beards:2};
+const clubPrices={Bronze:79.90,Prata:129.90,Ouro:219.90,"Family VIP":299.90};
+const servicePrices={cut:45,beard:40};
+let currentRecommendedPlan="Prata";
+
+function calculateRecommendedPlan(){
+  const cuts=clubUsage.cuts;
+  const beards=clubUsage.beards;
+  const monthlyServices=cuts+beards;
+  const regularCost=cuts*servicePrices.cut+beards*servicePrices.beard;
+
+  let plan="Bronze";
+  if(monthlyServices<=2&&beards===0){
+    plan="Bronze";
+  }else if(monthlyServices<=4){
+    plan="Prata";
+  }else{
+    plan="Ouro";
+  }
+
+  currentRecommendedPlan=plan;
+  const saving=regularCost-clubPrices[plan];
+
+  document.getElementById("cutsValue").textContent=cuts;
+  document.getElementById("beardsValue").textContent=beards;
+  document.getElementById("regularCost").textContent=regularCost.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+  document.getElementById("recommendedPlan").textContent=`Plano ${plan}`;
+
+  const message=document.getElementById("savingMessage");
+  if(saving>0){
+    message.textContent=`Você pode economizar aproximadamente ${saving.toLocaleString("pt-BR",{style:"currency",currency:"BRL"})} por mês.`;
+  }else{
+    message.textContent="Esse plano oferece praticidade, prioridade e benefícios adicionais.";
+  }
+}
+
+document.querySelectorAll(".counter-control button").forEach(button=>{
+  button.addEventListener("click",()=>{
+    const target=button.dataset.target;
+    const action=button.dataset.action;
+    clubUsage[target]=Math.max(0,Math.min(15,clubUsage[target]+(action==="plus"?1:-1)));
+    calculateRecommendedPlan();
+  });
+});
+
+document.getElementById("chooseRecommended")?.addEventListener("click",()=>{
+  const message=encodeURIComponent(`Olá! Tenho interesse no Plano ${currentRecommendedPlan} do Studio JM. Gostaria de receber mais informações.`);
+  window.location.assign(`https://wa.me/${WHATSAPP}?text=${message}`);
+});
+
+document.querySelectorAll(".faq-item>button").forEach(button=>{
+  button.addEventListener("click",()=>{
+    const item=button.closest(".faq-item");
+    document.querySelectorAll(".faq-item").forEach(other=>{
+      if(other!==item)other.classList.remove("open");
+    });
+    item.classList.toggle("open");
+  });
+});
+
+calculateRecommendedPlan();

@@ -147,43 +147,57 @@
     </div>
   </section>
 
-  <section class="plans-section" id="planos">
+  
+  <section class="plans-section club-section" id="planos">
     <div class="container">
       <div class="section-heading">
         <span class="eyebrow">Clube Studio JM</span>
-        <h2>Planos por assinatura</h2>
+        <h2>Economize e mantenha seu estilo em dia</h2>
+        <p class="section-intro">
+          Escolha o plano que combina com sua rotina e tenha benefícios exclusivos todos os meses.
+        </p>
       </div>
 
-      <div class="plans-grid">
-        <article class="plan-card reveal">
+      <div class="club-highlights">
+        <div><strong>Preço fixo mensal</strong><span>Mais controle e previsibilidade</span></div>
+        <div><strong>Prioridade na agenda</strong><span>Mais facilidade para reservar</span></div>
+        <div><strong>Benefícios exclusivos</strong><span>Descontos e serviços inclusos</span></div>
+      </div>
+
+      <div class="plans-grid club-plans">
+        <article class="plan-card reveal" data-plan-card="Bronze">
+          <div class="plan-icon">🥉</div>
           <h3>Bronze</h3>
-          <div class="price">R$ 79,90/mês</div>
-          <p>Para quem quer manter o corte sempre em dia.</p>
+          <div class="price">R$ 79,90<small>/mês</small></div>
+          <p>Para manter o corte sempre em dia.</p>
           <ul>
             <li>2 cortes por mês</li>
             <li>Agendamento conforme disponibilidade</li>
             <li>5% OFF em serviços adicionais</li>
           </ul>
-          <button class="btn btn-gold plan-button" data-plan="Bronze">Quero este plano</button>
+          <button class="btn btn-gold plan-button" data-plan="Bronze">Quero o Bronze</button>
         </article>
 
-        <article class="plan-card featured reveal">
+        <article class="plan-card featured reveal" data-plan-card="Prata">
           <span class="tag">Mais escolhido</span>
+          <div class="plan-icon">🥈</div>
           <h3>Prata</h3>
-          <div class="price">R$ 129,90/mês</div>
-          <p>Mais liberdade entre corte e barba.</p>
+          <div class="price">R$ 129,90<small>/mês</small></div>
+          <p>Mais liberdade para escolher entre corte e barba.</p>
           <ul>
             <li>2 cortes + 2 barbas</li>
             <li>Ou 4 serviços por mês</li>
             <li>1 freestyle gratuito</li>
             <li>10% OFF em serviços adicionais</li>
           </ul>
-          <button class="btn btn-gold plan-button" data-plan="Prata">Quero este plano</button>
+          <button class="btn btn-gold plan-button" data-plan="Prata">Quero o Prata</button>
         </article>
 
-        <article class="plan-card reveal">
+        <article class="plan-card gold-plan reveal" data-plan-card="Ouro">
+          <span class="tag gold-tag">Mais vantajoso</span>
+          <div class="plan-icon">🥇</div>
           <h3>Ouro</h3>
-          <div class="price">R$ 219,90/mês</div>
+          <div class="price">R$ 219,90<small>/mês</small></div>
           <p>Plano individual para quem frequenta toda semana.</p>
           <ul>
             <li>Até 12 atendimentos por mês</li>
@@ -192,14 +206,15 @@
             <li>Prioridade máxima na agenda</li>
             <li>20% OFF em serviços adicionais</li>
           </ul>
-          <small>Limite de 1 atendimento por dia, mediante agendamento.</small>
-          <button class="btn btn-gold plan-button" data-plan="Ouro">Quero este plano</button>
+          <small class="plan-rule">Limite de 1 atendimento por dia, mediante agendamento.</small>
+          <button class="btn btn-gold plan-button" data-plan="Ouro">Quero o Ouro</button>
         </article>
 
-        <article class="plan-card family reveal">
+        <article class="plan-card family reveal" data-plan-card="Family VIP">
           <span class="tag family-tag">Plano família</span>
+          <div class="plan-icon">👨‍👩‍👧‍👦</div>
           <h3>Family VIP</h3>
-          <div class="price">R$ 299,90/mês</div>
+          <div class="price">R$ 299,90<small>/mês</small></div>
           <p>Créditos compartilhados por até 4 pessoas.</p>
           <ul>
             <li>8 créditos mensais</li>
@@ -208,11 +223,206 @@
             <li>2 hidratações premium</li>
             <li>15% OFF em serviços adicionais</li>
           </ul>
-          <button class="btn btn-gold plan-button" data-plan="Family VIP">Quero este plano</button>
+          <button class="btn btn-gold plan-button" data-plan="Family VIP">Quero o Family VIP</button>
         </article>
+      </div>
+
+      <div class="club-tools">
+        <div class="savings-calculator">
+          <div>
+            <span class="eyebrow">Calculadora de economia</span>
+            <h3>Qual plano combina com você?</h3>
+            <p>Informe quantos cortes e barbas costuma fazer por mês.</p>
+          </div>
+
+          <div class="calculator-controls">
+            <label>
+              Cortes por mês
+              <div class="counter-control">
+                <button type="button" data-action="minus" data-target="cuts">−</button>
+                <strong id="cutsValue">2</strong>
+                <button type="button" data-action="plus" data-target="cuts">+</button>
+              </div>
+            </label>
+
+            <label>
+              Barbas por mês
+              <div class="counter-control">
+                <button type="button" data-action="minus" data-target="beards">−</button>
+                <strong id="beardsValue">2</strong>
+                <button type="button" data-action="plus" data-target="beards">+</button>
+              </div>
+            </label>
+          </div>
+
+          <div class="calculator-result">
+            <span>Gasto avulso estimado</span>
+            <strong id="regularCost">R$ 170,00</strong>
+            <span>Plano recomendado</span>
+            <strong class="recommended-plan" id="recommendedPlan">Plano Prata</strong>
+            <small id="savingMessage">Você pode economizar aproximadamente R$ 40,10 por mês.</small>
+            <button type="button" class="btn btn-gold" id="chooseRecommended">Quero este plano</button>
+          </div>
+        </div>
+
+        
+        
+        <div class="club-comparison premium-comparison all-plans-comparison">
+          <div class="comparison-heading">
+            <span class="eyebrow">Comparação completa</span>
+            <h3>Encontre o plano ideal</h3>
+            <p>Compare todos os benefícios do Clube Studio JM.</p>
+          </div>
+
+          <div class="comparison-scroll">
+            <div class="comparison-table all-plans-table">
+              <div class="comparison-row comparison-header">
+                <div class="feature-cell feature-title">Benefícios</div>
+
+                <div class="plan-cell bronze-column">
+                  <span class="comparison-icon">🥉</span>
+                  <strong>Bronze</strong>
+                  <small>R$ 79,90/mês</small>
+                </div>
+
+                <div class="plan-cell silver-column">
+                  <span class="plan-label">Mais escolhido</span>
+                  <span class="comparison-icon">🥈</span>
+                  <strong>Prata</strong>
+                  <small>R$ 129,90/mês</small>
+                </div>
+
+                <div class="plan-cell gold-column">
+                  <span class="plan-label gold-label">Mais vantajoso</span>
+                  <span class="comparison-icon">🥇</span>
+                  <strong>Ouro</strong>
+                  <small>R$ 219,90/mês</small>
+                </div>
+
+                <div class="plan-cell family-column">
+                  <span class="comparison-icon">👨‍👩‍👧‍👦</span>
+                  <strong>Family VIP</strong>
+                  <small>R$ 299,90/mês</small>
+                </div>
+              </div>
+
+              <div class="comparison-row">
+                <div class="feature-cell"><span class="feature-icon">✂️</span><strong>Limite mensal</strong></div>
+                <div class="plan-cell">2 cortes</div>
+                <div class="plan-cell silver-value">4 serviços</div>
+                <div class="plan-cell gold-value">Até 12 serviços</div>
+                <div class="plan-cell">8 créditos</div>
+              </div>
+
+              <div class="comparison-row">
+                <div class="feature-cell"><span class="feature-icon">🛡️</span><strong>Serviços incluídos</strong></div>
+                <div class="plan-cell">Corte</div>
+                <div class="plan-cell silver-value">Corte e barba</div>
+                <div class="plan-cell gold-value">Corte e barba</div>
+                <div class="plan-cell">Corte e barba</div>
+              </div>
+
+              <div class="comparison-row">
+                <div class="feature-cell"><span class="feature-icon">👤</span><strong>Pessoas incluídas</strong></div>
+                <div class="plan-cell">1 pessoa</div>
+                <div class="plan-cell silver-value">1 pessoa</div>
+                <div class="plan-cell gold-value">1 pessoa</div>
+                <div class="plan-cell">Até 4 pessoas</div>
+              </div>
+
+              <div class="comparison-row">
+                <div class="feature-cell"><span class="feature-icon">💧</span><strong>Hidratação premium</strong></div>
+                <div class="plan-cell muted-value">—</div>
+                <div class="plan-cell muted-value">—</div>
+                <div class="plan-cell gold-value">1 por mês</div>
+                <div class="plan-cell">2 por mês</div>
+              </div>
+
+              <div class="comparison-row">
+                <div class="feature-cell"><span class="feature-icon">✨</span><strong>Freestyle gratuito</strong></div>
+                <div class="plan-cell muted-value">—</div>
+                <div class="plan-cell silver-value">1 por mês</div>
+                <div class="plan-cell gold-value">Incluso</div>
+                <div class="plan-cell">2 por mês</div>
+              </div>
+
+              <div class="comparison-row">
+                <div class="feature-cell"><span class="feature-icon">🏷️</span><strong>Desconto em serviços extras</strong></div>
+                <div class="plan-cell">5%</div>
+                <div class="plan-cell silver-value">10%</div>
+                <div class="plan-cell gold-value">20%</div>
+                <div class="plan-cell">15%</div>
+              </div>
+
+              <div class="comparison-row">
+                <div class="feature-cell"><span class="feature-icon">📅</span><strong>Prioridade na agenda</strong></div>
+                <div class="plan-cell"><span class="status-text">Conforme disponibilidade</span></div>
+                <div class="plan-cell"><span class="check silver-check">✓</span></div>
+                <div class="plan-cell"><span class="check gold-check">✓</span></div>
+                <div class="plan-cell"><span class="check dark-check">✓</span></div>
+              </div>
+
+              <div class="comparison-row">
+                <div class="feature-cell"><span class="feature-icon">🔁</span><strong>Forma de utilização</strong></div>
+                <div class="plan-cell">Uso individual</div>
+                <div class="plan-cell silver-value">Uso individual</div>
+                <div class="plan-cell gold-value">Uso individual</div>
+                <div class="plan-cell">Créditos compartilhados</div>
+              </div>
+
+              <div class="comparison-row comparison-actions">
+                <div class="feature-cell"><span class="feature-icon">💎</span><strong>Escolha seu plano</strong></div>
+                <div class="plan-cell"><button class="mini-plan-button plan-button" data-plan="Bronze">Quero o Bronze</button></div>
+                <div class="plan-cell"><button class="mini-plan-button silver-button plan-button" data-plan="Prata">Quero o Prata</button></div>
+                <div class="plan-cell"><button class="mini-plan-button gold-button plan-button" data-plan="Ouro">Quero o Ouro</button></div>
+                <div class="plan-cell"><button class="mini-plan-button family-button plan-button" data-plan="Family VIP">Quero o Family</button></div>
+              </div>
+            </div>
+          </div>
+
+          <p class="comparison-note">
+            Os benefícios são mensais e não acumulativos. Todos os atendimentos dependem de agendamento e disponibilidade. No Plano Ouro, o limite é de 1 atendimento por dia.
+          </p>
+        </div>
+      </div>
+    </div>
+          </div>
+
+          <p class="comparison-note">
+            Os atendimentos dependem de agendamento e disponibilidade. No Plano Ouro, o limite é de 1 atendimento por dia.
+          </p>
+        </div>
+      </div>
+    </div>
+
+      <div class="club-faq">
+        <div class="section-heading compact">
+          <span class="eyebrow">Dúvidas frequentes</span>
+          <h2>Como funciona o Clube?</h2>
+        </div>
+
+        <div class="faq-list">
+          <article class="faq-item">
+            <button type="button">Os benefícios acumulam para o mês seguinte?<span>+</span></button>
+            <div><p>Não. Os benefícios são válidos dentro do mês da assinatura e não acumulam.</p></div>
+          </article>
+          <article class="faq-item">
+            <button type="button">Posso cancelar quando quiser?<span>+</span></button>
+            <div><p>As condições de cancelamento serão confirmadas no momento da adesão pelo WhatsApp.</p></div>
+          </article>
+          <article class="faq-item">
+            <button type="button">O Plano Ouro é realmente ilimitado?<span>+</span></button>
+            <div><p>O Plano Ouro inclui até 12 atendimentos mensais, limitado a 1 atendimento por dia e mediante agendamento.</p></div>
+          </article>
+          <article class="faq-item">
+            <button type="button">Como funcionam os créditos do Family VIP?<span>+</span></button>
+            <div><p>Cada corte ou barba consome 1 crédito, compartilhado entre até 4 membros cadastrados.</p></div>
+          </article>
+        </div>
       </div>
     </div>
   </section>
+
 
   <section id="galeria">
     <div class="container">

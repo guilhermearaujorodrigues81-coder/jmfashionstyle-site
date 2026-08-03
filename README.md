@@ -46,3 +46,31 @@ Hero com vídeos otimizados e agendamento em cinco etapas com confirmação pelo
 - Valor mantido em R$ 219,90/mês
 - Benefícios mantidos
 - Mensagem de interesse pelo WhatsApp atualizada automaticamente
+
+## Fase 3 — Clube Studio JM
+
+- Cards de assinatura reformulados
+- Destaque para o Plano Ouro
+- Comparação completa dos planos
+- Calculadora de economia
+- Recomendação automática de plano
+- Perguntas frequentes
+- Adesão pelo WhatsApp
+
+
+## Fase 3.1 — Comparação Premium
+- Comparação Ouro x Family VIP redesenhada
+- Cabeçalho preto e dourado
+- Coluna de benefícios com ícones
+- Texto corrigido para “Serviços incluídos”
+- Melhor leitura em desktop e celular
+
+## Fase 3.2 — Comparação de todos os planos
+
+- Bronze, Prata, Ouro e Family VIP na mesma tabela
+- Valores mensais no cabeçalho
+- Comparação de serviços, pessoas, hidratação, freestyle e descontos
+- Prata destacado como mais escolhido
+- Ouro destacado como mais vantajoso
+- Botão de adesão para cada plano
+- Rolagem horizontal orientada no celular
