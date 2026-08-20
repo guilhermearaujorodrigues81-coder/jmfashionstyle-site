@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Minha conta | Studio JM</title>
+<link rel="stylesheet" href="./app.css">
+</head>
+<body>
+<div id="loading" class="loading"><div><div class="spinner"></div>Carregando...</div></div>
+
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <img src="../img/brand/logo.jpg" alt="Studio JM">
+      <div><strong>STUDIO JM</strong><small>Área do cliente</small></div>
+    </div>
+
+    <nav class="nav-list">
+      <a class="active" href="./cliente.html">⌂ Minha conta</a>
+      <a href="../index.html">← Site público</a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button data-logout>⇥ Sair</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <button class="btn btn-dark mobile-menu">☰</button>
+        <h1>Minha conta</h1>
+        <p>Base cadastral da Studio JM.</p>
+      </div>
+
+      <div class="user-chip">
+        <span class="avatar" id="avatar">JM</span>
+        <span id="userName">Cliente</span>
+      </div>
+    </div>
+
+    <section class="grid grid-3">
+      <div class="card dark">
+        <span class="metric-label">Tipo de acesso</span>
+        <div class="metric-value gold">Cliente</div>
+        <small>Conta individual protegida</small>
+      </div>
+
+      <div class="card">
+        <span class="metric-label">Cadastro</span>
+        <div class="metric-value">Ativo</div>
+        <small>Sua conta já faz parte da base Studio JM</small>
+      </div>
+
+      <div class="card">
+        <span class="metric-label">Próximas funções</span>
+        <div class="metric-value">5.2 → 5.6</div>
+        <small>Agenda, planos, créditos e pagamentos</small>
+      </div>
+    </section>
+
+    <div class="section-title"><h2>Meus dados</h2></div>
+
+    <section class="grid grid-2">
+      <div class="card">
+        <h2>Perfil</h2>
+        <div class="profile-list">
+          <div class="profile-item"><span>Nome</span><strong id="profileName">—</strong></div>
+          <div class="profile-item"><span>E-mail</span><strong id="profileEmail">—</strong></div>
+          <div class="profile-item"><span>WhatsApp</span><strong id="profilePhone">—</strong></div>
+          <div class="profile-item"><span>Cliente desde</span><strong id="profileSince">—</strong></div>
+        </div>
+        <button class="btn btn-gold" id="editProfile" style="margin-top:16px">Editar dados</button>
+      </div>
+
+      <div class="card">
+        <h2>Segurança e privacidade</h2>
+        <div class="permissions-box">
+          <div class="permission">
+            <strong>Dados isolados por usuário</strong>
+            <small>Você só pode consultar e editar o próprio perfil.</small>
+          </div>
+          <div class="permission">
+            <strong>Permissões administrativas separadas</strong>
+            <small>Clientes não acessam a base de outros clientes.</small>
+          </div>
+          <div class="permission">
+            <strong>Senha gerenciada pelo Supabase Auth</strong>
+            <small>A senha não fica armazenada no código do site.</small>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="modal" id="profileModal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2>Editar meus dados</h2>
+      <button class="icon-button" id="closeModal">×</button>
+    </div>
+
+    <form id="profileForm" class="form-grid">
+      <label>Nome completo<input id="editName" required maxlength="120"></label>
+      <label>WhatsApp<input id="editPhone" required maxlength="30"></label>
+      <div id="profileMessage" class="form-message"></div>
+      <button class="btn btn-gold" type="submit">Salvar alterações</button>
+    </form>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./config.js"></script>
+<script src="./common.js"></script>
+<script src="./cliente.js"></script>
+</body>
+</html>

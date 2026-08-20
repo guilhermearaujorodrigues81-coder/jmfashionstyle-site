@@ -1,0 +1,122 @@
+
+@media(max-width:1000px){
+  .services-grid{grid-template-columns:repeat(2,1fr)}
+  .plans-grid{grid-template-columns:repeat(2,1fr)}
+  .booking-grid{grid-template-columns:1fr}
+  .gallery-track img{flex-basis:calc(50% - 7px)}
+}
+@media(max-width:720px){
+  .desktop-whatsapp{display:none}
+  .menu-button{display:block}
+  .nav-links{display:none;position:absolute;top:78px;left:0;right:0;background:#080808;flex-direction:column;padding:20px}
+  .nav-links.open{display:flex}
+  .brand small{display:none}
+  .hero{min-height:610px;background-position:60% center}
+  .metrics-grid{grid-template-columns:1fr 1fr}
+  .metrics-grid div:nth-child(2){border-right:0}
+  .metrics-grid div:nth-child(-n+2){border-bottom:1px solid #443512}
+  .services-grid,.plans-grid,.footer-grid{grid-template-columns:1fr}
+  .booking-form{grid-template-columns:1fr}
+  .booking-form .full{grid-column:auto}
+  .gallery-track img{flex-basis:86%}
+}
+
+@media(max-width:1000px){
+  .trust-grid{grid-template-columns:repeat(2,1fr)}
+  .testimonials-grid{grid-template-columns:1fr}
+}
+@media(max-width:720px){
+  .hero{min-height:700px}
+  .hero h1{font-size:clamp(3rem,15vw,4.4rem)}
+  .hero-badges{display:none}
+  .trust-grid{grid-template-columns:1fr}
+  .trust-grid div{border-right:0;border-bottom:1px solid #eee}
+}
+
+@media(max-width:720px){
+  .hero-video-overlay{background:linear-gradient(to right,rgba(0,0,0,.88),rgba(0,0,0,.48)),linear-gradient(to top,rgba(0,0,0,.62),transparent)}
+  .wizard-panel{padding:25px 16px}
+  .choice-grid,.service-choice,.date-time-grid,.wizard-client-grid{grid-template-columns:1fr}
+  .wizard-client-grid .full{grid-column:auto}
+  .time-buttons{grid-template-columns:repeat(3,1fr)}
+  .wizard-actions{position:sticky;bottom:-25px;background:#111;padding:15px 0 5px}
+}
+@media(prefers-reduced-motion:reduce){
+  .hero-video{
+    display:block !important;
+    transition:opacity .25s ease !important;
+    transform:none !important;
+  }
+  .hero-video.active{
+    opacity:1;
+    transform:none !important;
+  }
+  .reveal{
+    opacity:1;
+    transform:none;
+    transition:none;
+  }
+}
+  .video-hero{background:linear-gradient(90deg,rgba(0,0,0,.95),rgba(0,0,0,.55)),url("../img/gallery/salao-1.jpg") center/cover}
+}
+
+@media(max-width:760px){
+  .calendar-time-layout{grid-template-columns:1fr}
+  .calendar-day{min-height:39px}
+}
+
+@media(max-width:1000px){
+  .savings-calculator{grid-template-columns:1fr 1fr}
+  .calculator-result{grid-column:1/-1}
+}
+@media(max-width:720px){
+  .club-highlights,.savings-calculator{grid-template-columns:1fr}
+  .calculator-result{grid-column:auto}
+  .club-comparison{padding:16px}
+}
+
+@media(max-width:720px){
+  .comparison-heading h3{font-size:1.65rem}
+  .comparison-table{min-width:680px}
+  .comparison-row{grid-template-columns:1.22fr .9fr .9fr}
+  .comparison-row>div{padding:13px 11px}
+}
+
+@media(max-width:720px){
+  .all-plans-table{min-width:1050px}
+  .all-plans-table .comparison-row{
+    grid-template-columns:180px repeat(4,215px);
+  }
+  .comparison-scroll{
+    position:relative;
+    padding-bottom:8px;
+  }
+  .comparison-scroll::after{
+    content:"Deslize para comparar →";
+    position:sticky;
+    left:12px;
+    display:inline-block;
+    margin:10px 0 3px 12px;
+    padding:6px 10px;
+    border-radius:999px;
+    background:#111;
+    color:#fff;
+    font-size:.68rem;
+    font-weight:800;
+  }
+}
+
+@media(max-width:1000px){
+  .google-profile-grid{grid-template-columns:1fr}
+  .google-proof-bar{grid-template-columns:repeat(2,1fr)}
+  .google-proof-bar>div:nth-child(2){border-right:0}
+  .google-proof-bar>div:nth-child(-n+2){border-bottom:1px solid #332b1a}
+  .review-cards{grid-template-columns:1fr}
+}
+@media(max-width:720px){
+  .google-business-card{padding:22px 16px}
+  .google-rating>strong{font-size:2.7rem}
+  .google-actions .btn{width:100%}
+  .google-map-card,.google-map-card iframe{min-height:380px}
+  .google-proof-bar{grid-template-columns:1fr 1fr}
+}

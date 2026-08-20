@@ -1,0 +1,636 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#080808">
+  <meta name="description" content="Studio JM — centro de beleza completo em São Paulo.">
+  <meta property="og:title" content="Studio JM">
+  <meta property="og:description" content="Beleza, estilo e confiança em um só lugar.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://jmfashionstyle.com.br/">
+  <link rel="icon" href="./img/brand/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/responsive.css">
+  <title>Studio JM | Centro de Beleza</title>
+</head>
+<body>
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="#inicio">
+        <img src="./img/brand/logo.jpg" alt="Logo Studio JM">
+        <span><strong>STUDIO JM</strong><small>Centro de beleza</small></span>
+      </a>
+
+      <button class="menu-button" id="menuButton" aria-label="Abrir menu">☰</button>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#inicio">Início</a></li>
+        <li><a href="#servicos">Serviços</a></li>
+        <li><a href="#planos">Planos</a></li>
+        <li><a href="#galeria">Galeria</a></li>
+        <li><a href="#localizacao">Localização</a></li>
+        <li><a href="./app/login.html">Área do cliente</a></li>
+        <li><a href="#agendar">Agendar</a></li>
+      </ul>
+
+      <a class="btn btn-whatsapp desktop-whatsapp" target="_blank"
+         href="https://wa.me/5511954773332">WhatsApp</a>
+    </div>
+  </nav>
+
+  <header class="hero video-hero" id="inicio">
+    <div class="hero-video-stack" aria-hidden="true">
+      <video class="hero-video active" autoplay muted playsinline preload="auto" poster="./img/gallery/salao-1.jpg">
+        <source src="./video/hero-1.mp4" type="video/mp4">
+      </video>
+      <video class="hero-video" muted playsinline preload="auto" poster="./img/gallery/salao-1.jpg">
+        <source src="./video/hero-2.mp4" type="video/mp4">
+      </video>
+      <video class="hero-video" muted playsinline preload="auto" poster="./img/gallery/salao-1.jpg">
+        <source src="./video/hero-3.mp4" type="video/mp4">
+      </video>
+    </div>
+    <div class="hero-video-overlay"></div>
+    <div class="container hero-content">
+      <span class="eyebrow">Experiência completa em beleza</span>
+      <h1>Seu estilo.<br><em>Sua melhor versão.</em></h1>
+      <p>Um espaço completo para cuidar do visual, da autoestima e da confiança, com atendimento personalizado para toda a família.</p>
+      <div class="hero-badges">
+        <span>Atendimento personalizado</span>
+        <span>Ambiente climatizado</span>
+        <span>Agendamento fácil</span>
+      </div>
+      <div class="hero-actions">
+        <button class="btn btn-gold open-booking">Agendar agora</button>
+        <a class="btn btn-outline" href="#planos">Conheça os planos</a>
+      </div>
+      <div class="video-progress" id="videoProgress"><span class="active"></span><span></span><span></span></div>
+      <div class="video-status" id="videoStatus" hidden>Vídeo indisponível — exibindo imagem de fundo.</div>
+    </div>
+  </header>
+
+  <section class="metrics">
+    <div class="container metrics-grid">
+      <div><strong>+7</strong><span>Categorias</span></div>
+      <div><strong>09h–19h</strong><span>Atendimento</span></div>
+      <div><strong>100%</strong><span>Cuidado personalizado</span></div>
+      <div><strong>Família</strong><span>Masculino e feminino</span></div>
+    </div>
+  </section>
+
+  <section class="trust-strip">
+    <div class="container trust-grid">
+      <div><b>Profissionais qualificados</b><span>Cuidado em cada detalhe</span></div>
+      <div><b>Produtos de qualidade</b><span>Resultados com segurança</span></div>
+      <div><b>Ambiente acolhedor</b><span>Conforto para toda a família</span></div>
+      <div><b>Agendamento online</b><span>Praticidade pelo WhatsApp</span></div>
+    </div>
+  </section>
+
+  <section id="servicos">
+    <div class="container">
+      <div class="section-heading">
+        <span class="eyebrow">Nossos serviços</span>
+        <h2>Escolha a categoria</h2>
+      </div>
+
+      <div class="services-grid">
+        <article class="service-card reveal">
+          <img src="./img/services/barbearia.jpg" alt="Barbearia">
+          <h3>Barbearia</h3>
+          <p>Cortes, barba, acabamento e estilo masculino.</p>
+          <button class="btn btn-gold service-button" data-category="barbearia">Ver serviços</button>
+        </article>
+
+        <article class="service-card reveal">
+          <img src="./img/services/cabeleireiro.jpg" alt="Cabeleireiro">
+          <h3>Cabeleireiro</h3>
+          <p>Tratamentos, coloração e transformação capilar.</p>
+          <button class="btn btn-gold service-button" data-category="cabelo">Ver serviços</button>
+        </article>
+
+        <article class="service-card reveal">
+          <img src="./img/services/manicure.jpg" alt="Manicure">
+          <h3>Manicure</h3>
+          <p>Cuidados completos para as mãos.</p>
+          <button class="btn btn-gold service-button" data-category="unhas">Ver serviços</button>
+        </article>
+
+        <article class="service-card reveal">
+          <img src="./img/services/pedicure.jpg" alt="Pedicure">
+          <h3>Pedicure</h3>
+          <p>Esmaltação e cuidados para os pés.</p>
+          <button class="btn btn-gold service-button" data-category="unhas">Ver serviços</button>
+        </article>
+
+        <article class="service-card reveal">
+          <img src="./img/services/podologia.jpg" alt="Podologia">
+          <h3>Podologia</h3>
+          <p>Avaliação e cuidados especializados.</p>
+          <button class="btn btn-gold service-button" data-category="podologia">Ver serviços</button>
+        </article>
+
+        <article class="service-card reveal">
+          <img src="./img/services/maquiagem.jpg" alt="Maquiagem">
+          <h3>Maquiagem</h3>
+          <p>Produções sociais e ocasiões especiais.</p>
+          <button class="btn btn-gold service-button" data-category="maquiagem">Ver serviços</button>
+        </article>
+
+        <article class="service-card reveal">
+          <img src="./img/services/depilacao.jpg" alt="Depilação">
+          <h3>Depilação</h3>
+          <p>Atendimento por área e necessidade.</p>
+          <button class="btn btn-gold service-button" data-category="depilacao">Ver serviços</button>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  
+  <section class="plans-section club-section" id="planos">
+    <div class="container">
+      <div class="section-heading">
+        <span class="eyebrow">Clube Studio JM</span>
+        <h2>Economize e mantenha seu estilo em dia</h2>
+        <p class="section-intro">
+          Escolha o plano que combina com sua rotina e tenha benefícios exclusivos todos os meses.
+        </p>
+      </div>
+
+      <div class="club-highlights">
+        <div><strong>Preço fixo mensal</strong><span>Mais controle e previsibilidade</span></div>
+        <div><strong>Prioridade na agenda</strong><span>Mais facilidade para reservar</span></div>
+        <div><strong>Benefícios exclusivos</strong><span>Descontos e serviços inclusos</span></div>
+      </div>
+
+      <div class="plans-grid club-plans">
+        <article class="plan-card reveal" data-plan-card="Bronze">
+          <div class="plan-icon">🥉</div>
+          <h3>Bronze</h3>
+          <div class="price">R$ 79,90<small>/mês</small></div>
+          <p>Para manter o corte sempre em dia.</p>
+          <ul>
+            <li>2 cortes por mês</li>
+            <li>Agendamento conforme disponibilidade</li>
+            <li>5% OFF em serviços adicionais</li>
+          </ul>
+          <button class="btn btn-gold plan-button" data-plan="Bronze">Quero o Bronze</button>
+        </article>
+
+        <article class="plan-card featured reveal" data-plan-card="Prata">
+          <span class="tag">Mais escolhido</span>
+          <div class="plan-icon">🥈</div>
+          <h3>Prata</h3>
+          <div class="price">R$ 129,90<small>/mês</small></div>
+          <p>Mais liberdade para escolher entre corte e barba.</p>
+          <ul>
+            <li>2 cortes + 2 barbas</li>
+            <li>Ou 4 serviços por mês</li>
+            <li>1 freestyle gratuito</li>
+            <li>10% OFF em serviços adicionais</li>
+          </ul>
+          <button class="btn btn-gold plan-button" data-plan="Prata">Quero o Prata</button>
+        </article>
+
+        <article class="plan-card gold-plan reveal" data-plan-card="Ouro">
+          <span class="tag gold-tag">Mais vantajoso</span>
+          <div class="plan-icon">🥇</div>
+          <h3>Ouro</h3>
+          <div class="price">R$ 219,90<small>/mês</small></div>
+          <p>Plano individual para quem frequenta toda semana.</p>
+          <ul>
+            <li>Até 12 atendimentos por mês</li>
+            <li>Use em corte e/ou barba</li>
+            <li>1 hidratação capilar premium</li>
+            <li>Prioridade máxima na agenda</li>
+            <li>20% OFF em serviços adicionais</li>
+          </ul>
+          <small class="plan-rule">Limite de 1 atendimento por dia, mediante agendamento.</small>
+          <button class="btn btn-gold plan-button" data-plan="Ouro">Quero o Ouro</button>
+        </article>
+
+        <article class="plan-card family reveal" data-plan-card="Family VIP">
+          <span class="tag family-tag">Plano família</span>
+          <div class="plan-icon">👨‍👩‍👧‍👦</div>
+          <h3>Family VIP</h3>
+          <div class="price">R$ 299,90<small>/mês</small></div>
+          <p>Créditos compartilhados por até 4 pessoas.</p>
+          <ul>
+            <li>8 créditos mensais</li>
+            <li>1 corte = 1 crédito</li>
+            <li>1 barba = 1 crédito</li>
+            <li>2 hidratações premium</li>
+            <li>15% OFF em serviços adicionais</li>
+          </ul>
+          <button class="btn btn-gold plan-button" data-plan="Family VIP">Quero o Family VIP</button>
+        </article>
+      </div>
+
+      <div class="club-tools">
+        <div class="savings-calculator">
+          <div>
+            <span class="eyebrow">Calculadora de economia</span>
+            <h3>Qual plano combina com você?</h3>
+            <p>Informe quantos cortes e barbas costuma fazer por mês.</p>
+          </div>
+
+          <div class="calculator-controls">
+            <label>
+              Cortes por mês
+              <div class="counter-control">
+                <button type="button" data-action="minus" data-target="cuts">−</button>
+                <strong id="cutsValue">2</strong>
+                <button type="button" data-action="plus" data-target="cuts">+</button>
+              </div>
+            </label>
+
+            <label>
+              Barbas por mês
+              <div class="counter-control">
+                <button type="button" data-action="minus" data-target="beards">−</button>
+                <strong id="beardsValue">2</strong>
+                <button type="button" data-action="plus" data-target="beards">+</button>
+              </div>
+            </label>
+          </div>
+
+          <div class="calculator-result">
+            <span>Gasto avulso estimado</span>
+            <strong id="regularCost">R$ 170,00</strong>
+            <span>Plano recomendado</span>
+            <strong class="recommended-plan" id="recommendedPlan">Plano Prata</strong>
+            <small id="savingMessage">Você pode economizar aproximadamente R$ 40,10 por mês.</small>
+            <button type="button" class="btn btn-gold" id="chooseRecommended">Quero este plano</button>
+          </div>
+        </div>
+
+          </div>
+
+          <p class="comparison-note">
+            Os benefícios são mensais e não acumulativos. Todos os atendimentos dependem de agendamento e disponibilidade. No Plano Ouro, o limite é de 1 atendimento por dia.
+          </p>
+        </div>
+      </div>
+    </div>
+          </div>
+
+          <p class="comparison-note">
+            Os atendimentos dependem de agendamento e disponibilidade. No Plano Ouro, o limite é de 1 atendimento por dia.
+          </p>
+        </div>
+      </div>
+    </div>
+
+      <div class="club-faq">
+        <div class="section-heading compact">
+          <span class="eyebrow">Dúvidas frequentes</span>
+          <h2>Como funciona o Clube?</h2>
+        </div>
+
+        <div class="faq-list">
+          <article class="faq-item">
+            <button type="button">Os benefícios acumulam para o mês seguinte?<span>+</span></button>
+            <div><p>Não. Os benefícios são válidos dentro do mês da assinatura e não acumulam.</p></div>
+          </article>
+          <article class="faq-item">
+            <button type="button">Posso cancelar quando quiser?<span>+</span></button>
+            <div><p>As condições de cancelamento serão confirmadas no momento da adesão pelo WhatsApp.</p></div>
+          </article>
+          <article class="faq-item">
+            <button type="button">O Plano Ouro é realmente ilimitado?<span>+</span></button>
+            <div><p>O Plano Ouro inclui até 12 atendimentos mensais, limitado a 1 atendimento por dia e mediante agendamento.</p></div>
+          </article>
+          <article class="faq-item">
+            <button type="button">Como funcionam os créditos do Family VIP?<span>+</span></button>
+            <div><p>Cada corte ou barba consome 1 crédito, compartilhado entre até 4 membros cadastrados.</p></div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section id="galeria">
+    <div class="container">
+      <div class="section-heading">
+        <span class="eyebrow">Nosso espaço</span>
+        <h2>Conheça o Studio JM</h2>
+      </div>
+
+      <div class="gallery-track" id="galleryTrack">
+        <img src="./img/gallery/salao-1.jpg" alt="Salão Studio JM">
+        <img src="./img/gallery/salao-2.jpg" alt="Interior do Studio JM">
+        <img src="./img/gallery/salao-1.jpg" alt="Ambiente do Studio JM">
+        <img src="./img/gallery/salao-2.jpg" alt="Estações de atendimento">
+      </div>
+
+      <div class="gallery-controls">
+        <button id="prevGallery" aria-label="Foto anterior">‹</button>
+        <button id="nextGallery" aria-label="Próxima foto">›</button>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="testimonials-section">
+    <div class="container">
+      <div class="section-heading">
+        <span class="eyebrow">Quem conhece recomenda</span>
+        <h2>Experiências no Studio JM</h2>
+      </div>
+      <div class="testimonials-grid">
+        <article class="testimonial-card"><div class="stars">★★★★★</div><p>“Atendimento excelente, ambiente agradável e resultado impecável.”</p><strong>Cliente Studio JM</strong></article>
+        <article class="testimonial-card"><div class="stars">★★★★★</div><p>“Profissionais atenciosos e muita facilidade para agendar.”</p><strong>Cliente Studio JM</strong></article>
+        <article class="testimonial-card"><div class="stars">★★★★★</div><p>“Um espaço completo para toda a família cuidar do visual.”</p><strong>Cliente Studio JM</strong></article>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="google-section" id="localizacao">
+    <div class="container">
+      <div class="section-heading">
+        <span class="eyebrow">Studio JM no Google</span>
+        <h2>Visite nosso espaço</h2>
+        <p class="section-intro">
+          Atendimento completo em beleza no Engenheiro Goulart, em São Paulo.
+        </p>
+      </div>
+
+      <div class="google-profile-grid">
+        <article class="google-business-card reveal">
+          <div class="google-brand-line">
+            <div class="google-mark">G</div>
+            <div>
+              <span>Perfil da empresa</span>
+              <h3>Studio JM</h3>
+            </div>
+          </div>
+
+          <div class="google-rating">
+            <strong>5,0</strong>
+            <div>
+              <div class="google-stars">★★★★★</div>
+              <span>23 avaliações no Google</span>
+            </div>
+          </div>
+
+          <div class="business-details">
+            <div>
+              <span class="detail-icon">📍</span>
+              <p>
+                <strong>Endereço</strong>
+                R. dos Professores, 671<br>
+                Eng. Goulart, São Paulo – SP<br>
+                CEP 03725-000
+              </p>
+            </div>
+
+            <div>
+              <span class="detail-icon">📞</span>
+              <p>
+                <strong>Contato</strong>
+                (11) 95477-3332
+              </p>
+            </div>
+
+            <div>
+              <span class="detail-icon">🕒</span>
+              <p>
+                <strong>Funcionamento</strong>
+                Consulte os horários atualizados no perfil do Google.
+              </p>
+            </div>
+          </div>
+
+          <div class="google-actions">
+            <button type="button" class="btn btn-gold open-booking">Agendar agora</button>
+            <a class="btn google-route-button"
+               href="https://www.google.com/maps?sca_esv=1cb68c34dee2a72d&sxsrf=APpeQntIDxQlGUdgVQtipMtVgZSMQK-o1Q:1785770970543&si=APenkKm7iecQ4G6P-TsbSMFKIQtv3EFIqRAFw-i8uEbk55Z-_2vLCK9aZObzoFk1dC6PXaoOKZeaVAAArrg1fEHVjuDXxLGKWDqX1EGuJUqCa9QAnSu8R2_6h9fwDmRmHAaBh-sYTBSU&biw=1243&bih=535&dpr=1.1&um=1&ie=UTF-8&fb=1&gl=br&sa=X&geocode=KVXHRt5bX86UMfmqfAVEm9Gi&daddr=R.+dos+Professores,+671+-+Eng.+Goulart,+S%C3%A3o+Paulo+-+SP,+03725-000" target="_blank" rel="noopener">Como chegar
+            </a>
+            <a class="btn google-view-button"
+               href="https://maps.app.goo.gl/Mkhhbpc7bzinUY6W6" target="_blank" rel="noopener">Ver no Google
+            </a>
+          </div>
+        </article>
+
+        <div class="google-map-card reveal">
+          <iframe
+            title="Localização da Studio JM"
+            src="https://www.google.com/maps?q=R.%20dos%20Professores%2C%20671%20-%20Eng.%20Goulart%2C%20S%C3%A3o%20Paulo%20-%20SP%2C%2003725-000&output=embed"
+            width="100%"
+            height="100%"
+            style="border:0"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            allowfullscreen>
+          </iframe>
+        </div>
+      </div>
+
+      <div class="google-proof-bar">
+        <div>
+          <span class="proof-icon">★</span>
+          <strong>5,0 no Google</strong>
+          <small>Avaliação máxima</small>
+        </div>
+        <div>
+          <span class="proof-icon">✓</span>
+          <strong>23 avaliações</strong>
+          <small>Clientes reais</small>
+        </div>
+        <div>
+          <span class="proof-icon">📍</span>
+          <strong>Eng. Goulart</strong>
+          <small>São Paulo – SP</small>
+        </div>
+        <div>
+          <span class="proof-icon">💬</span>
+          <strong>WhatsApp</strong>
+          <small>Agendamento fácil</small>
+        </div>
+      </div>
+
+      <div class="reviews-showcase">
+        <div class="section-heading compact">
+          <span class="eyebrow">Reputação e confiança</span>
+          <h2>O que nossos clientes valorizam</h2>
+          <p class="section-intro">
+            A nota máxima no Google reflete o cuidado, a atenção e a qualidade do atendimento.
+          </p>
+        </div>
+
+        <div class="review-cards">
+          <article class="review-card reveal">
+            <div class="google-stars">★★★★★</div>
+            <p>Atendimento personalizado, cuidado em cada detalhe e ambiente acolhedor.</p>
+            <strong>Experiência Studio JM</strong>
+          </article>
+
+          <article class="review-card reveal">
+            <div class="google-stars">★★★★★</div>
+            <p>Serviços completos para cabelo, barba, unhas, estética e toda a família.</p>
+            <strong>Centro de beleza completo</strong>
+          </article>
+
+          <article class="review-card reveal">
+            <div class="google-stars">★★★★★</div>
+            <p>Localização fácil, contato direto pelo WhatsApp e agendamento prático.</p>
+            <strong>Comodidade para o cliente</strong>
+          </article>
+        </div>
+
+        <div class="review-actions">
+          <a class="btn btn-gold"
+             href="https://www.google.com/search?sca_esv=1cb68c34dee2a72d&sxsrf=APpeQnsFm4USr_TXZ4zYhZTg7xJM7yi4wQ:1785770978962&si=APenkKm7iecQ4G6P-TsbSMFKIQtv3EFIqRAFw-i8uEbk55Z-_2vLCK9aZObzoFk1dC6PXaoOKZeaVAAArrg1fEHVjuDXxLGKWDqX1EGuJUqCa9QAnSu8R2_6h9fwDmRmHAaBh-sYTBSU&q=Studio+JM+Coment%C3%A1rios&sa=X&ved=2ahUKEwjroOem44SWAxWrrpUCHcBPMRUQ0bkNegQIJBAI&biw=1243&bih=535&dpr=1.1" target="_blank" rel="noopener">Ver avaliações no Google
+          </a>
+          <a class="btn google-review-button"
+             href="https://www.google.com/search?sca_esv=1cb68c34dee2a72d&sxsrf=APpeQntIDxQlGUdgVQtipMtVgZSMQK-o1Q:1785770970543&si=APenkKm7iecQ4G6P-TsbSMFKIQtv3EFIqRAFw-i8uEbk55Z-_2vLCK9aZObzoFk1dC6PXaoOKZeaVAAArrg1fEHVjuDXxLGKWDqX1EGuJUqCa9QAnSu8R2_6h9fwDmRmHAaBh-sYTBSU&q=Studio+JM+Coment%C3%A1rios&sa=X&ved=2ahUKEwjCquWi44SWAxWnMdAFHUd9Gj4Q0bkNegQIJxAH&biw=1243&bih=535&dpr=1.1" target="_blank" rel="noopener">Avaliar a Studio JM
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="booking-section" id="agendar">
+    <div class="container booking-grid">
+      <div>
+        <span class="eyebrow">Agendamento</span>
+        <h2>Solicite seu horário</h2>
+        <p>Escolha o serviço, data e horário em poucos passos. A confirmação final será feita pelo WhatsApp.</p>
+        <button class="btn btn-gold booking-launch open-booking">Iniciar agendamento</button>
+      </div>
+
+      <form id="bookingForm" class="booking-form legacy-form">
+        <label>Nome<input id="name" required></label>
+        <label>Telefone<input id="phone" required></label>
+
+        <label class="full">Serviço<select id="service" required></select></label>
+
+        <label>Data<input id="date" type="date" required></label>
+        <label>Horário
+          <select id="time" required>
+            <option value="">Selecione</option>
+            <option>09:00</option><option>10:00</option><option>11:00</option>
+            <option>12:00</option><option>13:00</option><option>14:00</option>
+            <option>15:00</option><option>16:00</option><option>17:00</option><option>18:00</option>
+          </select>
+        </label>
+
+        <label class="full">Observações<textarea id="notes"></textarea></label>
+        <button class="btn btn-whatsapp full" type="submit">Enviar pelo WhatsApp</button>
+      </form>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container footer-grid">
+      <div><h3>Studio JM</h3><p>Beleza, estilo e confiança em um só lugar.</p></div>
+      <div><h3>Contato</h3><p>(11) 95477-3332</p></div>
+      <div><h3>Funcionamento</h3><p>Segunda a sábado, das 09h às 19h.</p></div>
+    </div>
+  </footer>
+
+  <a class="floating-whatsapp" target="_blank" href="https://wa.me/5511954773332">WhatsApp</a>
+
+
+  <div class="booking-wizard" id="bookingWizard" aria-hidden="true">
+    <div class="wizard-panel">
+      <button class="wizard-close" id="closeBooking" aria-label="Fechar">×</button>
+      <div class="wizard-header">
+        <span class="eyebrow">Agendamento Studio JM</span>
+        <h2>Reserve seu atendimento</h2>
+        <div class="wizard-steps" id="wizardSteps"><span class="active">1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
+      </div>
+      <form id="wizardForm">
+        <section class="wizard-page active" data-step="1">
+          <h3>Escolha a categoria</h3>
+          <div class="choice-grid category-choice" id="categoryChoice">
+            <button type="button" data-category="barbearia">💈<b>Barbearia</b></button>
+            <button type="button" data-category="cabelo">✂️<b>Cabeleireiro</b></button>
+            <button type="button" data-category="unhas">💅<b>Manicure e pedicure</b></button>
+            <button type="button" data-category="podologia">👣<b>Podologia</b></button>
+            <button type="button" data-category="maquiagem">💄<b>Maquiagem</b></button>
+            <button type="button" data-category="depilacao">✨<b>Depilação</b></button>
+          </div>
+        </section>
+        <section class="wizard-page" data-step="2"><h3>Escolha o serviço</h3><div class="service-choice" id="wizardServiceChoice"></div></section>
+        <section class="wizard-page" data-step="3">
+          <h3>Escolha o profissional</h3>
+          <div class="choice-grid professional-choice">
+            <button type="button" data-professional="Sem preferência"><span class="professional-avatar">★</span><b>Sem preferência</b><small>Primeiro profissional disponível</small></button>
+            <button type="button" data-professional="Profissional de preferência"><span class="professional-avatar">JM</span><b>Profissional de preferência</b><small>Informe nas observações</small></button>
+          </div>
+        </section>
+        <section class="wizard-page" data-step="4">
+          <h3>Escolha data e horário</h3>
+
+          <div class="calendar-time-layout">
+            <div class="calendar-card">
+              <div class="calendar-header">
+                <button type="button" id="calendarPrev" aria-label="Mês anterior">‹</button>
+                <strong id="calendarTitle"></strong>
+                <button type="button" id="calendarNext" aria-label="Próximo mês">›</button>
+              </div>
+
+              <div class="calendar-weekdays">
+                <span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span>
+                <span>Qui</span><span>Sex</span><span>Sáb</span>
+              </div>
+
+              <div class="calendar-days" id="calendarDays"></div>
+              <p class="calendar-selected" id="calendarSelected">Selecione uma data disponível.</p>
+            </div>
+
+            <div class="time-selection">
+              <span class="field-label">Horário desejado</span>
+              <div class="time-buttons" id="timeButtons">
+                <button type="button" data-time="09:00">09:00</button>
+                <button type="button" data-time="10:00">10:00</button>
+                <button type="button" data-time="11:00">11:00</button>
+                <button type="button" data-time="12:00">12:00</button>
+                <button type="button" data-time="13:00">13:00</button>
+                <button type="button" data-time="14:00">14:00</button>
+                <button type="button" data-time="15:00">15:00</button>
+                <button type="button" data-time="16:00">16:00</button>
+                <button type="button" data-time="17:00">17:00</button>
+                <button type="button" data-time="18:00">18:00</button>
+              </div>
+              <small class="availability-note">O horário escolhido será confirmado pela equipe no WhatsApp.</small>
+            </div>
+          </div>
+        </section>
+        <section class="wizard-page" data-step="5">
+          <h3>Seus dados e confirmação</h3>
+          <div class="wizard-client-grid">
+            <label>Nome<input id="wizardName" required placeholder="Seu nome"></label>
+            <label>Telefone<input id="wizardPhone" required placeholder="(11) 99999-9999"></label>
+            <label class="full">Observações<textarea id="wizardNotes" placeholder="Preferência de profissional ou detalhes do serviço"></textarea></label>
+          </div>
+          <div class="booking-summary" id="bookingSummary"></div>
+          <a class="whatsapp-fallback" id="whatsappFallback" href="https://wa.me/5511954773332" target="_self">Abrir WhatsApp diretamente</a>
+        </section>
+        <div class="wizard-actions">
+          <button type="button" class="btn wizard-back" id="wizardBack">Voltar</button>
+          <button type="button" class="btn btn-gold wizard-next" id="wizardNext">Continuar</button>
+          <button type="submit" class="btn btn-whatsapp wizard-submit" id="wizardSubmit">Confirmar pelo WhatsApp</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal" id="serviceModal">
+    <div class="modal-content">
+      <button class="modal-close" id="closeModal">×</button>
+      <h2 id="modalTitle"></h2>
+      <div id="modalPrices"></div>
+    </div>
+  </div>
+
+  <script src="./js/services.js"></script>
+  <script src="./js/script.js"></script>
+</body>
+</html>
