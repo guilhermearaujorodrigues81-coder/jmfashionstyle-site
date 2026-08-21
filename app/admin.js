@@ -314,3 +314,25 @@ async function subscriptionAction(action,id){
 document.addEventListener("DOMContentLoaded",()=>{
   setTimeout(()=>{ if(document.getElementById("subscriptionsBody")) loadAdminSubscriptions532(); },700);
 });
+
+
+/* ===== FASE 5.3.4 — RESUMO DE PLANOS NO ADMIN ===== */
+async function loadPlanSummary534(){
+  const {data,error}=await sb.from("subscriptions")
+    .select("status,credits_remaining");
+  if(error)return;
+
+  const rows=data||[];
+  adminActivePlans.textContent=rows.filter(x=>x.status==="active").length;
+  adminPendingPlans.textContent=rows.filter(x=>x.status==="pending").length;
+  adminSuspendedPlans.textContent=rows.filter(x=>x.status==="suspended").length;
+  adminOpenCredits.textContent=rows
+    .filter(x=>x.status==="active")
+    .reduce((sum,x)=>sum+(Number(x.credits_remaining)||0),0);
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+  setTimeout(()=>{
+    if(document.getElementById("planSummary534"))loadPlanSummary534();
+  },700);
+});

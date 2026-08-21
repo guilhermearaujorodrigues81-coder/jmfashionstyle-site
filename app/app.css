@@ -424,3 +424,55 @@ html{scroll-behavior:smooth}
 @media(max-width:650px){
   .credit-quote{align-items:flex-start;flex-direction:column}
 }
+
+/* ===== FASE 5.3.4 — ACABAMENTO DE PLANOS ===== */
+.section-subtitle{margin-top:3px;color:#888;font-size:.82rem}
+.plan-dashboard-head{
+  display:flex;justify-content:space-between;gap:18px;align-items:flex-start
+}
+.plan-dashboard-head h2{font-size:1.75rem;margin:5px 0}
+.plan-dashboard-head p{color:#777}
+.plan-balance-panel{
+  display:grid;grid-template-columns:1.15fr .85fr;gap:12px;
+  margin-top:18px
+}
+.plan-balance-main{
+  background:#171717;color:#fff;border-radius:13px;padding:20px
+}
+.plan-balance-main span,.plan-balance-main small{display:block;color:#aaa}
+.plan-balance-main strong{
+  display:block;font-size:2.5rem;line-height:1;margin:8px 0;color:var(--gold2)
+}
+.plan-balance-side{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.plan-balance-side>div{
+  background:#f7f7f7;border:1px solid #ececec;border-radius:12px;padding:15px
+}
+.plan-balance-side span{display:block;color:#777;font-size:.72rem}
+.plan-balance-side strong{display:block;font-size:1.35rem;margin-top:5px}
+.plan-progress-wrap{margin-top:18px}
+.plan-progress-label{display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:7px}
+.plan-progress{height:8px;background:#eee;border-radius:99px;overflow:hidden}
+.plan-progress span{display:block;height:100%;width:0;background:#b98b2e;border-radius:99px;transition:.3s}
+.plan-info-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px
+}
+.plan-info-item{border:1px solid #eee;border-radius:11px;padding:13px}
+.plan-info-item span{display:block;color:#888;font-size:.7rem;margin-bottom:5px}
+.plan-info-item strong{font-size:.88rem;line-height:1.4}
+.plan-attention{
+  margin-top:14px;padding:12px 14px;border-radius:10px;font-size:.82rem;line-height:1.45
+}
+.plan-attention.warning{display:block;background:#fff5d9;color:#76570d;border:1px solid #eedca8}
+.plan-attention.danger{display:block;background:#fff0f0;color:#913c3c;border:1px solid #efcaca}
+.plan-attention.info{display:block;background:#eef5ff;color:#3e608c;border:1px solid #d5e3f5}
+.plan-dashboard-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.plan-admin-summary{margin:0 0 16px}
+.metric-card{box-shadow:none}
+@media(max-width:800px){
+  .plan-dashboard-head{flex-direction:column}
+  .plan-balance-panel{grid-template-columns:1fr}
+  .plan-info-grid{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+  .plan-balance-side{grid-template-columns:1fr}
+}

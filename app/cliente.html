@@ -62,7 +62,7 @@
       </div>
 
       <div id="planState" class="hidden">
-        <div class="plan-account-head">
+        <div class="plan-dashboard-head">
           <div>
             <span class="eyebrow-app">MEU PLANO</span>
             <h2 id="accountPlanName">—</h2>
@@ -71,19 +71,46 @@
           <div class="plan-account-price" id="accountPlanPrice">—</div>
         </div>
 
-        <div class="grid grid-3 plan-account-metrics">
-          <div>
-            <span class="metric-label">Créditos do ciclo</span>
-            <div class="metric-value" id="accountCredits">—</div>
+        <div class="plan-balance-panel">
+          <div class="plan-balance-main">
+            <span>Créditos disponíveis</span>
+            <strong id="creditsAvailable532">—</strong>
+            <small id="creditsCycleHint">Saldo livre para novos agendamentos</small>
           </div>
-          <div>
-            <span class="metric-label">Validade</span>
-            <div class="metric-value compact-metric" id="accountValidity">Aguardando</div>
+          <div class="plan-balance-side">
+            <div><span>Reservados</span><strong id="creditsReserved532">—</strong></div>
+            <div><span>Saldo do ciclo</span><strong id="accountCredits">—</strong></div>
           </div>
-          <div>
-            <span class="metric-label">Situação</span>
-            <div class="metric-value compact-metric" id="accountStatusBadge">—</div>
+        </div>
+
+        <div class="plan-progress-wrap">
+          <div class="plan-progress-label">
+            <span>Uso do ciclo</span>
+            <strong id="creditUsageText">—</strong>
           </div>
+          <div class="plan-progress"><span id="creditUsageBar"></span></div>
+        </div>
+
+        <div class="plan-info-grid">
+          <div class="plan-info-item">
+            <span>Validade / renovação</span>
+            <strong id="accountValidity">—</strong>
+          </div>
+          <div class="plan-info-item">
+            <span>Situação</span>
+            <strong id="accountStatusBadge">—</strong>
+          </div>
+          <div class="plan-info-item">
+            <span>Benefícios</span>
+            <strong id="planBenefits532">—</strong>
+          </div>
+        </div>
+
+        <div id="planAttention532" class="plan-attention hidden"></div>
+
+        <div class="plan-dashboard-actions">
+          <a class="btn btn-light" href="#agenda">Agendar atendimento</a>
+          <a class="btn btn-light" href="#extrato-creditos">Ver extrato</a>
         </div>
 
         <div id="pendingPlanActions" class="hidden" style="margin-top:14px">
@@ -93,7 +120,7 @@
     </section>
 
 
-    <div class="section-title" id="extrato-creditos"><h2>Extrato de créditos</h2></div>
+    <div class="section-title" id="extrato-creditos"><div><h2>Extrato de créditos</h2><p class="section-subtitle">Acompanhe os créditos consumidos nos atendimentos concluídos.</p></div></div>
     <div class="card table-wrap">
       <table>
         <thead>

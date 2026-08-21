@@ -476,3 +476,98 @@ document.addEventListener("DOMContentLoaded",()=>{
     }
   },120);
 });
+
+
+/* ===== FASE 5.3.4 — EXPERIÊNCIA DE PLANOS ===== */
+async function renderPlanExperience534(){
+  if(!authData)return;
+
+  const {data:s,error}=await sb.from("subscriptions")
+    .select("*,plans(*)")
+    .eq("user_id",authData.session.user.id)
+    .in("status",["pending","active","suspended"])
+    .order("selected_at",{ascending:false})
+    .limit(1)
+    .maybeSingle();
+
+  if(error || !s)return;
+
+  const plan=s.plans||{};
+  let reserved=0;
+
+  if(s.status==="active" || s.status==="suspended"){
+    const {data:a}=await sb.from("appointments")
+      .select("credits_reserved")
+      .eq("subscription_id",s.id)
+      .eq("billing_mode","plan")
+      .eq("credits_charged",false)
+      .in("status",["pending","confirmed"]);
+
+    reserved=(a||[]).reduce((sum,x)=>sum+(Number(x.credits_reserved)||0),0);
+  }
+
+  const total=Number(s.credits_total)||0;
+  const remaining=Number(s.credits_remaining)||0;
+  const available=Math.max(0,remaining-reserved);
+  const consumed=Math.max(0,total-remaining);
+  const usage=total ? Math.min(100,Math.round((consumed/total)*100)) : 0;
+
+  if(document.getElementById("creditsAvailable532"))
+    creditsAvailable532.textContent=s.status==="pending" ? "—" : available;
+
+  if(document.getElementById("creditsReserved532"))
+    creditsReserved532.textContent=s.status==="pending" ? "—" : reserved;
+
+  if(document.getElementById("accountCredits"))
+    accountCredits.textContent=s.status==="pending" ? `${total} previstos` : `${remaining} de ${total}`;
+
+  if(document.getElementById("creditUsageText"))
+    creditUsageText.textContent=s.status==="pending" ? "Aguardando ativação" : `${consumed} utilizado(s)`;
+
+  if(document.getElementById("creditUsageBar"))
+    creditUsageBar.style.width=`${usage}%`;
+
+  const benefits=[];
+  if(plan.freestyles) benefits.push(`${plan.freestyles} freestyle${plan.freestyles>1?"s":""}`);
+  if(plan.hydrations) benefits.push(`${plan.hydrations} hidratação${plan.hydrations>1?"ões":""}`);
+  if(plan.discount_percent) benefits.push(`${Number(plan.discount_percent)}% extras`);
+  if(plan.family_members>1) benefits.push(`até ${plan.family_members} pessoas`);
+
+  if(document.getElementById("planBenefits532"))
+    planBenefits532.textContent=benefits.length ? benefits.join(" • ") : "Créditos do plano";
+
+  const attention=document.getElementById("planAttention532");
+  if(attention){
+    attention.classList.add("hidden");
+    attention.className="plan-attention hidden";
+
+    if(s.status==="pending"){
+      attention.textContent="Seu plano foi escolhido e está aguardando ativação. Os créditos serão liberados após a ativação.";
+      attention.className="plan-attention warning";
+    }else if(s.status==="suspended"){
+      attention.textContent="Seu plano está suspenso. Novos atendimentos não utilizarão créditos até a reativação.";
+      attention.className="plan-attention danger";
+    }else if(s.status==="active" && available===0){
+      attention.textContent=reserved>0
+        ? "Todos os seus créditos livres estão reservados em agendamentos. Cancelamentos liberam a reserva."
+        : "Você utilizou todos os créditos disponíveis deste ciclo.";
+      attention.className="plan-attention warning";
+    }else if(s.status==="active" && s.ends_at){
+      const end=new Date(s.ends_at+"T23:59:59");
+      const days=Math.max(0,Math.ceil((end-new Date())/86400000));
+      if(days<=5){
+        attention.textContent=`Seu ciclo termina em ${days} dia${days===1?"":"s"}.`;
+        attention.className="plan-attention info";
+      }
+    }
+  }
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+  const timer=setInterval(()=>{
+    if(authData){
+      clearInterval(timer);
+      setTimeout(renderPlanExperience534,650);
+    }
+  },120);
+});
