@@ -533,3 +533,17 @@ html{scroll-behavior:smooth}
 .clickable-row:hover{background:#fffaf0}
 @media(max-width:800px){.client-detail-grid{grid-template-columns:1fr}}
 @media(max-width:520px){.client-credit-summary{grid-template-columns:1fr}}
+
+/* Fix 5.4.2 — link de ficha visível */
+.client-detail-link{
+  display:inline-flex;
+  margin-top:5px;
+  padding:4px 8px;
+  border-radius:7px;
+  background:#fff6dc;
+  color:#8a620b;
+  font-size:.72rem;
+  font-weight:900;
+  text-decoration:none;
+}
+.client-detail-link:hover{background:#f3e2ac}

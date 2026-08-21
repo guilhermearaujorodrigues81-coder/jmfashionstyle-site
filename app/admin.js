@@ -27,8 +27,13 @@ async function init(){
 function render(data){
   clientsBody.innerHTML=data.length
     ? data.map(p=>`
-      <tr>
-        <td><strong>${p.full_name||"—"}</strong></td>
+      <tr class="clickable-row">
+        <td>
+          <strong>${p.full_name||"—"}</strong>
+          ${p.role==="client"
+            ? `<a class="client-detail-link" href="./cliente-detalhe.html?id=${p.id}">Ver ficha</a>`
+            : ""}
+        </td>
         <td>${p.email||"—"}</td>
         <td>${p.phone||"—"}</td>
         <td><span class="badge badge-${p.role}">${p.role==="admin"?"Administrador":"Cliente"}</span></td>
@@ -468,33 +473,3 @@ document.addEventListener("DOMContentLoaded",()=>{
   },900);
 });
 
-/* ===== FASE 5.4.2 — FICHA DO CLIENTE ===== */
-function enhanceClientRows542(){
-  document.querySelectorAll("#clientsBody tr").forEach(tr=>{
-    if(tr.dataset.detailReady)return;
-    const btn=tr.querySelector("[data-user-id],button[data-id]");
-    let id=btn?.dataset.userId||btn?.dataset.id;
-    if(!id){
-      const html=tr.innerHTML;
-      const m=html.match(/[0-9a-f]{8}-[0-9a-f-]{27,}/i);
-      if(m)id=m[0];
-    }
-    if(id){
-      tr.dataset.detailReady="1";
-      tr.classList.add("clickable-row");
-      tr.title="Abrir ficha do cliente";
-      tr.addEventListener("dblclick",()=>location.href=`./cliente-detalhe.html?id=${id}`);
-      const first=tr.querySelector("td");
-      if(first && !first.querySelector(".client-detail-link")){
-        const a=document.createElement("a");
-        a.href=`./cliente-detalhe.html?id=${id}`;
-        a.className="client-detail-link";
-        a.textContent="Ver ficha";
-        first.appendChild(a);
-      }
-    }
-  });
-}
-document.addEventListener("DOMContentLoaded",()=>{
-  setInterval(enhanceClientRows542,1000);
-});

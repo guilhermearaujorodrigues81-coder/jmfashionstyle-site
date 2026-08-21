@@ -10,7 +10,8 @@ function rowsEmpty(cols,text){return `<tr><td colspan="${cols}" class="empty">${
  const id=new URLSearchParams(location.search).get("id");
  if(!id){location.href="./admin.html#clientes";return}
 
- const {data:p,error}=await sb.from("profiles").select("*").eq("id",id).single();
+ const {data:profiles,error}=await sb.rpc("admin_list_profiles");
+ const p=(profiles||[]).find(x=>x.id===id);
  if(error||!p){alert("Cliente não encontrado.");location.href="./admin.html#clientes";return}
 
  detailName.textContent=p.full_name||"Cliente"; dName.textContent=p.full_name||"—";
