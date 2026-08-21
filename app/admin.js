@@ -70,14 +70,41 @@ document.getElementById("newBlock")?.addEventListener("click",async()=>{
     body.innerHTML=`
       <form id="blockForm" class="form-grid">
         <label>Data<input id="blockDate" type="date" required></label>
-        <div class="form-row">
-          <label>Início<input id="blockStart" type="time" required></label>
-          <label>Fim<input id="blockEnd" type="time" required></label>
+
+        <label class="block-full-day-option">
+          <input id="blockFullDay" type="checkbox">
+          <span>Bloquear o dia inteiro</span>
+        </label>
+
+        <div class="form-row" id="blockTimeFields">
+          <label>Início<input id="blockStart" type="time" value="12:00" required></label>
+          <label>Fim<input id="blockEnd" type="time" value="13:00" required></label>
         </div>
-        <label>Motivo<input id="blockReason" placeholder="Almoço, compromisso, manutenção..."></label>
+
+        <label>Motivo
+          <input id="blockReason" placeholder="Ex.: almoço, compromisso, folga, manutenção...">
+        </label>
+
+        <div class="block-modal-note">
+          O período bloqueado deixa de aparecer como disponível para os clientes.
+        </div>
+
         <button class="btn btn-gold" type="submit">Criar bloqueio</button>
       </form>`;
-    document.getElementById("blockDate").value=agendaLocalDate543();
+    document.getElementById("blockDate").value=
+      document.getElementById("agendaDate543")?.value || agendaLocalDate543();
+
+    const fullDay=document.getElementById("blockFullDay");
+    const fields=document.getElementById("blockTimeFields");
+    const startInput=document.getElementById("blockStart");
+    const endInput=document.getElementById("blockEnd");
+
+    fullDay?.addEventListener("change",()=>{
+      const isFull=fullDay.checked;
+      fields?.classList.toggle("disabled-fields",isFull);
+      if(startInput)startInput.disabled=isFull;
+      if(endInput)endInput.disabled=isFull;
+    });
     document.getElementById("blockForm").addEventListener("submit",createBlock544);
     modal.classList.add("open");
   }catch(error){
@@ -87,28 +114,52 @@ document.getElementById("newBlock")?.addEventListener("click",async()=>{
 
 async function createBlock544(e){
   e.preventDefault();
+
   try{
     const professional=await ensureAdminProfessional544();
+
     const date=document.getElementById("blockDate")?.value;
+    const fullDay=document.getElementById("blockFullDay")?.checked;
     const startValue=document.getElementById("blockStart")?.value;
     const endValue=document.getElementById("blockEnd")?.value;
     const reason=document.getElementById("blockReason")?.value.trim()||"";
 
-    if(!date||!startValue||!endValue)return;
-    const start=new Date(`${date}T${startValue}:00-03:00`);
-    const end=new Date(`${date}T${endValue}:00-03:00`);
-    if(end<=start)return alert("O horário final precisa ser depois do horário inicial.");
+    if(!date)return;
+
+    let start;
+    let end;
+
+    if(fullDay){
+      start=new Date(`${date}T09:00:00-03:00`);
+      end=new Date(`${date}T19:00:00-03:00`);
+    }else{
+      if(!startValue||!endValue)return alert("Informe o horário inicial e final.");
+      start=new Date(`${date}T${startValue}:00-03:00`);
+      end=new Date(`${date}T${endValue}:00-03:00`);
+
+      if(end<=start){
+        return alert("O horário final precisa ser depois do horário inicial.");
+      }
+    }
 
     const {error}=await sb.from("schedule_blocks").insert({
       professional_id:professional.id,
       starts_at:start.toISOString(),
       ends_at:end.toISOString(),
-      reason
+      reason:reason || (fullDay ? "Dia bloqueado" : "Horário bloqueado")
     });
+
     if(error)throw error;
 
     document.getElementById("agendaModal")?.classList.remove("open");
-    alert("Horário bloqueado com sucesso.");
+
+    await loadAgenda543();
+
+    alert(fullDay
+      ? "Dia bloqueado com sucesso."
+      : "Horário bloqueado com sucesso."
+    );
+
   }catch(error){
     alert(error?.message||"Não foi possível criar o bloqueio.");
   }
@@ -221,6 +272,7 @@ document.addEventListener("DOMContentLoaded",hookAdminFilters544);
 
 /* ===== FASE 5.4.3 — AGENDA ADMINISTRATIVA ===== */
 let agendaRows543=[];
+let agendaBlocks545=[];
 
 function agendaLocalDate543(date=new Date()){
   return new Intl.DateTimeFormat("en-CA",{
@@ -254,47 +306,151 @@ function agendaActions543(a){
   return `<div class="agenda-actions">${b.join("")}</div>`;
 }
 function renderAgenda543(){
-  const box=document.getElementById("agendaTimeline543"); if(!box)return;
+  const box=document.getElementById("agendaTimeline543");
+  if(!box)return;
+
   const searchEl=document.getElementById("agendaSearch543");
   const statusEl=document.getElementById("agendaStatus543");
   const q=(searchEl?.value||"").trim().toLowerCase();
   const st=statusEl?.value||"";
-  const rows=agendaRows543.filter(a=>{
-    const text=`${a.profiles?.full_name||""} ${a.services?.name||""}`.toLowerCase();
-    return (!q||text.includes(q))&&(!st||a.status===st);
-  });
+
+  const appointmentItems=agendaRows543
+    .filter(a=>{
+      const text=`${a.profiles?.full_name||""} ${a.services?.name||""}`.toLowerCase();
+      return (!q||text.includes(q))&&(!st||a.status===st);
+    })
+    .map(a=>({
+      type:"appointment",
+      starts_at:a.starts_at,
+      data:a
+    }));
+
+  const blockItems=agendaBlocks545
+    .filter(b=>{
+      const text=`bloqueio ${b.reason||""}`.toLowerCase();
+      return (!q||text.includes(q)) && (!st);
+    })
+    .map(b=>({
+      type:"block",
+      starts_at:b.starts_at,
+      data:b
+    }));
+
+  const items=[...appointmentItems,...blockItems]
+    .sort((a,b)=>new Date(a.starts_at)-new Date(b.starts_at));
 
   const countEl=document.getElementById("agendaDayCount543");
   const pendingEl=document.getElementById("agendaPendingCount543");
   const confirmedEl=document.getElementById("agendaConfirmedCount543");
-  if(countEl)countEl.textContent=`${agendaRows543.length} atendimento${agendaRows543.length===1?"":"s"}`;
+
+  if(countEl){
+    const appts=agendaRows543.length;
+    const blocks=agendaBlocks545.length;
+    countEl.textContent=
+      `${appts} atendimento${appts===1?"":"s"} • ${blocks} bloqueio${blocks===1?"":"s"}`;
+  }
   if(pendingEl)pendingEl.textContent=agendaRows543.filter(a=>a.status==="pending").length;
   if(confirmedEl)confirmedEl.textContent=agendaRows543.filter(a=>a.status==="confirmed").length;
 
-  if(!rows.length){
-    box.innerHTML=`<div class="card agenda-empty"><strong>Nenhum atendimento encontrado</strong><span>${agendaRows543.length?"Ajuste os filtros para ver outros resultados.":"A agenda está livre nesta data."}</span></div>`;
+  if(!items.length){
+    box.innerHTML=`
+      <div class="card agenda-empty">
+        <strong>Nenhum item encontrado</strong>
+        <span>${agendaRows543.length||agendaBlocks545.length
+          ? "Ajuste os filtros para ver outros resultados."
+          : "A agenda está totalmente livre nesta data."
+        }</span>
+      </div>`;
     return;
   }
 
-  box.innerHTML=rows.map(a=>{
-    const time=new Date(a.starts_at).toLocaleTimeString("pt-BR",{timeZone:"America/Sao_Paulo",hour:"2-digit",minute:"2-digit"});
+  box.innerHTML=items.map(item=>{
+    if(item.type==="block"){
+      const b=item.data;
+
+      const start=new Date(b.starts_at);
+      const end=new Date(b.ends_at);
+
+      const startTime=start.toLocaleTimeString("pt-BR",{
+        timeZone:"America/Sao_Paulo",
+        hour:"2-digit",minute:"2-digit"
+      });
+
+      const endTime=end.toLocaleTimeString("pt-BR",{
+        timeZone:"America/Sao_Paulo",
+        hour:"2-digit",minute:"2-digit"
+      });
+
+      return `
+        <article class="card agenda-item agenda-block-item">
+          <div class="agenda-item-time">
+            ${startTime}
+            <small>até ${endTime}</small>
+          </div>
+
+          <div class="agenda-item-main">
+            <div class="agenda-item-head">
+              <div>
+                <strong>🔒 Horário bloqueado</strong>
+                <span>${b.reason||"Sem motivo informado"}</span>
+              </div>
+              <span class="badge badge-blocked">Bloqueado</span>
+            </div>
+            <div class="agenda-item-meta">
+              <span class="agenda-billing blocked">Indisponível para agendamento</span>
+            </div>
+          </div>
+
+          <div class="agenda-item-controls">
+            <button
+              type="button"
+              class="btn btn-light btn-small"
+              onclick="releaseScheduleBlock545('${b.id}')">
+              Liberar horário
+            </button>
+          </div>
+        </article>`;
+    }
+
+    const a=item.data;
+
+    const time=new Date(a.starts_at).toLocaleTimeString("pt-BR",{
+      timeZone:"America/Sao_Paulo",
+      hour:"2-digit",minute:"2-digit"
+    });
+
     const billing=a.billing_mode==="plan"
       ? `<span class="agenda-billing plan">Plano • ${a.credits_reserved||0} crédito(s)</span>`
       : `<span class="agenda-billing avulso">Avulso</span>`;
-    return `<article class="card agenda-item status-${a.status}">
-      <div class="agenda-item-time">${time}</div>
-      <div class="agenda-item-main">
-        <div class="agenda-item-head">
-          <div><strong>${a.profiles?.full_name||"Cliente"}</strong><span>${a.services?.name||"Serviço"}</span></div>
-          <span class="badge badge-${a.status}">${agendaStatus543(a.status)}</span>
+
+    return `
+      <article class="card agenda-item status-${a.status}">
+        <div class="agenda-item-time">${time}</div>
+
+        <div class="agenda-item-main">
+          <div class="agenda-item-head">
+            <div>
+              <strong>${a.profiles?.full_name||"Cliente"}</strong>
+              <span>${a.services?.name||"Serviço"}</span>
+            </div>
+            <span class="badge badge-${a.status}">${agendaStatus543(a.status)}</span>
+          </div>
+
+          <div class="agenda-item-meta">
+            ${billing}
+            ${a.notes?`<span class="agenda-note">Obs.: ${a.notes}</span>`:""}
+          </div>
         </div>
-        <div class="agenda-item-meta">${billing}${a.notes?`<span class="agenda-note">Obs.: ${a.notes}</span>`:""}</div>
-      </div>
-      <div class="agenda-item-controls">
-        ${agendaActions543(a)}
-        <a class="client-detail-link agenda-client-link" href="./cliente-detalhe.html?id=${a.user_id}">Ver cliente</a>
-      </div>
-    </article>`;
+
+        <div class="agenda-item-controls">
+          ${agendaActions543(a)}
+          <a
+            class="client-detail-link agenda-client-link"
+            href="./cliente-detalhe.html?id=${a.user_id}">
+            Ver cliente
+          </a>
+        </div>
+      </article>`;
   }).join("");
 }
 async function loadAgenda543(){
@@ -305,35 +461,44 @@ async function loadAgenda543(){
     const key=input.value||agendaLocalDate543();
     input.value=key;
 
-    const dayLabel=document.getElementById("agendaDayLabel543");
-    if(dayLabel) dayLabel.textContent=agendaPretty543(key);
+    const label=document.getElementById("agendaDayLabel543");
+    if(label)label.textContent=agendaPretty543(key);
 
     const {start,end}=agendaRange543(key);
 
-    const {data,error}=await sb.from("appointments")
-      .select("*,profiles(full_name,phone),services(name)")
-      .gte("starts_at",start)
-      .lte("starts_at",end)
-      .order("starts_at",{ascending:true});
+    const [appointmentsRes,blocksRes]=await Promise.all([
+      sb.from("appointments")
+        .select("*,profiles(full_name,phone),services(name)")
+        .gte("starts_at",start)
+        .lte("starts_at",end)
+        .order("starts_at",{ascending:true}),
 
-    if(error) throw error;
+      sb.from("schedule_blocks")
+        .select("id,starts_at,ends_at,reason,professional_id")
+        .lt("starts_at",end)
+        .gt("ends_at",start)
+        .order("starts_at",{ascending:true})
+    ]);
 
-    agendaRows543=data||[];
+    if(appointmentsRes.error)throw appointmentsRes.error;
+    if(blocksRes.error)throw blocksRes.error;
+
+    agendaRows543=appointmentsRes.data||[];
+    agendaBlocks545=blocksRes.data||[];
+
     renderAgenda543();
 
   }catch(error){
     console.error("Erro ao carregar agenda:",error);
 
-    const timeline=document.getElementById("agendaTimeline543");
-    if(timeline){
-      timeline.innerHTML=`
+    const box=document.getElementById("agendaTimeline543");
+    if(box){
+      box.innerHTML=`
         <div class="card agenda-empty">
           <strong>Não foi possível carregar a agenda.</strong>
           <span>${error?.message||"Tente atualizar a página."}</span>
         </div>`;
     }
-  }finally{
-    releaseAdminLoading543();
   }
 }
 async function agendaSetStatus543(id,status){
@@ -399,5 +564,25 @@ function releaseAdminLoading543(){
 
   if(shell){
     shell.classList.remove("hidden");
+  }
+}
+
+
+/* ===== FASE 5.4.5 — LIBERAR BLOQUEIO ===== */
+async function releaseScheduleBlock545(id){
+  if(!confirm("Deseja liberar este horário para novos agendamentos?"))return;
+
+  try{
+    const {error}=await sb
+      .from("schedule_blocks")
+      .delete()
+      .eq("id",id);
+
+    if(error)throw error;
+
+    await loadAgenda543();
+
+  }catch(error){
+    alert(error?.message||"Não foi possível liberar o horário.");
   }
 }
