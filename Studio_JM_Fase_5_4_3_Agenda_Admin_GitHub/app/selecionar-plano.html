@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Escolher plano | Studio JM</title>
+<link rel="stylesheet" href="./app.css">
+</head>
+<body>
+<div id="loading" class="loading">
+  <div><div class="spinner"></div>Preparando seu plano...</div>
+</div>
+
+<div class="app-shell hidden" id="planShell">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <img src="../img/brand/logo.jpg" alt="Studio JM">
+      <div><strong>STUDIO JM</strong><small>Área do cliente</small></div>
+    </div>
+    <nav class="nav-list">
+      <a href="./cliente.html">⌂ Minha conta</a>
+      <a class="active" href="#">◆ Escolher plano</a>
+      <a href="../index.html#planos">← Ver outros planos</a>
+    </nav>
+    <div class="sidebar-footer">
+      <button data-logout>⇥ Sair</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <button class="btn btn-dark mobile-menu">☰</button>
+        <h1>Confirme seu plano</h1>
+        <p>Revise os benefícios antes de continuar.</p>
+      </div>
+      <div class="user-chip">
+        <span class="avatar" id="avatar">JM</span>
+        <span id="userName">Cliente</span>
+      </div>
+    </div>
+
+    <section class="plan-confirm-layout">
+      <div class="card dark plan-confirm-card">
+        <span class="eyebrow-app">PLANO SELECIONADO</span>
+        <h2 id="planName">—</h2>
+        <div class="plan-confirm-price" id="planPrice">—</div>
+        <p id="planDescription"></p>
+
+        <div class="plan-benefit-grid">
+          <div><span>Créditos mensais</span><strong id="planCredits">—</strong></div>
+          <div><span>Freestyles</span><strong id="planFreestyles">—</strong></div>
+          <div><span>Hidratações</span><strong id="planHydrations">—</strong></div>
+          <div><span>Pessoas</span><strong id="planMembers">—</strong></div>
+          <div><span>Desconto extras</span><strong id="planDiscount">—</strong></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Como funciona agora?</h2>
+        <div class="permissions-box" style="margin-top:14px">
+          <div class="permission">
+            <strong>1. Confirme o plano</strong>
+            <small>Sua escolha fica salva na sua conta Studio JM.</small>
+          </div>
+          <div class="permission">
+            <strong>2. Aguardando ativação</strong>
+            <small>Nesta etapa ainda não há cobrança automática.</small>
+          </div>
+          <div class="permission">
+            <strong>3. Próximas fases</strong>
+            <small>Pagamento, ciclo mensal, créditos e uso na agenda serão conectados ao mesmo cadastro.</small>
+          </div>
+        </div>
+
+        <div id="planMessage" class="form-message" style="margin-top:16px"></div>
+
+        <button id="confirmPlan" class="btn btn-gold" style="width:100%;margin-top:16px">
+          Confirmar escolha
+        </button>
+        <a class="btn btn-light" href="../index.html#planos" style="width:100%;margin-top:8px">
+          Escolher outro plano
+        </a>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./config.js"></script>
+<script src="./common.js"></script>
+<script>
+let selectedPlan=null;
+let auth=null;
+
+function moneyBR(v){
+  return Number(v||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+}
+
+(async()=>{
+  if(!configured){
+    alert("O sistema ainda não está conectado.");
+    location.href="../index.html#planos";
+    return;
+  }
+
+  const params=new URLSearchParams(location.search);
+  const slug=params.get("plan");
+
+  if(!slug){
+    location.href="../index.html#planos";
+    return;
+  }
+
+  const {data:{session}}=await sb.auth.getSession();
+
+  if(!session){
+    const next=`./selecionar-plano.html?plan=${encodeURIComponent(slug)}`;
+    location.href=`./login.html?next=${encodeURIComponent(next)}`;
+    return;
+  }
+
+  auth=await getSessionProfile();
+  if(!auth)return;
+
+  if(auth.profile.role==="admin"){
+    location.href="./admin.html";
+    return;
+  }
+
+  const {data:plan,error}=await sb
+    .from("plans")
+    .select("*")
+    .eq("slug",slug)
+    .eq("active",true)
+    .single();
+
+  if(error || !plan){
+    alert("Plano não encontrado.");
+    location.href="../index.html#planos";
+    return;
+  }
+
+  selectedPlan=plan;
+
+  avatar.textContent=initials(auth.profile.full_name);
+  userName.textContent=auth.profile.full_name||auth.session.user.email;
+
+  planName.textContent=plan.name;
+  planPrice.textContent=`${moneyBR(plan.monthly_price)}/mês`;
+  planDescription.textContent=plan.description||"";
+  planCredits.textContent=plan.monthly_credits;
+  planFreestyles.textContent=plan.freestyles;
+  planHydrations.textContent=plan.hydrations;
+  planMembers.textContent=plan.family_members;
+  planDiscount.textContent=`${Number(plan.discount_percent)}%`;
+
+  loading.classList.add("off");
+  planShell.classList.remove("hidden");
+})();
+
+confirmPlan.addEventListener("click",async()=>{
+  if(!selectedPlan)return;
+
+  confirmPlan.disabled=true;
+  confirmPlan.textContent="Salvando...";
+
+  const {data,error}=await sb.rpc("select_plan",{
+    p_plan_slug:selectedPlan.slug
+  });
+
+  if(error){
+    showMessage("planMessage",error.message);
+    confirmPlan.disabled=false;
+    confirmPlan.textContent="Confirmar escolha";
+    return;
+  }
+
+  showMessage(
+    "planMessage",
+    "Plano salvo na sua conta! Agora você pode acompanhar a solicitação em Minha conta.",
+    "success"
+  );
+
+  setTimeout(()=>location.href="./cliente.html#meu-plano",1200);
+});
+</script>
+</body>
+</html>
