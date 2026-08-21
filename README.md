@@ -162,3 +162,17 @@ Implementado:
 - Cliente logado entra direto na agenda
 - Interface da área do cliente simplificada
 - Interface administrativa com foco na agenda
+
+
+## Fase 5.3.1 — Planos vinculados à conta
+
+- Catálogo de planos no Supabase
+- Bronze, Prata, Ouro e Family VIP
+- Cliente escolhe plano no site
+- Cliente não logado passa por login e volta ao plano escolhido
+- Página de confirmação de plano
+- Solicitação salva na conta com status `pending`
+- Área do cliente exibe plano selecionado
+- Cliente pode cancelar solicitação pendente
+- Painel admin exibe planos selecionados pelos clientes
+- Estrutura preparada para ciclos, créditos, validade e pagamentos

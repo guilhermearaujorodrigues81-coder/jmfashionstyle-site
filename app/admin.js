@@ -219,3 +219,48 @@ document.addEventListener("DOMContentLoaded",()=>{
     loadAdminAgenda();
   },200);
 });
+
+
+/* ===== FASE 5.3.1 — PLANOS NO ADMIN ===== */
+async function loadAdminSubscriptions(){
+  const {data,error}=await sb
+    .from("subscriptions")
+    .select("*,profiles(full_name,phone),plans(name,monthly_price)")
+    .order("selected_at",{ascending:false});
+
+  if(error){
+    console.error("Erro ao carregar planos:",error);
+    return;
+  }
+
+  subscriptionsBody.innerHTML=(data||[]).length
+    ? data.map(s=>`
+      <tr>
+        <td><strong>${s.profiles?.full_name||"—"}</strong></td>
+        <td>${s.plans?.name||"—"}</td>
+        <td>${Number(s.plans?.monthly_price||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}</td>
+        <td><span class="badge badge-${s.status}">${subscriptionStatusLabelAdmin(s.status)}</span></td>
+        <td>${formatDateTime(s.selected_at)}</td>
+      </tr>
+    `).join("")
+    : '<tr><td colspan="5" class="empty">Nenhum plano selecionado.</td></tr>';
+}
+
+function subscriptionStatusLabelAdmin(status){
+  return {
+    pending:"Aguardando ativação",
+    active:"Ativo",
+    suspended:"Suspenso",
+    expired:"Expirado",
+    cancelled:"Cancelado"
+  }[status]||status;
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+  const timer=setInterval(()=>{
+    if(document.getElementById("subscriptionsBody")){
+      clearInterval(timer);
+      loadAdminSubscriptions();
+    }
+  },200);
+});

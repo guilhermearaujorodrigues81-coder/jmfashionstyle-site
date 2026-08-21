@@ -85,7 +85,7 @@
       <div><b>Profissionais qualificados</b><span>Cuidado em cada detalhe</span></div>
       <div><b>Produtos de qualidade</b><span>Resultados com segurança</span></div>
       <div><b>Ambiente acolhedor</b><span>Conforto para toda a família</span></div>
-      <div><b>Agendamento online</b><span>Praticidade pelo WhatsApp</span></div>
+      <div><b>Agendamento online</b><span>Reserve diretamente pelo site</span></div>
     </div>
   </section>
 
@@ -177,7 +177,7 @@
             <li>Agendamento conforme disponibilidade</li>
             <li>5% OFF em serviços adicionais</li>
           </ul>
-          <button class="btn btn-gold plan-button" data-plan="Bronze">Quero o Bronze</button>
+          <button class="btn btn-gold plan-button" data-plan="Bronze" data-plan-slug="bronze" onclick="location.href=\'./app/selecionar-plano.html?plan=bronze\'">Quero o Bronze</button>
         </article>
 
         <article class="plan-card featured reveal" data-plan-card="Prata">
@@ -192,7 +192,7 @@
             <li>1 freestyle gratuito</li>
             <li>10% OFF em serviços adicionais</li>
           </ul>
-          <button class="btn btn-gold plan-button" data-plan="Prata">Quero o Prata</button>
+          <button class="btn btn-gold plan-button" data-plan="Prata" data-plan-slug="prata" onclick="location.href=\'./app/selecionar-plano.html?plan=prata\'">Quero o Prata</button>
         </article>
 
         <article class="plan-card gold-plan reveal" data-plan-card="Ouro">
@@ -209,7 +209,7 @@
             <li>20% OFF em serviços adicionais</li>
           </ul>
           <small class="plan-rule">Limite de 1 atendimento por dia, mediante agendamento.</small>
-          <button class="btn btn-gold plan-button" data-plan="Ouro">Quero o Ouro</button>
+          <button class="btn btn-gold plan-button" data-plan="Ouro" data-plan-slug="ouro" onclick="location.href=\'./app/selecionar-plano.html?plan=ouro\'">Quero o Ouro</button>
         </article>
 
         <article class="plan-card family reveal" data-plan-card="Family VIP">
@@ -225,7 +225,7 @@
             <li>2 hidratações premium</li>
             <li>15% OFF em serviços adicionais</li>
           </ul>
-          <button class="btn btn-gold plan-button" data-plan="Family VIP">Quero o Family VIP</button>
+          <button class="btn btn-gold plan-button" data-plan="Family VIP" data-plan-slug="family-vip" onclick="location.href=\'./app/selecionar-plano.html?plan=family-vip\'">Quero o Family VIP</button>
         </article>
       </div>
 
@@ -297,7 +297,7 @@
           </article>
           <article class="faq-item">
             <button type="button">Posso cancelar quando quiser?<span>+</span></button>
-            <div><p>As condições de cancelamento serão confirmadas no momento da adesão pelo WhatsApp.</p></div>
+            <div><p>As condições de cancelamento serão apresentadas e gerenciadas pela área do cliente.</p></div>
           </article>
           <article class="faq-item">
             <button type="button">O Plano Ouro é realmente ilimitado?<span>+</span></button>
@@ -450,7 +450,7 @@
         <div>
           <span class="proof-icon">💬</span>
           <strong>WhatsApp</strong>
-          <small>Agendamento fácil</small>
+          <small>Dúvidas e atendimento</small>
         </div>
       </div>
 
@@ -478,7 +478,7 @@
 
           <article class="review-card reveal">
             <div class="google-stars">★★★★★</div>
-            <p>Localização fácil, contato direto pelo WhatsApp e agendamento prático.</p>
+            <p>Localização fácil, atendimento online e agendamento direto pelo site.</p>
             <strong>Comodidade para o cliente</strong>
           </article>
         </div>
@@ -498,31 +498,11 @@
   <section class="booking-section" id="agendar">
     <div class="container booking-grid">
       <div>
-        <span class="eyebrow">Agendamento</span>
-        <h2>Solicite seu horário</h2>
-        <p>Escolha o serviço, data e horário em poucos passos. A confirmação final será feita pelo WhatsApp.</p>
-        <button class="btn btn-gold booking-launch open-booking">Iniciar agendamento</button>
+        <span class="eyebrow">Agendamento online</span>
+        <h2>Reserve seu atendimento</h2>
+        <p>Escolha seu serviço, data e horário diretamente pela agenda da Studio JM. Para agendar, acesse sua conta.</p>
+        <button class="btn btn-gold" type="button" onclick="location.href='./app/agendar.html'">Agendar atendimento</button>
       </div>
-
-      <form id="bookingForm" class="booking-form legacy-form">
-        <label>Nome<input id="name" required></label>
-        <label>Telefone<input id="phone" required></label>
-
-        <label class="full">Serviço<select id="service" required></select></label>
-
-        <label>Data<input id="date" type="date" required></label>
-        <label>Horário
-          <select id="time" required>
-            <option value="">Selecione</option>
-            <option>09:00</option><option>10:00</option><option>11:00</option>
-            <option>12:00</option><option>13:00</option><option>14:00</option>
-            <option>15:00</option><option>16:00</option><option>17:00</option><option>18:00</option>
-          </select>
-        </label>
-
-        <label class="full">Observações<textarea id="notes"></textarea></label>
-        <button class="btn btn-whatsapp full" type="submit">Enviar pelo WhatsApp</button>
-      </form>
     </div>
   </section>
 
@@ -599,7 +579,7 @@
                 <button type="button" data-time="17:00">17:00</button>
                 <button type="button" data-time="18:00">18:00</button>
               </div>
-              <small class="availability-note">O horário escolhido será confirmado pela equipe no WhatsApp.</small>
+              <small class="availability-note">Escolha um dos horários disponíveis na agenda.</small>
             </div>
           </div>
         </section>
@@ -611,12 +591,12 @@
             <label class="full">Observações<textarea id="wizardNotes" placeholder="Preferência de profissional ou detalhes do serviço"></textarea></label>
           </div>
           <div class="booking-summary" id="bookingSummary"></div>
-          <a class="whatsapp-fallback" id="whatsappFallback" href="https://wa.me/5511954773332" target="_self">Abrir WhatsApp diretamente</a>
+          
         </section>
         <div class="wizard-actions">
           <button type="button" class="btn wizard-back" id="wizardBack">Voltar</button>
           <button type="button" class="btn btn-gold wizard-next" id="wizardNext">Continuar</button>
-          <button type="submit" class="btn btn-whatsapp wizard-submit" id="wizardSubmit">Confirmar pelo WhatsApp</button>
+          <button type="button" class="btn btn-gold wizard-submit" id="wizardSubmit" onclick="location.href='./app/agendar.html'">Continuar para a agenda</button>
         </div>
       </form>
     </div>

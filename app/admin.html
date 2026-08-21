@@ -20,6 +20,7 @@
     <nav class="nav-list">
       <a class="active" href="#agenda">▦ Agenda</a>
       <a href="#clientes">♙ Clientes</a>
+      <a href="#planos-clientes">◆ Planos</a>
       <a href="../index.html">← Site Studio JM</a>
     </nav>
 
@@ -83,6 +84,23 @@
     <div class="section-title" id="agenda"><h2>Agenda</h2><button class="btn btn-gold" id="newBlock">Bloquear horário</button></div>
     <div class="card">
       <div id="calendar"></div>
+    </div>
+
+
+    <div class="section-title" id="planos-clientes"><h2>Planos dos clientes</h2></div>
+    <div class="card table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th>Plano</th>
+            <th>Valor</th>
+            <th>Status</th>
+            <th>Selecionado em</th>
+          </tr>
+        </thead>
+        <tbody id="subscriptionsBody"></tbody>
+      </table>
     </div>
 
 <div class="section-title"><h2>Modelo de permissões</h2></div>

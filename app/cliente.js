@@ -244,3 +244,83 @@ document.addEventListener("DOMContentLoaded",()=>{
     }
   },100);
 });
+
+
+/* ===== FASE 5.3.1 — PLANO VINCULADO À CONTA ===== */
+function subscriptionStatusLabel(status){
+  return {
+    pending:"Aguardando ativação",
+    active:"Ativo",
+    suspended:"Suspenso",
+    expired:"Expirado",
+    cancelled:"Cancelado"
+  }[status]||status;
+}
+
+async function loadMyPlan(){
+  const {data:subscription,error}=await sb
+    .from("subscriptions")
+    .select("*,plans(*)")
+    .eq("user_id",authData.session.user.id)
+    .in("status",["pending","active","suspended"])
+    .order("selected_at",{ascending:false})
+    .limit(1)
+    .maybeSingle();
+
+  if(error){
+    console.error("Erro ao carregar plano:",error);
+    return;
+  }
+
+  if(!subscription){
+    noPlanState.classList.remove("hidden");
+    planState.classList.add("hidden");
+    return;
+  }
+
+  noPlanState.classList.add("hidden");
+  planState.classList.remove("hidden");
+
+  const plan=subscription.plans;
+  accountPlanName.textContent=plan?.name||"Plano";
+  accountPlanPrice.textContent=Number(plan?.monthly_price||0)
+    .toLocaleString("pt-BR",{style:"currency",currency:"BRL"})+"/mês";
+
+  accountPlanStatus.textContent=subscriptionStatusLabel(subscription.status);
+  accountCredits.textContent=subscription.status==="active"
+    ? `${subscription.credits_remaining} / ${subscription.credits_total}`
+    : `${subscription.credits_total} previstos`;
+
+  accountValidity.textContent=(subscription.starts_at && subscription.ends_at)
+    ? `${formatDateTime(subscription.starts_at+"T12:00:00")} → ${formatDateTime(subscription.ends_at+"T12:00:00")}`
+    : "Após ativação";
+
+  accountStatusBadge.innerHTML=`<span class="badge badge-${subscription.status}">${subscriptionStatusLabel(subscription.status)}</span>`;
+
+  if(subscription.status==="pending"){
+    pendingPlanActions.classList.remove("hidden");
+  }else{
+    pendingPlanActions.classList.add("hidden");
+  }
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+  const timer=setInterval(()=>{
+    if(authData){
+      clearInterval(timer);
+      loadMyPlan();
+    }
+  },100);
+});
+
+cancelPlanSelection?.addEventListener("click",async()=>{
+  if(!confirm("Cancelar sua solicitação de plano?"))return;
+
+  const {error}=await sb.rpc("cancel_pending_subscription");
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  await loadMyPlan();
+});

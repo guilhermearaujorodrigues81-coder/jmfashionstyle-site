@@ -51,7 +51,48 @@
       <a class="btn btn-gold" href="#agenda">Novo agendamento</a>
     </section>
 
-    <div class="section-title"><h2>Meus dados</h2></div>
+    
+    <div class="section-title" id="meu-plano"><h2>Meu plano</h2></div>
+    <section class="card plan-account-card">
+      <div id="noPlanState">
+        <span class="eyebrow-app">CLUBE STUDIO JM</span>
+        <h2 style="margin:6px 0">Você ainda não possui um plano</h2>
+        <p style="color:#777">Escolha um plano no site para vinculá-lo à sua conta.</p>
+        <a class="btn btn-gold" href="../index.html#planos" style="margin-top:14px">Conhecer planos</a>
+      </div>
+
+      <div id="planState" class="hidden">
+        <div class="plan-account-head">
+          <div>
+            <span class="eyebrow-app">MEU PLANO</span>
+            <h2 id="accountPlanName">—</h2>
+            <p id="accountPlanStatus">—</p>
+          </div>
+          <div class="plan-account-price" id="accountPlanPrice">—</div>
+        </div>
+
+        <div class="grid grid-3 plan-account-metrics">
+          <div>
+            <span class="metric-label">Créditos do ciclo</span>
+            <div class="metric-value" id="accountCredits">—</div>
+          </div>
+          <div>
+            <span class="metric-label">Validade</span>
+            <div class="metric-value compact-metric" id="accountValidity">Aguardando</div>
+          </div>
+          <div>
+            <span class="metric-label">Situação</span>
+            <div class="metric-value compact-metric" id="accountStatusBadge">—</div>
+          </div>
+        </div>
+
+        <div id="pendingPlanActions" class="hidden" style="margin-top:14px">
+          <button class="btn btn-danger" id="cancelPlanSelection">Cancelar solicitação</button>
+        </div>
+      </div>
+    </section>
+
+<div class="section-title"><h2>Meus dados</h2></div>
 
     <section class="grid grid-2">
       <div class="card">

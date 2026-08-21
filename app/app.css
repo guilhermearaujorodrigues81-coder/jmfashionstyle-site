@@ -307,3 +307,72 @@ html{scroll-behavior:smooth}
   .client-welcome{align-items:flex-start;flex-direction:column}
   .client-welcome .btn{width:100%}
 }
+
+/* ===== FASE 5.3.1 — PLANOS ===== */
+.plan-confirm-layout{
+  display:grid;
+  grid-template-columns:1.05fr .95fr;
+  gap:18px;
+}
+.plan-confirm-card h2{
+  font-size:2.2rem;
+  margin:6px 0;
+  color:var(--gold2);
+}
+.plan-confirm-price{
+  font-size:1.8rem;
+  font-weight:1000;
+  margin:8px 0 12px;
+}
+.plan-confirm-card>p{color:#bbb}
+.plan-benefit-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  margin-top:20px;
+}
+.plan-benefit-grid>div{
+  padding:13px;
+  border:1px solid #313131;
+  background:#151515;
+  border-radius:10px;
+}
+.plan-benefit-grid span{
+  display:block;
+  color:#999;
+  font-size:.72rem;
+}
+.plan-benefit-grid strong{
+  display:block;
+  margin-top:3px;
+  color:#fff;
+  font-size:1.2rem;
+}
+.plan-account-card{box-shadow:none}
+.plan-account-head{
+  display:flex;
+  justify-content:space-between;
+  gap:18px;
+  align-items:flex-start;
+}
+.plan-account-head h2{font-size:1.7rem;margin:5px 0}
+.plan-account-head p{color:#777}
+.plan-account-price{
+  font-size:1.35rem;
+  font-weight:1000;
+  color:#9c6b0a;
+}
+.plan-account-metrics{
+  margin-top:18px;
+  padding-top:16px;
+  border-top:1px solid #eee;
+}
+.compact-metric{font-size:1rem;line-height:1.35}
+.badge-pending{background:#fff3d3;color:#8d6508}
+.badge-active{background:#e8f7ec;color:#2d743f}
+.badge-suspended{background:#fff0d8;color:#945f0b}
+.badge-expired,.badge-cancelled{background:#ffe8e8;color:#963535}
+@media(max-width:900px){
+  .plan-confirm-layout{grid-template-columns:1fr}
+  .plan-account-head{flex-direction:column}
+}

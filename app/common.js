@@ -111,9 +111,14 @@ function getReturnTarget(defaultTarget="./cliente.html"){
   const next=params.get("next");
   if(!next)return defaultTarget;
 
-  // Allow only same-app relative destinations.
-  if(next.startsWith("./") || next.startsWith("cliente.html") || next.startsWith("agendar.html")){
-    return next.startsWith("./") ? next : `./${next}`;
+  // Only allow local files inside /app.
+  if(
+    next.startsWith("./cliente.html") ||
+    next.startsWith("./agendar.html") ||
+    next.startsWith("./selecionar-plano.html")
+  ){
+    return next;
   }
+
   return defaultTarget;
 }
