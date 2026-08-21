@@ -4,24 +4,28 @@ let rows=[];
 document.addEventListener("DOMContentLoaded",init);
 
 async function init(){
-  const auth=await requireAdmin();
-  if(!auth)return;
+  try{
+    const auth=await requireAdmin();
+    if(!auth)return;
 
-  const {data,error}=await sb.rpc("admin_list_profiles");
+    const {data,error}=await sb.rpc("admin_list_profiles");
+    if(error)throw error;
 
-  if(error){
-    console.error(error);
-    alert(error.message);
+    rows=data||[];
+    render(rows);
+
+    // Estes cards foram removidos na 5.4.3; só atualiza se existirem.
+    const clientCountEl=document.getElementById("clientCount");
+    const adminCountEl=document.getElementById("adminCount");
+    if(clientCountEl)clientCountEl.textContent=rows.filter(x=>x.role==="client").length;
+    if(adminCountEl)adminCountEl.textContent=rows.filter(x=>x.role==="admin").length;
+  }catch(error){
+    console.error("Erro ao iniciar Admin:",error);
+    alert(error?.message||"Não foi possível carregar o painel administrativo.");
+  }finally{
     loadingOff();
-    return;
+    if(typeof releaseAdminLoading543==="function")releaseAdminLoading543();
   }
-
-  rows=data||[];
-  render(rows);
-
-  clientCount.textContent=rows.filter(x=>x.role==="client").length;
-  adminCount.textContent=rows.filter(x=>x.role==="admin").length;
-  loadingOff();
 }
 
 function render(data){
@@ -43,11 +47,10 @@ function render(data){
     : '<tr><td colspan="5" class="empty">Nenhum cadastro encontrado.</td></tr>';
 }
 
-search.addEventListener("input",()=>{
-  const q=search.value.trim().toLowerCase();
-
+document.getElementById("search")?.addEventListener("input",()=>{
+  const el=document.getElementById("search");
+  const q=(el?.value||"").trim().toLowerCase();
   if(!q)return render(rows);
-
   render(rows.filter(p=>
     (p.full_name||"").toLowerCase().includes(q) ||
     (p.email||"").toLowerCase().includes(q) ||
@@ -181,7 +184,7 @@ async function deleteBlock(id){
   location.reload();
 }
 
-newBlock.addEventListener("click",()=>{
+document.getElementById("newBlock")?.addEventListener("click",()=>{
   agendaModalTitle.textContent="Bloquear horário";
   agendaModalBody.innerHTML=`
     <form id="blockForm" class="form-grid">
@@ -216,14 +219,20 @@ async function createBlock(e){
   location.reload();
 }
 
-closeAgendaModal.addEventListener("click",()=>agendaModal.classList.remove("open"));
-agendaModal.addEventListener("click",e=>{if(e.target===agendaModal)agendaModal.classList.remove("open")});
+document.getElementById("closeAgendaModal")?.addEventListener("click",()=>document.getElementById("agendaModal")?.classList.remove("open"));
+document.getElementById("agendaModal")?.addEventListener("click",e=>{
+  const modal=document.getElementById("agendaModal");
+  if(e.target===modal)modal.classList.remove("open");
+});
 
 document.addEventListener("DOMContentLoaded",()=>{
+  // FullCalendar legado só inicia se a página ainda possuir #calendar.
+  if(!document.getElementById("calendar"))return;
   const wait=setInterval(()=>{
-    if(document.getElementById("clientsBody") && !document.getElementById("loading").classList.contains("off"))return;
+    const loading=document.getElementById("loading");
+    if(loading && !loading.classList.contains("off"))return;
     clearInterval(wait);
-    loadAdminAgenda();
+    loadAdminAgenda().catch(err=>console.error("Agenda legada:",err));
   },200);
 });
 
