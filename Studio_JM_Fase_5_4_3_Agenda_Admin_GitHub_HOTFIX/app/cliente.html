@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Minha conta | Studio JM</title>
+<link rel="stylesheet" href="./app.css">
+</head>
+<body>
+<div id="loading" class="loading"><div><div class="spinner"></div>Carregando...</div></div>
+
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <img src="../img/brand/logo.jpg" alt="Studio JM">
+      <div><strong>STUDIO JM</strong><small>Área do cliente</small></div>
+    </div>
+
+    <nav class="nav-list">
+      <a class="active" href="./cliente.html">⌂ Início</a>
+      <a href="#agenda">▣ Agendar</a>
+      <a href="#meus-agendamentos">◷ Meus agendamentos</a>
+      <a href="../index.html">← Site Studio JM</a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button data-logout>⇥ Sair</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <button class="btn btn-dark mobile-menu">☰</button>
+        <h1>Minha conta</h1>
+        <p>Sua conta Studio JM.</p>
+      </div>
+
+      <div class="user-chip">
+        <span class="avatar" id="avatar">JM</span>
+        <span id="userName">Cliente</span>
+      </div>
+    </div>
+
+    <section class="client-welcome card dark">
+      <div>
+        <span class="eyebrow-app">ÁREA DO CLIENTE</span>
+        <h2>Bem-vindo à Studio JM</h2>
+        <p>Gerencie seus dados e seus horários em um só lugar.</p>
+      </div>
+      <a class="btn btn-gold" href="#agenda">Novo agendamento</a>
+    </section>
+
+    
+    <div class="section-title" id="meu-plano"><h2>Meu plano</h2></div>
+    <section class="card plan-account-card">
+      <div id="noPlanState">
+        <span class="eyebrow-app">CLUBE STUDIO JM</span>
+        <h2 style="margin:6px 0">Você ainda não possui um plano</h2>
+        <p style="color:#777">Escolha um plano no site para vinculá-lo à sua conta.</p>
+        <a class="btn btn-gold" href="../index.html#planos" style="margin-top:14px">Conhecer planos</a>
+      </div>
+
+      <div id="planState" class="hidden">
+        <div class="plan-dashboard-head">
+          <div>
+            <span class="eyebrow-app">MEU PLANO</span>
+            <h2 id="accountPlanName">—</h2>
+            <p id="accountPlanStatus">—</p>
+          </div>
+          <div class="plan-account-price" id="accountPlanPrice">—</div>
+        </div>
+
+        <div class="plan-balance-panel">
+          <div class="plan-balance-main">
+            <span>Créditos disponíveis</span>
+            <strong id="creditsAvailable532">—</strong>
+            <small id="creditsCycleHint">Saldo livre para novos agendamentos</small>
+          </div>
+          <div class="plan-balance-side">
+            <div><span>Reservados</span><strong id="creditsReserved532">—</strong></div>
+            <div><span>Saldo do ciclo</span><strong id="accountCredits">—</strong></div>
+          </div>
+        </div>
+
+        <div class="plan-progress-wrap">
+          <div class="plan-progress-label">
+            <span>Uso do ciclo</span>
+            <strong id="creditUsageText">—</strong>
+          </div>
+          <div class="plan-progress"><span id="creditUsageBar"></span></div>
+        </div>
+
+        <div class="plan-info-grid">
+          <div class="plan-info-item">
+            <span>Validade / renovação</span>
+            <strong id="accountValidity">—</strong>
+          </div>
+          <div class="plan-info-item">
+            <span>Situação</span>
+            <strong id="accountStatusBadge">—</strong>
+          </div>
+          <div class="plan-info-item">
+            <span>Benefícios</span>
+            <strong id="planBenefits532">—</strong>
+          </div>
+        </div>
+
+        <div id="planAttention532" class="plan-attention hidden"></div>
+
+        <div class="plan-dashboard-actions">
+          <a class="btn btn-light" href="#agenda">Agendar atendimento</a>
+          <a class="btn btn-light" href="#extrato-creditos">Ver extrato</a>
+        </div>
+
+        <div id="pendingPlanActions" class="hidden" style="margin-top:14px">
+          <button class="btn btn-danger" id="cancelPlanSelection">Cancelar solicitação</button>
+        </div>
+      </div>
+    </section>
+
+
+    <div class="section-title" id="extrato-creditos"><div><h2>Extrato de créditos</h2><p class="section-subtitle">Acompanhe os créditos consumidos nos atendimentos concluídos.</p></div></div>
+    <div class="card table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Movimento</th>
+            <th>Créditos</th>
+            <th>Saldo</th>
+          </tr>
+        </thead>
+        <tbody id="creditLedgerBody"></tbody>
+      </table>
+    </div>
+
+<div class="section-title"><h2>Meus dados</h2></div>
+
+    <section class="grid grid-2">
+      <div class="card">
+        <h2>Perfil</h2>
+        <div class="profile-list">
+          <div class="profile-item"><span>Nome</span><strong id="profileName">—</strong></div>
+          <div class="profile-item"><span>E-mail</span><strong id="profileEmail">—</strong></div>
+          <div class="profile-item"><span>WhatsApp</span><strong id="profilePhone">—</strong></div>
+          <div class="profile-item"><span>Cliente desde</span><strong id="profileSince">—</strong></div>
+        </div>
+        <button class="btn btn-gold" id="editProfile" style="margin-top:16px">Editar dados</button>
+      </div>
+
+      <div class="card">
+        <h2>Segurança da conta</h2>
+        <div class="permissions-box">
+          <div class="permission">
+            <strong>Dados isolados por usuário</strong>
+            <small>Você só pode consultar e editar o próprio perfil.</small>
+          </div>
+          <div class="permission">
+            <strong>Permissões administrativas separadas</strong>
+            <small>Clientes não acessam a base de outros clientes.</small>
+          </div>
+          <div class="permission">
+            <strong>Senha gerenciada pelo Supabase Auth</strong>
+            <small>A senha não fica armazenada no código do site.</small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-title" id="agenda"><h2>Agendar atendimento</h2></div>
+
+    <section class="booking-layout">
+      <div class="card">
+        <h2>1. Escolha o serviço</h2>
+        <p style="color:#777;margin:6px 0 14px">Profissional: <strong>Cristiano — Barbeiro</strong></p>
+        <div id="serviceList" class="service-list"></div>
+      </div>
+
+      <div class="card">
+        <h2>2. Escolha a data</h2>
+        <label style="margin-top:12px">
+          Data
+          <input id="bookingDate" type="date">
+        </label>
+        <div class="calendar-note">
+          Atendimento de terça a sábado, das 09h às 19h. Domingo e segunda são fechados.
+        </div>
+
+        <h2 style="margin-top:20px">3. Escolha o horário</h2>
+        <div id="slotGrid" class="slot-grid"></div>
+
+        <div id="creditQuoteBox" class="credit-quote hidden">
+          <div>
+            <span class="credit-quote-label">Forma de utilização</span>
+            <strong id="creditQuoteTitle">—</strong>
+            <small id="creditQuoteMessage">—</small>
+          </div>
+          <div class="credit-quote-balance" id="creditQuoteBalance"></div>
+        </div>
+
+        <label style="margin-top:16px">
+          Observações
+          <textarea id="bookingNotes" rows="3" placeholder="Opcional"></textarea>
+        </label>
+
+        <button id="bookButton" class="btn btn-gold" style="margin-top:14px" disabled>
+          Solicitar agendamento
+        </button>
+        <div id="bookingMessage" class="form-message" style="margin-top:10px"></div>
+      </div>
+    </section>
+
+    <div class="section-title" id="meus-agendamentos"><h2>Meus agendamentos</h2></div>
+
+    <div class="card table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Serviço</th>
+            <th>Profissional</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="appointmentsBody"></tbody>
+      </table>
+    </div>
+
+  </main>
+</div>
+
+<div class="modal" id="profileModal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2>Editar meus dados</h2>
+      <button class="icon-button" id="closeModal">×</button>
+    </div>
+
+    <form id="profileForm" class="form-grid">
+      <label>Nome completo<input id="editName" required maxlength="120"></label>
+      <label>WhatsApp<input id="editPhone" required maxlength="30"></label>
+      <div id="profileMessage" class="form-message"></div>
+      <button class="btn btn-gold" type="submit">Salvar alterações</button>
+    </form>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./config.js"></script>
+<script src="./common.js"></script>
+<script src="./cliente.js"></script>
+</body>
+</html>

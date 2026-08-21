@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cliente | Studio JM Admin</title>
+<link rel="stylesheet" href="./app.css">
+</head>
+<body>
+<div id="loading" class="loading"><div><div class="spinner"></div>Carregando cliente...</div></div>
+<div class="app-shell hidden" id="detailShell">
+  <aside class="sidebar">
+    <div class="sidebar-brand"><img src="../img/brand/logo.jpg" alt="Studio JM"><div><strong>STUDIO JM</strong><small>Administração</small></div></div>
+    <nav class="nav-list">
+      <a href="./admin.html#visao-geral">⌂ Visão geral</a>
+      <a class="active" href="./admin.html#clientes">♙ Clientes</a>
+      <a href="./admin.html#agenda">▦ Agenda</a>
+      <a href="./admin.html#planos-clientes">◆ Planos</a>
+    </nav>
+    <div class="sidebar-footer"><button data-logout>⇥ Sair</button></div>
+  </aside>
+  <main class="main">
+    <div class="topbar">
+      <div><button class="btn btn-dark mobile-menu">☰</button><a class="back-link" href="./admin.html#clientes">← Voltar aos clientes</a><h1 id="detailName">Cliente</h1><p>Ficha completa do cliente.</p></div>
+      <div class="user-chip"><span class="avatar">JM</span><span>Admin</span></div>
+    </div>
+
+    <section class="client-detail-grid">
+      <div class="card">
+        <span class="eyebrow-app">CADASTRO</span>
+        <div class="profile-list detail-profile">
+          <div class="profile-item"><span>Nome</span><strong id="dName">—</strong></div>
+          <div class="profile-item"><span>E-mail</span><strong id="dEmail">—</strong></div>
+          <div class="profile-item"><span>Telefone</span><strong id="dPhone">—</strong></div>
+          <div class="profile-item"><span>Cliente desde</span><strong id="dSince">—</strong></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="eyebrow-app">PLANO</span>
+        <h2 id="dPlanName" style="margin:6px 0">Sem plano</h2>
+        <p id="dPlanStatus" style="color:#777">—</p>
+        <div class="client-credit-summary">
+          <div><span>Disponíveis</span><strong id="dAvailable">—</strong></div>
+          <div><span>Reservados</span><strong id="dReserved">—</strong></div>
+          <div><span>Saldo do ciclo</span><strong id="dRemaining">—</strong></div>
+        </div>
+        <div class="profile-item" style="margin-top:12px"><span>Validade</span><strong id="dValidity">—</strong></div>
+      </div>
+    </section>
+
+    <div class="section-title"><div><h2>Próximos agendamentos</h2><p class="section-subtitle">Atendimentos futuros deste cliente.</p></div></div>
+    <div class="card table-wrap"><table><thead><tr><th>Data</th><th>Serviço</th><th>Status</th><th>Uso</th></tr></thead><tbody id="dUpcoming"></tbody></table></div>
+
+    <div class="section-title"><div><h2>Histórico de atendimentos</h2><p class="section-subtitle">Últimos atendimentos registrados.</p></div></div>
+    <div class="card table-wrap"><table><thead><tr><th>Data</th><th>Serviço</th><th>Status</th><th>Créditos</th></tr></thead><tbody id="dHistory"></tbody></table></div>
+
+    <div class="section-title"><div><h2>Movimentação de créditos</h2><p class="section-subtitle">Extrato relacionado ao plano do cliente.</p></div></div>
+    <div class="card table-wrap"><table><thead><tr><th>Data</th><th>Descrição</th><th>Movimento</th><th>Saldo</th></tr></thead><tbody id="dLedger"></tbody></table></div>
+  </main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./config.js"></script><script src="./common.js"></script><script src="./cliente-detalhe.js"></script>
+</body></html>

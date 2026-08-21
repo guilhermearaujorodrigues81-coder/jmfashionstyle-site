@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Definir nova senha | Studio JM</title>
+<link rel="stylesheet" href="./app.css">
+</head>
+<body>
+<div class="auth-page">
+<section class="auth-visual">
+  <div class="auth-copy">
+    <small>STUDIO JM</small>
+    <h1>Nova senha.</h1>
+    <p>Crie uma nova senha para voltar a acessar sua conta Studio JM.</p>
+  </div>
+</section>
+<section class="auth-panel">
+  <div class="auth-card">
+    <div class="brand-mini">
+      <img src="../img/brand/logo.jpg" alt="Studio JM">
+      <div><strong>STUDIO JM</strong><span>Segurança da conta</span></div>
+    </div>
+    <h2>Definir nova senha</h2>
+    <p id="intro">Validando seu link de recuperação...</p>
+
+    <form id="resetForm" class="form-grid hidden">
+      <label>Nova senha<input id="password" type="password" minlength="6" autocomplete="new-password" required></label>
+      <label>Confirmar nova senha<input id="confirmPassword" type="password" minlength="6" autocomplete="new-password" required></label>
+      <div id="message" class="form-message"></div>
+      <button class="btn btn-gold" type="submit">Salvar nova senha</button>
+    </form>
+
+    <div id="invalidLink" class="form-message error">
+      Este link é inválido ou expirou. Solicite um novo link de recuperação.
+    </div>
+
+    <div class="auth-links">
+      <a href="./esqueci-senha.html">Solicitar novo link</a><br>
+      <a href="./login.html">Voltar para entrar</a>
+    </div>
+  </div>
+</section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./config.js"></script>
+<script src="./common.js"></script>
+<script>
+let recoveryReady = false;
+
+function enableRecoveryForm() {
+  if (recoveryReady) return;
+  recoveryReady = true;
+  document.getElementById("intro").textContent = "Link confirmado. Crie sua nova senha.";
+  document.getElementById("resetForm").classList.remove("hidden");
+  document.getElementById("invalidLink").classList.remove("show");
+}
+
+function showInvalidRecoveryLink() {
+  if (recoveryReady) return;
+  document.getElementById("intro").textContent = "Não foi possível validar o link.";
+  document.getElementById("resetForm").classList.add("hidden");
+  document.getElementById("invalidLink").classList.add("show");
+}
+
+sb.auth.onAuthStateChange((event, session) => {
+  if (event === "PASSWORD_RECOVERY" || session) enableRecoveryForm();
+});
+
+(async () => {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) {
+    enableRecoveryForm();
+  } else {
+    setTimeout(() => {
+      if (!recoveryReady) showInvalidRecoveryLink();
+    }, 1800);
+  }
+})();
+
+document.getElementById("resetForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const passwordInput = document.getElementById("password");
+  const confirmPasswordInput = document.getElementById("confirmPassword");
+  const button = e.submitter;
+
+  if (passwordInput.value !== confirmPasswordInput.value) {
+    return showMessage("message", "As senhas não são iguais.");
+  }
+
+  button.disabled = true;
+  button.textContent = "Salvando...";
+
+  try {
+    const { error } = await sb.auth.updateUser({ password: passwordInput.value });
+
+    if (error) return showMessage("message", error.message);
+
+    showMessage(
+      "message",
+      "Senha atualizada com sucesso! Você será direcionado para o login.",
+      "success"
+    );
+
+    setTimeout(async () => {
+      await sb.auth.signOut();
+      location.href = "./login.html";
+    }, 1800);
+  } catch (err) {
+    console.error(err);
+    showMessage("message", "Não foi possível atualizar a senha. Solicite um novo link e tente novamente.");
+  } finally {
+    button.disabled = false;
+    button.textContent = "Salvar nova senha";
+  }
+});
+</script>
+</body>
+</html>

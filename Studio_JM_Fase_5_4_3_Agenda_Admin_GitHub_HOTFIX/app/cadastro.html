@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Criar conta | Studio JM</title>
+<link rel="stylesheet" href="./app.css">
+</head>
+<body>
+<div class="auth-page">
+  <section class="auth-visual">
+    <div class="auth-copy">
+      <small>CADASTRO STUDIO JM</small>
+      <h1>Comece<br>por aqui.</h1>
+      <p>Crie sua conta para centralizar seu relacionamento com a Studio JM.</p>
+    </div>
+  </section>
+
+  <section class="auth-panel">
+    <div class="auth-card">
+      <div class="brand-mini">
+        <img src="../img/brand/logo.jpg" alt="Studio JM">
+        <div><strong>STUDIO JM</strong><span>Novo cliente</span></div>
+      </div>
+
+      <h2>Criar cadastro</h2>
+      <p>Seus dados poderão ser atualizados depois pela sua área.</p>
+
+      <form id="signupForm" class="form-grid">
+        <label>Nome completo
+          <input id="name" autocomplete="name" required maxlength="120">
+        </label>
+
+        <label>WhatsApp
+          <input id="phone" autocomplete="tel" required maxlength="30" placeholder="(11) 99999-9999">
+        </label>
+
+        <label>E-mail
+          <input id="email" type="email" autocomplete="email" required maxlength="180">
+        </label>
+
+        <div class="form-row">
+          <label>Senha
+            <input id="password" type="password" minlength="6" autocomplete="new-password" required>
+          </label>
+          <label>Confirmar senha
+            <input id="confirmPassword" type="password" minlength="6" autocomplete="new-password" required>
+          </label>
+        </div>
+
+        <label>
+          <span style="display:flex;gap:8px;align-items:flex-start;font-weight:500">
+            <input id="terms" type="checkbox" required style="width:auto;margin-top:2px">
+            Confirmo que os dados informados são meus e autorizo seu uso para atendimento e gestão da minha conta Studio JM.
+          </span>
+        </label>
+
+        <div id="message" class="form-message"></div>
+        <button class="btn btn-gold" type="submit">Criar minha conta</button>
+      </form>
+
+      <div class="auth-links">
+        Já possui cadastro? <a href="./login.html">Entrar</a><br>
+        <a href="../index.html">← Voltar para o site</a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./config.js"></script>
+<script src="./common.js"></script>
+<script>
+document.getElementById("signupForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const form = document.getElementById("signupForm");
+  const nameInput = document.getElementById("name");
+  const phoneInput = document.getElementById("phone");
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
+  const confirmPasswordInput = document.getElementById("confirmPassword");
+  const button = e.submitter;
+
+  if (passwordInput.value !== confirmPasswordInput.value) {
+    return showMessage("message", "As senhas não são iguais.");
+  }
+
+  button.disabled = true;
+  button.textContent = "Criando conta...";
+
+  try {
+    const { error } = await sb.auth.signUp({
+      email: emailInput.value.trim(),
+      password: passwordInput.value,
+      options: {
+        data: {
+          full_name: nameInput.value.trim(),
+          phone: phoneInput.value.trim()
+        }
+      }
+    });
+
+    if (error) {
+      const msg = (error.message || "").toLowerCase();
+      if (msg.includes("rate limit")) {
+        return showMessage("message", "Muitas tentativas em pouco tempo. Aguarde alguns minutos e tente novamente.");
+      }
+      return showMessage("message", error.message);
+    }
+
+    form.reset();
+    showMessage(
+      "message",
+      "Cadastro realizado! Enviamos um e-mail de confirmação. Abra sua caixa de entrada e confirme o cadastro antes de tentar entrar na sua conta Studio JM.",
+      "success"
+    );
+  } catch (err) {
+    console.error(err);
+    showMessage("message", "Não foi possível concluir o cadastro. Tente novamente.");
+  } finally {
+    button.disabled = false;
+    button.textContent = "Criar minha conta";
+  }
+});
+</script>
+</body>
+</html>

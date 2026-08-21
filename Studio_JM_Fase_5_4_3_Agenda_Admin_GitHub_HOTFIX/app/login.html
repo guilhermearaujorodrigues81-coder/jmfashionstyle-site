@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Entrar | Studio JM</title>
+<link rel="stylesheet" href="./app.css">
+</head>
+<body>
+<div class="auth-page">
+  <section class="auth-visual">
+    <div class="auth-copy">
+      <small>STUDIO JM</small>
+      <h1>Sua conta.<br>Seu espaço.</h1>
+      <p>Acesse seus dados e, nas próximas etapas, acompanhe agenda, plano, créditos e pagamentos em um só lugar.</p>
+    </div>
+  </section>
+
+  <section class="auth-panel">
+    <div class="auth-card">
+      <div class="brand-mini">
+        <img src="../img/brand/logo.jpg" alt="Studio JM">
+        <div><strong>STUDIO JM</strong><span>Área do cliente</span></div>
+      </div>
+
+      <h2>Entrar</h2>
+      <p>Use o e-mail cadastrado para acessar sua conta.</p>
+
+      <form id="loginForm" class="form-grid">
+        <label>E-mail
+          <input id="email" type="email" autocomplete="email" required>
+        </label>
+        <label>Senha
+          <input id="password" type="password" autocomplete="current-password" minlength="6" required>
+        </label>
+        <div id="message" class="form-message"></div>
+        <button class="btn btn-gold" type="submit">Entrar</button>
+      </form>
+
+      <div class="auth-links">
+        Ainda não tem conta? <a href="./cadastro.html">Criar cadastro</a><br>
+        <a href="../index.html">← Voltar para o site</a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./config.js"></script>
+<script src="./common.js"></script>
+<script>
+
+(async () => {
+  if (!configured) return;
+
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) return;
+
+  const { data: profile } = await sb
+    .from("profiles")
+    .select("role")
+    .eq("id", session.user.id)
+    .maybeSingle();
+
+  if(profile?.role==="admin"){
+    location.href="./admin.html";
+  }else{
+    location.href=getReturnTarget("./cliente.html");
+  }
+})();
+
+document.getElementById("loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
+  const button = e.submitter;
+
+  button.disabled = true;
+  button.textContent = "Entrando...";
+
+  try {
+    const { data, error } = await sb.auth.signInWithPassword({
+      email: emailInput.value.trim(),
+      password: passwordInput.value
+    });
+
+    if (error) {
+      const msg = (error.message || "").toLowerCase();
+
+      if (msg.includes("email not confirmed")) {
+        return showMessage(
+          "message",
+          "Seu e-mail ainda não foi confirmado. Verifique sua caixa de entrada e confirme o cadastro antes de entrar."
+        );
+      }
+
+      if (msg.includes("invalid login credentials")) {
+        return showMessage(
+          "message",
+          "E-mail ou senha inválidos. Confira os dados ou use “Esqueci minha senha”."
+        );
+      }
+
+      if (msg.includes("rate limit")) {
+        return showMessage(
+          "message",
+          "Muitas tentativas foram realizadas em pouco tempo. Aguarde alguns minutos e tente novamente."
+        );
+      }
+
+      return showMessage("message", error.message);
+    }
+
+    const { data: profile, error: profileError } = await sb
+      .from("profiles")
+      .select("role")
+      .eq("id", data.user.id)
+      .single();
+
+    if (profileError) {
+      return showMessage("message", "Login realizado, mas não foi possível carregar o perfil.");
+    }
+
+    if(profile?.role==="admin"){
+      location.href="./admin.html";
+    }else{
+      location.href=getReturnTarget("./cliente.html");
+    }
+  } catch (err) {
+    console.error(err);
+    showMessage("message", "Não foi possível entrar agora. Tente novamente.");
+  } finally {
+    button.disabled = false;
+    button.textContent = "Entrar";
+  }
+});
+</script>
+</body>
+</html>
