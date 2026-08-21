@@ -39,7 +39,7 @@
 
       <div class="auth-links">
         Ainda não tem conta? <a href="./cadastro.html">Criar cadastro</a><br>
-        <a href="./esqueci-senha.html">Esqueci minha senha</a><br><a href="../index.html">← Voltar para o site</a>
+        <a href="../index.html">← Voltar para o site</a>
       </div>
     </div>
   </section>
@@ -49,6 +49,24 @@
 <script src="./config.js"></script>
 <script src="./common.js"></script>
 <script>
+
+(async () => {
+  if (!configured) return;
+
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) return;
+
+  const { data: profile } = await sb
+    .from("profiles")
+    .select("role")
+    .eq("id", session.user.id)
+    .maybeSingle();
+
+  location.href = profile?.role === "admin"
+    ? "./admin.html"
+    : "./cliente.html";
+})();
+
 document.getElementById("loginForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 

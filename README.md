@@ -128,3 +128,13 @@ Não incluído nesta fase:
 - Planos e créditos
 - Pagamentos
 - Automação
+
+
+## Fase 5.1.2 — Sessão persistente
+
+- Sessão Supabase persistida no navegador
+- Auto refresh de token
+- Site público reconhece usuário autenticado
+- "Área do cliente" muda para "Minha conta" ou "Painel Admin"
+- Login redireciona automaticamente usuários já autenticados
+- Base preparada para contratação de planos vinculada à conta autenticada
