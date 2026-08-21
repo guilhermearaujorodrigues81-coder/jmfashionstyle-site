@@ -380,3 +380,47 @@ html{scroll-behavior:smooth}
 /* Fase 5.3.2 */
 .btn-small{padding:8px 10px;font-size:.78rem;white-space:nowrap}
 .table-actions{display:flex;gap:6px;flex-wrap:wrap}
+
+/* ===== FASE 5.3.3 — CRÉDITOS NA AGENDA ===== */
+.credit-quote{
+  margin-top:16px;
+  padding:14px;
+  border:1px solid #e4d7b9;
+  border-radius:11px;
+  background:#fffaf0;
+  display:flex;
+  justify-content:space-between;
+  gap:14px;
+  align-items:center;
+}
+.credit-quote.using-plan{
+  background:#f2f8ee;
+  border-color:#c9ddbd;
+}
+.credit-quote-label{
+  display:block;
+  font-size:.68rem;
+  letter-spacing:.08em;
+  font-weight:900;
+  color:#84620b;
+  text-transform:uppercase;
+}
+.credit-quote strong{
+  display:block;
+  margin:3px 0;
+}
+.credit-quote small{
+  display:block;
+  color:#666;
+  line-height:1.4;
+}
+.credit-quote-balance{
+  flex:0 0 auto;
+  font-weight:900;
+  color:#765408;
+  white-space:nowrap;
+}
+.credit-quote.using-plan .credit-quote-balance{color:#2d743f}
+@media(max-width:650px){
+  .credit-quote{align-items:flex-start;flex-direction:column}
+}

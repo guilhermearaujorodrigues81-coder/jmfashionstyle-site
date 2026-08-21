@@ -133,6 +133,8 @@ function openAppointmentModal(a){
       <div class="profile-item"><span>Serviço</span><strong>${a.services?.name||"—"}</strong></div>
       <div class="profile-item"><span>Data</span><strong>${formatDateTime(a.starts_at)}</strong></div>
       <div class="profile-item"><span>Status</span><strong>${statusBadge(a.status)}</strong></div>
+      <div class="profile-item"><span>Utilização</span><strong>${a.billing_mode==="plan" ? "Plano" : "Avulso"}</strong></div>
+      <div class="profile-item"><span>Créditos</span><strong>${a.billing_mode==="plan" ? `${a.credits_reserved} reservado(s)` : "—"}</strong></div>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px">
       <button class="btn btn-gold" onclick="setAppointmentStatus('${a.id}','confirmed')">Confirmar</button>

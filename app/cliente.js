@@ -167,29 +167,32 @@ async function createAppointment(){
 
   const startLocal=`${bookingDate.value}T${selectedTime}:00-03:00`;
   const start=new Date(startLocal);
-  const end=new Date(start.getTime()+60*60000);
 
   bookButton.disabled=true;
   bookButton.textContent="Agendando...";
 
-  const {error}=await sb.from("appointments").insert({
-    user_id:authData.session.user.id,
-    professional_id:cristiano.id,
-    service_id:selectedService.id,
-    starts_at:start.toISOString(),
-    ends_at:end.toISOString(),
-    status:"pending",
-    notes:bookingNotes.value.trim()
+  const {error}=await sb.rpc("create_appointment_v2",{
+    p_professional_id:cristiano.id,
+    p_service_id:selectedService.id,
+    p_starts_at:start.toISOString(),
+    p_notes:bookingNotes.value.trim() || null
   });
 
   if(error){
     showMessage("bookingMessage",error.message);
   }else{
-    showMessage("bookingMessage","Agendamento solicitado com sucesso. Aguarde a confirmação da Studio JM.","success");
+    showMessage(
+      "bookingMessage",
+      "Agendamento solicitado com sucesso. Se o serviço estiver coberto pelo seu plano, o crédito ficou reservado e só será descontado após a conclusão.",
+      "success"
+    );
     bookingNotes.value="";
     selectedTime=null;
     await loadSlots();
     await loadAppointments();
+    await loadMyPlan();
+    await loadCreditLedger();
+    creditQuoteBox?.classList.add("hidden");
   }
 
   bookButton.textContent="Solicitar agendamento";
@@ -346,3 +349,130 @@ async function refreshPlanCycle532(){
   }
 }
 document.addEventListener("DOMContentLoaded",()=>setTimeout(refreshPlanCycle532,800));
+
+
+/* ===== FASE 5.3.3 — CRÉDITOS + AGENDA ===== */
+async function loadCreditQuote(){
+  if(!selectedService || !selectedTime || !bookingDate.value){
+    creditQuoteBox?.classList.add("hidden");
+    return;
+  }
+
+  const start=new Date(`${bookingDate.value}T${selectedTime}:00-03:00`);
+
+  const {data,error}=await sb.rpc("get_booking_credit_quote",{
+    p_service_id:selectedService.id,
+    p_starts_at:start.toISOString()
+  });
+
+  if(error || !data?.length){
+    creditQuoteBox?.classList.add("hidden");
+    return;
+  }
+
+  const q=data[0];
+  creditQuoteBox.classList.remove("hidden");
+
+  if(q.billing_mode==="plan"){
+    creditQuoteBox.classList.add("using-plan");
+    creditQuoteTitle.textContent=`Usar ${q.plan_name}`;
+    creditQuoteMessage.textContent=q.message;
+    creditQuoteBalance.textContent=`${q.credits_available} disponível(is)`;
+  }else{
+    creditQuoteBox.classList.remove("using-plan");
+    creditQuoteTitle.textContent="Atendimento avulso";
+    creditQuoteMessage.textContent=q.message;
+    creditQuoteBalance.textContent=q.plan_name
+      ? `${q.credits_available} crédito(s) livre(s)`
+      : "";
+  }
+}
+
+async function loadCreditLedger(){
+  if(!authData)return;
+
+  const {data,error}=await sb
+    .from("credit_ledger")
+    .select("id,amount,balance_after,description,created_at,appointments(services(name))")
+    .order("created_at",{ascending:false});
+
+  if(error){
+    console.error("Erro no extrato:",error);
+    return;
+  }
+
+  creditLedgerBody.innerHTML=(data||[]).length
+    ? data.map(x=>{
+        const service=x.appointments?.services?.name;
+        const desc=service ? `${x.description} • ${service}` : x.description;
+        const sign=x.amount>0?"+":"";
+        return `<tr>
+          <td>${formatDateTime(x.created_at)}</td>
+          <td>${desc}</td>
+          <td><strong>${sign}${x.amount}</strong></td>
+          <td>${x.balance_after ?? "—"}</td>
+        </tr>`;
+      }).join("")
+    : '<tr><td colspan="4" class="empty">Nenhum movimento de crédito ainda.</td></tr>';
+}
+
+function hookCreditQuoteEvents(){
+  bookingDate?.addEventListener("change",()=>setTimeout(loadCreditQuote,100));
+
+  serviceList?.addEventListener("click",()=>{
+    setTimeout(loadCreditQuote,100);
+  });
+
+  slotGrid?.addEventListener("click",e=>{
+    if(e.target.closest(".slot")){
+      setTimeout(loadCreditQuote,100);
+    }
+  });
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+  const timer=setInterval(()=>{
+    if(authData && document.getElementById("creditLedgerBody")){
+      clearInterval(timer);
+      loadCreditLedger();
+      hookCreditQuoteEvents();
+    }
+  },120);
+});
+
+
+async function loadReservedCreditSummary(){
+  if(!authData)return;
+
+  const {data:s}=await sb.from("subscriptions")
+    .select("id,credits_remaining,status")
+    .eq("user_id",authData.session.user.id)
+    .eq("status","active")
+    .maybeSingle();
+
+  if(!s)return;
+
+  const {data:a}=await sb.from("appointments")
+    .select("credits_reserved")
+    .eq("subscription_id",s.id)
+    .eq("billing_mode","plan")
+    .eq("credits_charged",false)
+    .in("status",["pending","confirmed"]);
+
+  const reserved=(a||[]).reduce((sum,x)=>sum+(x.credits_reserved||0),0);
+  const available=Math.max(0,(s.credits_remaining||0)-reserved);
+
+  if(document.getElementById("accountCredits")){
+    accountCredits.textContent=`${available} disponíveis`;
+    accountCredits.title=`Saldo: ${s.credits_remaining} • Reservados: ${reserved}`;
+  }
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+  const timer=setInterval(()=>{
+    if(authData){
+      clearInterval(timer);
+      setTimeout(loadReservedCreditSummary,500);
+    }
+  },120);
+});

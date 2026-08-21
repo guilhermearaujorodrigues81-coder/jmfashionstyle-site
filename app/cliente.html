@@ -92,6 +92,22 @@
       </div>
     </section>
 
+
+    <div class="section-title" id="extrato-creditos"><h2>Extrato de créditos</h2></div>
+    <div class="card table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Movimento</th>
+            <th>Créditos</th>
+            <th>Saldo</th>
+          </tr>
+        </thead>
+        <tbody id="creditLedgerBody"></tbody>
+      </table>
+    </div>
+
 <div class="section-title"><h2>Meus dados</h2></div>
 
     <section class="grid grid-2">
@@ -146,6 +162,15 @@
 
         <h2 style="margin-top:20px">3. Escolha o horário</h2>
         <div id="slotGrid" class="slot-grid"></div>
+
+        <div id="creditQuoteBox" class="credit-quote hidden">
+          <div>
+            <span class="credit-quote-label">Forma de utilização</span>
+            <strong id="creditQuoteTitle">—</strong>
+            <small id="creditQuoteMessage">—</small>
+          </div>
+          <div class="credit-quote-balance" id="creditQuoteBalance"></div>
+        </div>
 
         <label style="margin-top:16px">
           Observações
