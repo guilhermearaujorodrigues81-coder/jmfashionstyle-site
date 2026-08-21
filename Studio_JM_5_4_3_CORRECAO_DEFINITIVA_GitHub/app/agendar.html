@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Agendar | Studio JM</title>
+<link rel="stylesheet" href="./app.css">
+</head>
+<body>
+<div id="loading" class="loading">
+  <div><div class="spinner"></div>Preparando sua agenda...</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./config.js"></script>
+<script src="./common.js"></script>
+<script>
+(async()=>{
+  if(!configured){
+    alert("O sistema ainda não está conectado.");
+    location.href="../index.html";
+    return;
+  }
+
+  const {data:{session}}=await sb.auth.getSession();
+
+  if(!session){
+    location.href="./login.html?next=./cliente.html%23agenda";
+    return;
+  }
+
+  const {data:profile}=await sb
+    .from("profiles")
+    .select("role")
+    .eq("id",session.user.id)
+    .maybeSingle();
+
+  if(profile?.role==="admin"){
+    location.href="./admin.html#agenda";
+  }else{
+    location.href="./cliente.html#agenda";
+  }
+})();
+</script>
+</body>
+</html>

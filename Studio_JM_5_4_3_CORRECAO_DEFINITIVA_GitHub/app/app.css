@@ -1,0 +1,603 @@
+
+:root{
+  --black:#080808;
+  --black2:#111;
+  --panel:#171717;
+  --gold:#c9931d;
+  --gold2:#efc45b;
+  --cream:#f7f3ea;
+  --white:#fff;
+  --muted:#767676;
+  --line:#e7dfd0;
+  --green:#287b42;
+  --red:#a33838;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:Inter,Arial,Helvetica,sans-serif;
+  background:var(--cream);
+  color:#161616;
+  min-height:100vh;
+}
+a{text-decoration:none;color:inherit}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+
+/* AUTH */
+.auth-page{
+  min-height:100vh;
+  display:grid;
+  grid-template-columns:1.05fr .95fr;
+  background:var(--black);
+}
+.auth-visual{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  min-height:100vh;
+  padding:60px;
+  color:#fff;
+  background:
+    linear-gradient(90deg,rgba(0,0,0,.94),rgba(0,0,0,.38)),
+    url("../img/gallery/salao-1.jpg") center/cover;
+}
+.auth-visual:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:radial-gradient(circle at 76% 20%,rgba(201,147,29,.2),transparent 30%);
+  pointer-events:none;
+}
+.auth-copy{position:relative;z-index:1;max-width:620px}
+.auth-copy small{letter-spacing:.2em;color:var(--gold2);font-weight:900}
+.auth-copy h1{font-size:clamp(3rem,7vw,6rem);line-height:.95;margin:12px 0 18px}
+.auth-copy p{color:#ddd;font-size:1.05rem;line-height:1.6}
+.auth-panel{
+  display:grid;
+  place-items:center;
+  padding:34px;
+  background:#fff;
+}
+.auth-card{width:min(440px,100%)}
+.brand-mini{
+  display:flex;align-items:center;gap:12px;margin-bottom:26px
+}
+.brand-mini img{
+  width:58px;height:58px;object-fit:contain;border-radius:10px;background:#111
+}
+.brand-mini strong{display:block;color:#9c6b0a;letter-spacing:.08em}
+.brand-mini span{font-size:.78rem;color:#777}
+.auth-card h2{font-size:2rem;margin-bottom:7px}
+.auth-card>p{color:#777;margin-bottom:24px}
+.form-grid{display:grid;gap:14px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label{display:flex;flex-direction:column;gap:6px;font-size:.8rem;font-weight:900}
+input,textarea,select{
+  width:100%;
+  padding:12px 13px;
+  border:1px solid #d9d2c5;
+  border-radius:9px;
+  background:#fff;
+  color:#111;
+}
+input:focus,textarea:focus,select:focus{
+  outline:none;
+  border-color:var(--gold);
+  box-shadow:0 0 0 3px rgba(201,147,29,.12);
+}
+.btn{
+  display:inline-flex;
+  justify-content:center;
+  align-items:center;
+  gap:8px;
+  border:0;
+  border-radius:9px;
+  padding:12px 16px;
+  font-weight:900;
+  transition:.2s;
+}
+.btn:hover{transform:translateY(-1px)}
+.btn-gold{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#111}
+.btn-dark{background:#111;color:#fff}
+.btn-light{background:#fff;border:1px solid #ddd;color:#111}
+.btn-danger{background:#fff0f0;color:var(--red);border:1px solid #eccccc}
+.auth-links{margin-top:18px;color:#666;font-size:.84rem;line-height:1.9}
+.auth-links a{font-weight:900;color:#96650a}
+.form-message{
+  display:none;
+  padding:11px;
+  border-radius:8px;
+  font-size:.82rem;
+  line-height:1.45;
+}
+.form-message.show{display:block}
+.form-message.error{background:#ffeaea;color:#8d2d2d}
+.form-message.success{background:#e8f7ec;color:#276e3c}
+
+/* APP */
+.app-shell{min-height:100vh;display:grid;grid-template-columns:250px 1fr}
+.sidebar{
+  position:sticky;top:0;height:100vh;
+  padding:24px 17px;
+  background:#080808;color:#fff
+}
+.sidebar-brand{display:flex;gap:11px;align-items:center;margin-bottom:28px}
+.sidebar-brand img{width:48px;height:48px;object-fit:contain;border-radius:8px;background:#fff}
+.sidebar-brand strong{display:block;color:var(--gold2);letter-spacing:.08em}
+.sidebar-brand small{color:#aaa;font-size:.7rem}
+.nav-list{display:grid;gap:6px}
+.nav-list a,.nav-list button{
+  width:100%;
+  border:0;
+  background:transparent;
+  color:#d1d1d1;
+  text-align:left;
+  border-radius:9px;
+  padding:12px;
+}
+.nav-list a:hover,.nav-list a.active,.nav-list button:hover{
+  background:#1a1a1a;color:var(--gold2)
+}
+.sidebar-footer{position:absolute;bottom:18px;left:17px;right:17px}
+.main{padding:28px;min-width:0}
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:24px
+}
+.topbar h1{font-size:2rem}
+.topbar p{color:#777;margin-top:3px}
+.user-chip{
+  display:flex;gap:9px;align-items:center;
+  padding:7px 12px;border:1px solid var(--line);
+  background:#fff;border-radius:999px
+}
+.avatar{
+  width:34px;height:34px;border-radius:50%;
+  display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--gold2),var(--gold));
+  font-weight:1000
+}
+.grid{display:grid;gap:16px}
+.grid-3{grid-template-columns:repeat(3,1fr)}
+.grid-2{grid-template-columns:repeat(2,1fr)}
+.card{
+  background:#fff;border:1px solid var(--line);
+  border-radius:15px;padding:20px;
+  box-shadow:0 12px 28px rgba(0,0,0,.055)
+}
+.card.dark{background:#0b0b0b;color:#fff;border-color:#282828}
+.card h2{font-size:1.25rem}
+.metric-label{font-size:.76rem;color:#777}
+.metric-value{font-size:1.7rem;font-weight:1000;margin-top:5px}
+.gold{color:#b77a05}
+.section-title{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  margin:28px 0 12px
+}
+.section-title h2{font-size:1.3rem}
+.profile-list{display:grid;gap:12px;margin-top:16px}
+.profile-item{
+  display:grid;grid-template-columns:150px 1fr;gap:15px;
+  padding-bottom:12px;border-bottom:1px solid #eee
+}
+.profile-item:last-child{border-bottom:0}
+.profile-item span{color:#777;font-size:.8rem}
+.profile-item strong{overflow-wrap:anywhere}
+.badge{
+  display:inline-flex;
+  align-items:center;
+  padding:5px 8px;border-radius:999px;
+  font-size:.68rem;font-weight:1000
+}
+.badge-client{background:#eef3ff;color:#415d97}
+.badge-admin{background:#fff2ce;color:#8b6208}
+.badge-active{background:#e8f7ec;color:#2d743f}
+.table-wrap{overflow-x:auto}
+table{width:100%;min-width:760px;border-collapse:collapse}
+th,td{padding:12px;border-bottom:1px solid #eee;text-align:left}
+th{font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:#777}
+.empty{text-align:center;padding:28px;color:#777}
+.loading{
+  position:fixed;inset:0;z-index:500;
+  display:grid;place-items:center;background:rgba(8,8,8,.94);color:#fff
+}
+.loading.off{display:none}
+.spinner{
+  width:44px;height:44px;border-radius:50%;
+  border:4px solid #333;border-top-color:var(--gold2);
+  margin:auto auto 12px;animation:spin .8s linear infinite
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.mobile-menu{display:none}
+
+.permissions-box{display:grid;gap:10px;margin-top:15px}
+.permission{
+  padding:12px;border:1px solid #ece4d6;border-radius:10px;background:#fffdfa
+}
+.permission strong{display:block;margin-bottom:3px}
+.permission small{color:#777}
+
+/* MODAL */
+.modal{
+  position:fixed;inset:0;z-index:100;
+  background:rgba(0,0,0,.76);
+  display:none;align-items:center;justify-content:center;padding:18px
+}
+.modal.open{display:flex}
+.modal-card{
+  width:min(520px,100%);max-height:90vh;overflow:auto;
+  padding:22px;background:#fff;border-radius:15px
+}
+.modal-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:16px}
+.icon-button{border:0;background:#eee;width:35px;height:35px;border-radius:50%}
+
+@media(max-width:900px){
+  .auth-page{grid-template-columns:1fr}
+  .auth-visual{min-height:310px;padding:30px}
+  .app-shell{grid-template-columns:1fr}
+  .sidebar{position:fixed;left:-270px;width:250px;z-index:80;transition:.25s}
+  .sidebar.open{left:0}
+  .main{padding:18px}
+  .mobile-menu{display:inline-flex}
+  .grid-3,.grid-2,.form-row{grid-template-columns:1fr}
+}
+
+/* Fase 5.1.1 */
+.auth-card .btn:disabled{opacity:.65;cursor:not-allowed;transform:none}
+.auth-card .form-message{line-height:1.55}
+
+/* ===== FASE 5.2 — AGENDA ===== */
+.booking-layout{display:grid;grid-template-columns:.8fr 1.2fr;gap:16px}
+.service-list{display:grid;gap:9px}
+.service-option{
+  width:100%;display:flex;justify-content:space-between;align-items:center;
+  padding:14px;border:1px solid #e1dacd;background:#fff;border-radius:10px;text-align:left
+}
+.service-option.selected{border-color:var(--gold);background:#fff8e5}
+.slot-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:12px}
+.slot{
+  border:1px solid #ddd;background:#fff;border-radius:8px;padding:10px
+}
+.slot.selected{background:var(--gold);border-color:var(--gold);color:#111;font-weight:900}
+.slot:disabled{background:#eee;color:#aaa;cursor:not-allowed}
+.calendar-note{
+  margin-top:10px;padding:11px;border-radius:9px;
+  background:#fff6dc;border:1px solid #ead59d;color:#755509;font-size:.8rem
+}
+#calendar{min-width:0}
+.fc .fc-button-primary{background:#111;border-color:#111}
+.fc .fc-button-primary:not(:disabled).fc-button-active,
+.fc .fc-button-primary:not(:disabled):active{background:var(--gold);border-color:var(--gold);color:#111}
+.badge-pending{background:#fff4d8;color:#91690b}
+.badge-confirmed{background:#e6f7ea;color:#23783a}
+.badge-completed{background:#e6efff;color:#315b9c}
+.badge-cancelled{background:#ffe8e8;color:#9c3333}
+.badge-no_show{background:#eee;color:#555}
+@media(max-width:900px){
+  .booking-layout{grid-template-columns:1fr}
+  .slot-grid{grid-template-columns:repeat(3,1fr)}
+}
+
+/* ===== FASE 5.2.2 — INTERFACE LIMPA ===== */
+html{scroll-behavior:smooth}
+.client-welcome{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  margin-bottom:18px;
+}
+.client-welcome h2{font-size:1.65rem;margin:5px 0}
+.client-welcome p{color:#aaa}
+.eyebrow-app{
+  color:var(--gold2);
+  font-size:.7rem;
+  font-weight:1000;
+  letter-spacing:.15em;
+}
+.booking-layout .card{box-shadow:none}
+.booking-layout h2{font-size:1.05rem}
+.service-option{transition:.18s}
+.service-option:hover{border-color:#c9a85b}
+.section-title{margin-top:22px}
+.admin-calendar,.card:has(#calendar){box-shadow:none}
+.nav-list a{font-size:.88rem}
+@media(max-width:700px){
+  .client-welcome{align-items:flex-start;flex-direction:column}
+  .client-welcome .btn{width:100%}
+}
+
+/* ===== FASE 5.3.1 — PLANOS ===== */
+.plan-confirm-layout{
+  display:grid;
+  grid-template-columns:1.05fr .95fr;
+  gap:18px;
+}
+.plan-confirm-card h2{
+  font-size:2.2rem;
+  margin:6px 0;
+  color:var(--gold2);
+}
+.plan-confirm-price{
+  font-size:1.8rem;
+  font-weight:1000;
+  margin:8px 0 12px;
+}
+.plan-confirm-card>p{color:#bbb}
+.plan-benefit-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  margin-top:20px;
+}
+.plan-benefit-grid>div{
+  padding:13px;
+  border:1px solid #313131;
+  background:#151515;
+  border-radius:10px;
+}
+.plan-benefit-grid span{
+  display:block;
+  color:#999;
+  font-size:.72rem;
+}
+.plan-benefit-grid strong{
+  display:block;
+  margin-top:3px;
+  color:#fff;
+  font-size:1.2rem;
+}
+.plan-account-card{box-shadow:none}
+.plan-account-head{
+  display:flex;
+  justify-content:space-between;
+  gap:18px;
+  align-items:flex-start;
+}
+.plan-account-head h2{font-size:1.7rem;margin:5px 0}
+.plan-account-head p{color:#777}
+.plan-account-price{
+  font-size:1.35rem;
+  font-weight:1000;
+  color:#9c6b0a;
+}
+.plan-account-metrics{
+  margin-top:18px;
+  padding-top:16px;
+  border-top:1px solid #eee;
+}
+.compact-metric{font-size:1rem;line-height:1.35}
+.badge-pending{background:#fff3d3;color:#8d6508}
+.badge-active{background:#e8f7ec;color:#2d743f}
+.badge-suspended{background:#fff0d8;color:#945f0b}
+.badge-expired,.badge-cancelled{background:#ffe8e8;color:#963535}
+@media(max-width:900px){
+  .plan-confirm-layout{grid-template-columns:1fr}
+  .plan-account-head{flex-direction:column}
+}
+
+/* Fase 5.3.2 */
+.btn-small{padding:8px 10px;font-size:.78rem;white-space:nowrap}
+.table-actions{display:flex;gap:6px;flex-wrap:wrap}
+
+/* ===== FASE 5.3.3 — CRÉDITOS NA AGENDA ===== */
+.credit-quote{
+  margin-top:16px;
+  padding:14px;
+  border:1px solid #e4d7b9;
+  border-radius:11px;
+  background:#fffaf0;
+  display:flex;
+  justify-content:space-between;
+  gap:14px;
+  align-items:center;
+}
+.credit-quote.using-plan{
+  background:#f2f8ee;
+  border-color:#c9ddbd;
+}
+.credit-quote-label{
+  display:block;
+  font-size:.68rem;
+  letter-spacing:.08em;
+  font-weight:900;
+  color:#84620b;
+  text-transform:uppercase;
+}
+.credit-quote strong{
+  display:block;
+  margin:3px 0;
+}
+.credit-quote small{
+  display:block;
+  color:#666;
+  line-height:1.4;
+}
+.credit-quote-balance{
+  flex:0 0 auto;
+  font-weight:900;
+  color:#765408;
+  white-space:nowrap;
+}
+.credit-quote.using-plan .credit-quote-balance{color:#2d743f}
+@media(max-width:650px){
+  .credit-quote{align-items:flex-start;flex-direction:column}
+}
+
+/* ===== FASE 5.3.4 — ACABAMENTO DE PLANOS ===== */
+.section-subtitle{margin-top:3px;color:#888;font-size:.82rem}
+.plan-dashboard-head{
+  display:flex;justify-content:space-between;gap:18px;align-items:flex-start
+}
+.plan-dashboard-head h2{font-size:1.75rem;margin:5px 0}
+.plan-dashboard-head p{color:#777}
+.plan-balance-panel{
+  display:grid;grid-template-columns:1.15fr .85fr;gap:12px;
+  margin-top:18px
+}
+.plan-balance-main{
+  background:#171717;color:#fff;border-radius:13px;padding:20px
+}
+.plan-balance-main span,.plan-balance-main small{display:block;color:#aaa}
+.plan-balance-main strong{
+  display:block;font-size:2.5rem;line-height:1;margin:8px 0;color:var(--gold2)
+}
+.plan-balance-side{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.plan-balance-side>div{
+  background:#f7f7f7;border:1px solid #ececec;border-radius:12px;padding:15px
+}
+.plan-balance-side span{display:block;color:#777;font-size:.72rem}
+.plan-balance-side strong{display:block;font-size:1.35rem;margin-top:5px}
+.plan-progress-wrap{margin-top:18px}
+.plan-progress-label{display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:7px}
+.plan-progress{height:8px;background:#eee;border-radius:99px;overflow:hidden}
+.plan-progress span{display:block;height:100%;width:0;background:#b98b2e;border-radius:99px;transition:.3s}
+.plan-info-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px
+}
+.plan-info-item{border:1px solid #eee;border-radius:11px;padding:13px}
+.plan-info-item span{display:block;color:#888;font-size:.7rem;margin-bottom:5px}
+.plan-info-item strong{font-size:.88rem;line-height:1.4}
+.plan-attention{
+  margin-top:14px;padding:12px 14px;border-radius:10px;font-size:.82rem;line-height:1.45
+}
+.plan-attention.warning{display:block;background:#fff5d9;color:#76570d;border:1px solid #eedca8}
+.plan-attention.danger{display:block;background:#fff0f0;color:#913c3c;border:1px solid #efcaca}
+.plan-attention.info{display:block;background:#eef5ff;color:#3e608c;border:1px solid #d5e3f5}
+.plan-dashboard-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.plan-admin-summary{margin:0 0 16px}
+.metric-card{box-shadow:none}
+@media(max-width:800px){
+  .plan-dashboard-head{flex-direction:column}
+  .plan-balance-panel{grid-template-columns:1fr}
+  .plan-info-grid{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+  .plan-balance-side{grid-template-columns:1fr}
+}
+
+/* ===== FASE 5.4.1 — GESTÃO OPERACIONAL ===== */
+.admin-ops{margin-bottom:24px}
+.ops-metrics{margin-bottom:16px}
+.ops-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:16px}
+.compact-title{margin-top:0;align-items:center}
+.ops-list{display:flex;flex-direction:column}
+.ops-row{
+  display:flex;align-items:center;gap:12px;padding:11px 0;
+  border-bottom:1px solid #eee
+}
+.ops-row:last-child{border-bottom:0}
+.ops-time{
+  width:52px;font-weight:1000;font-size:.9rem;color:#8b650e
+}
+.ops-row-main{flex:1;min-width:0}
+.ops-row-main strong,.ops-row-main small{display:block}
+.ops-row-main small{color:#888;margin-top:2px}
+.ops-alert{
+  padding:12px;border:1px solid #ead9ac;background:#fff8e7;
+  border-radius:10px;margin-bottom:8px
+}
+.ops-alert strong,.ops-alert small{display:block}
+.ops-alert small{color:#7a6a43;margin-top:4px;line-height:1.4}
+.ops-empty{padding:20px 6px;color:#888;text-align:center}
+.admin-filter-bar{
+  display:flex;gap:8px;align-items:center;margin-bottom:10px
+}
+.admin-search{
+  width:100%;padding:11px 12px;border:1px solid #ddd;border-radius:9px;
+  background:#fff;font:inherit
+}
+.admin-select{max-width:210px}
+.plan-admin-summary.grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:900px){
+  .ops-grid{grid-template-columns:1fr}
+  .ops-metrics{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:620px){
+  .ops-metrics{grid-template-columns:1fr 1fr}
+  .admin-filter-bar{align-items:stretch;flex-direction:column}
+  .admin-select{max-width:none}
+}
+
+/* ===== FASE 5.4.2 — GESTÃO DE CLIENTES ===== */
+.client-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.detail-profile .profile-item:first-child{border-top:0}
+.client-credit-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
+.client-credit-summary>div{padding:13px;background:#f7f7f7;border:1px solid #eee;border-radius:10px}
+.client-credit-summary span{display:block;color:#777;font-size:.7rem}
+.client-credit-summary strong{display:block;font-size:1.25rem;margin-top:4px}
+.back-link{display:inline-block;margin-bottom:6px;color:#8c6815;text-decoration:none;font-size:.82rem;font-weight:800}
+.client-detail-link{display:block;margin-top:4px;color:#9a7117;text-decoration:none;font-size:.72rem;font-weight:900}
+.clickable-row{transition:.15s}
+.clickable-row:hover{background:#fffaf0}
+@media(max-width:800px){.client-detail-grid{grid-template-columns:1fr}}
+@media(max-width:520px){.client-credit-summary{grid-template-columns:1fr}}
+
+/* Fix 5.4.2 — link de ficha visível */
+.client-detail-link{
+  display:inline-flex;
+  margin-top:5px;
+  padding:4px 8px;
+  border-radius:7px;
+  background:#fff6dc;
+  color:#8a620b;
+  font-size:.72rem;
+  font-weight:900;
+  text-decoration:none;
+}
+.client-detail-link:hover{background:#f3e2ac}
+
+/* ===== FASE 5.4.3 — AGENDA ADMINISTRATIVA ===== */
+.admin-agenda-section{margin-bottom:30px}
+.agenda-title{align-items:center}
+.agenda-title-actions{display:flex;gap:7px;flex-wrap:wrap}
+.agenda-toolbar{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;padding:14px;box-shadow:none}
+.agenda-date-nav{display:flex;align-items:flex-end;gap:7px}
+.agenda-date-field span{display:block;margin-bottom:5px;color:#777;font-size:.68rem;font-weight:900;text-transform:uppercase}
+.agenda-date-field input{min-width:165px;padding:10px 11px;border:1px solid #ddd;border-radius:9px;background:#fff;font:inherit}
+.agenda-nav-btn{padding:10px 13px}
+.agenda-filters{display:flex;gap:8px;flex:1;justify-content:flex-end}
+.agenda-filters .admin-search{max-width:300px}
+.agenda-filters .admin-select{max-width:190px}
+.agenda-day-summary{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:13px 3px 9px}
+.agenda-day-summary strong,.agenda-day-summary span{display:block}
+.agenda-day-summary>div:first-child span{font-size:.75rem;color:#888;margin-top:2px}
+.agenda-mini-stats{display:flex;gap:7px}
+.agenda-mini-stats span{padding:6px 9px;background:#f5f5f5;border-radius:8px;font-size:.72rem;color:#666}
+.agenda-mini-stats b{display:inline;color:#222}
+.agenda-timeline{display:flex;flex-direction:column;gap:8px}
+.agenda-item{display:grid;grid-template-columns:70px minmax(0,1fr) auto;gap:14px;align-items:center;padding:14px 16px;box-shadow:none;border-left:4px solid #ddd}
+.agenda-item.status-pending{border-left-color:#d8aa38}.agenda-item.status-confirmed{border-left-color:#4774a8}
+.agenda-item.status-completed{border-left-color:#4f8a5e}.agenda-item.status-cancelled{border-left-color:#b95b5b;opacity:.72}
+.agenda-item.status-no_show{border-left-color:#777;opacity:.78}
+.agenda-item-time{font-size:1.08rem;font-weight:1000;color:#8d6813}
+.agenda-item-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.agenda-item-head strong{display:block}.agenda-item-head>div>span{display:block;color:#777;font-size:.8rem;margin-top:2px}
+.agenda-item-meta{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+.agenda-billing,.agenda-note{display:inline-flex;padding:5px 7px;border-radius:7px;font-size:.68rem}
+.agenda-billing.plan{background:#edf6e8;color:#387048}.agenda-billing.avulso{background:#f3f3f3;color:#666}
+.agenda-note{background:#fff7df;color:#745a1d}
+.agenda-item-controls{text-align:right;min-width:210px}.agenda-actions{display:flex;justify-content:flex-end;gap:5px;flex-wrap:wrap}
+.agenda-client-link{margin-top:6px}.agenda-empty{text-align:center;padding:32px 18px;box-shadow:none}
+.agenda-empty strong,.agenda-empty span{display:block}.agenda-empty span{margin-top:5px;color:#888;font-size:.8rem}
+@media(max-width:900px){
+ .agenda-toolbar{align-items:stretch;flex-direction:column}.agenda-filters{justify-content:stretch}
+ .agenda-filters .admin-search,.agenda-filters .admin-select{max-width:none}
+ .agenda-item{grid-template-columns:58px minmax(0,1fr)}.agenda-item-controls{grid-column:2;text-align:left;min-width:0}
+ .agenda-actions{justify-content:flex-start}
+}
+@media(max-width:620px){
+ .agenda-title{align-items:flex-start;flex-direction:column}.agenda-date-nav{display:grid;grid-template-columns:auto 1fr auto}
+ .agenda-date-field input{width:100%;min-width:0}.agenda-filters{flex-direction:column}
+ .agenda-day-summary{align-items:flex-start;flex-direction:column}.agenda-item{grid-template-columns:1fr}
+ .agenda-item-controls{grid-column:auto}
+}
+
+
+/* Hotfix 5.4.3 */
+.loading.off{
+  opacity:0 !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+}

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Recuperar senha | Studio JM</title>
+<link rel="stylesheet" href="./app.css">
+</head>
+<body>
+<div class="auth-page">
+<section class="auth-visual">
+  <div class="auth-copy">
+    <small>STUDIO JM</small>
+    <h1>Recupere<br>sua conta.</h1>
+    <p>Informe o e-mail cadastrado e enviaremos um link seguro para criar uma nova senha.</p>
+  </div>
+</section>
+<section class="auth-panel">
+  <div class="auth-card">
+    <div class="brand-mini">
+      <img src="../img/brand/logo.jpg" alt="Studio JM">
+      <div><strong>STUDIO JM</strong><span>Recuperação de senha</span></div>
+    </div>
+    <h2>Esqueci minha senha</h2>
+    <p>O link será enviado para o e-mail cadastrado.</p>
+    <form id="forgotForm" class="form-grid">
+      <label>E-mail<input id="email" type="email" autocomplete="email" required></label>
+      <div id="message" class="form-message"></div>
+      <button class="btn btn-gold" type="submit">Enviar link de recuperação</button>
+    </form>
+    <div class="auth-links">
+      <a href="./login.html">Voltar para entrar</a><br>
+      <a href="../index.html">← Voltar para o site</a>
+    </div>
+  </div>
+</section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./config.js"></script>
+<script src="./common.js"></script>
+<script>
+document.getElementById("forgotForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const emailInput = document.getElementById("email");
+  const button = e.submitter;
+  button.disabled = true;
+  button.textContent = "Enviando...";
+
+  try {
+    const redirectTo = new URL("./redefinir-senha.html", window.location.href).href;
+
+    const { error } = await sb.auth.resetPasswordForEmail(
+      emailInput.value.trim(),
+      { redirectTo }
+    );
+
+    if (error) {
+      const msg = (error.message || "").toLowerCase();
+      if (msg.includes("rate limit")) {
+        return showMessage("message", "Muitas solicitações em pouco tempo. Aguarde alguns minutos e tente novamente.");
+      }
+      return showMessage("message", error.message);
+    }
+
+    showMessage(
+      "message",
+      "E-mail enviado! Verifique sua caixa de entrada e clique no link para criar uma nova senha.",
+      "success"
+    );
+  } catch (err) {
+    console.error(err);
+    showMessage("message", "Não foi possível enviar o e-mail agora. Tente novamente.");
+  } finally {
+    button.disabled = false;
+    button.textContent = "Enviar link de recuperação";
+  }
+});
+</script>
+</body>
+</html>

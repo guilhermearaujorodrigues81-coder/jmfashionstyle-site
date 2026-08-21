@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin | Studio JM</title>
+<link rel="stylesheet" href="./app.css">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.20/index.global.min.js"></script>
+</head>
+<body>
+<div id="loading" class="loading"><div><div class="spinner"></div>Verificando permissões...</div></div>
+
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <img src="../img/brand/logo.jpg" alt="Studio JM">
+      <div><strong>STUDIO JM</strong><small>Administração</small></div>
+    </div>
+
+    <nav class="nav-list">
+      <a class="active" href="#agenda">▦ Agenda</a>
+      <a href="#clientes">♙ Clientes</a>
+      <a href="#planos-clientes">◆ Planos</a>
+      <a href="../index.html">← Site Studio JM</a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button data-logout>⇥ Sair</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <button class="btn btn-dark mobile-menu">☰</button>
+        <h1>Agenda Studio JM</h1>
+        <p>Cristiano • terça a sábado • 09h às 19h</p>
+      </div>
+      <div class="user-chip">
+        <span class="avatar">A</span>
+        <span>Administrador</span>
+      </div>
+    </div>
+<section id="agenda" class="admin-agenda-section">
+      <div class="section-title agenda-title">
+        <div>
+          <h2>Agenda</h2>
+          <p class="section-subtitle">Gerencie o dia de forma rápida e objetiva.</p>
+        </div>
+        <div class="agenda-title-actions">
+          <button type="button" class="btn btn-light" id="newBlock">Bloquear horário</button>
+          <button type="button" class="btn btn-gold" id="agendaTodayBtn543">Hoje</button>
+        </div>
+      </div>
+
+      <div class="agenda-toolbar card">
+        <div class="agenda-date-nav">
+          <button type="button" class="btn btn-light agenda-nav-btn" id="agendaPrevDay543">←</button>
+          <label class="agenda-date-field">
+            <span>Data</span>
+            <input type="date" id="agendaDate543">
+          </label>
+          <button type="button" class="btn btn-light agenda-nav-btn" id="agendaNextDay543">→</button>
+        </div>
+        <div class="agenda-filters">
+          <input type="search" id="agendaSearch543" class="admin-search" placeholder="Buscar cliente ou serviço">
+          <select id="agendaStatus543" class="admin-search admin-select">
+            <option value="">Todos os status</option>
+            <option value="pending">Pendentes</option>
+            <option value="confirmed">Confirmados</option>
+            <option value="completed">Concluídos</option>
+            <option value="cancelled">Cancelados</option>
+            <option value="no_show">Faltas</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="agenda-day-summary">
+        <div><strong id="agendaDayLabel543">—</strong><span id="agendaDayCount543">0 atendimentos</span></div>
+        <div class="agenda-mini-stats">
+          <span><b id="agendaPendingCount543">0</b> pendentes</span>
+          <span><b id="agendaConfirmedCount543">0</b> confirmados</span>
+        </div>
+      </div>
+
+      <div id="agendaTimeline543" class="agenda-timeline"></div>
+    </section>
+
+    <div class="section-title" id="clientes">
+      <h2>Clientes</h2>
+      <input id="search" placeholder="Buscar por nome, e-mail ou WhatsApp" style="max-width:340px">
+    </div>
+
+    <div class="admin-filter-bar">
+      <input id="clientSearch534" class="admin-search" type="search" placeholder="Buscar cliente por nome, e-mail ou telefone">
+    </div>
+    <div class="card table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>E-mail</th>
+            <th>WhatsApp</th>
+            <th>Perfil</th>
+            <th>Cadastrado em</th>
+          </tr>
+        </thead>
+        <tbody id="clientsBody"></tbody>
+      </table>
+    </div>
+<div class="section-title" id="planos-clientes"><h2>Planos dos clientes</h2></div>
+
+    <section class="grid grid-2 plan-admin-summary" id="planSummary534">
+      <div class="card metric-card">
+        <span class="metric-label">Planos ativos</span>
+        <div class="metric-value" id="adminActivePlans">0</div>
+      </div>
+      
+      <div class="card metric-card">
+        <span class="metric-label">Suspensos</span>
+        <div class="metric-value" id="adminSuspendedPlans">0</div>
+      </div>
+      
+    </section>
+
+    <div class="admin-filter-bar">
+      <input id="planSearch534" class="admin-search" type="search" placeholder="Buscar assinante ou plano">
+      <select id="planStatusFilter534" class="admin-search admin-select">
+        <option value="">Todos os status</option>
+        <option value="active">Ativos</option>
+        <option value="pending">Aguardando ativação</option>
+        <option value="suspended">Suspensos</option>
+        <option value="cancelled">Cancelados</option>
+        <option value="expired">Expirados</option>
+      </select>
+    </div>
+    <div class="card table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th>Plano</th>
+            <th>Valor</th>
+            <th>Status</th>
+            <th>Créditos</th>
+            <th>Validade</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="subscriptionsBody"></tbody>
+      </table>
+    </div>
+
+<div class="section-title"><h2>Modelo de permissões</h2></div>
+
+    <section class="grid grid-2">
+      <div class="card">
+        <h2>Cliente</h2>
+        <div class="permissions-box">
+          <div class="permission"><strong>✓ Próprio perfil</strong><small>Pode consultar e editar nome e telefone.</small></div>
+          <div class="permission"><strong>✕ Outros clientes</strong><small>Não tem acesso.</small></div>
+          <div class="permission"><strong>✕ Administração</strong><small>Não consegue abrir o painel administrativo.</small></div>
+        </div>
+      </div>
+
+      <div class="card dark">
+        <h2>Administrador</h2>
+        <div class="permissions-box">
+          <div class="permission"><strong>✓ Base de clientes</strong><small>Consulta todos os perfis cadastrados.</small></div>
+          <div class="permission"><strong>✓ Gestão</strong><small>Permissão preparada para as próximas fases.</small></div>
+          <div class="permission"><strong>✓ Auditoria futura</strong><small>A estrutura será ampliada sem expor dados entre clientes.</small></div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+
+<div class="modal" id="agendaModal">
+  <div class="modal-card">
+    <div class="modal-head"><h2 id="agendaModalTitle">Agenda</h2><button class="icon-button" id="closeAgendaModal">×</button></div>
+    <div id="agendaModalBody"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./config.js"></script>
+<script src="./common.js"></script>
+<script src="./admin.js"></script>
+</body>
+</html>
