@@ -549,18 +549,43 @@ function renderAgenda543(){
   }).join("");
 }
 async function loadAgenda543(){
-  const input=document.getElementById("agendaDate543"); if(!input)return;
-  const key=input.value||agendaLocalDate543(); input.value=key;
-  agendaDayLabel543.textContent=agendaPretty543(key);
-  const {start,end}=agendaRange543(key);
-  const {data,error}=await sb.from("appointments")
-    .select("*,profiles(full_name,phone),services(name)")
-    .gte("starts_at",start).lte("starts_at",end).order("starts_at",{ascending:true});
-  if(error){
-    agendaTimeline543.innerHTML=`<div class="card agenda-empty"><strong>Erro ao carregar agenda</strong><span>${error.message}</span></div>`;
-    return;
+  const input=document.getElementById("agendaDate543");
+  if(!input)return;
+
+  try{
+    const key=input.value||agendaLocalDate543();
+    input.value=key;
+
+    const dayLabel=document.getElementById("agendaDayLabel543");
+    if(dayLabel) dayLabel.textContent=agendaPretty543(key);
+
+    const {start,end}=agendaRange543(key);
+
+    const {data,error}=await sb.from("appointments")
+      .select("*,profiles(full_name,phone),services(name)")
+      .gte("starts_at",start)
+      .lte("starts_at",end)
+      .order("starts_at",{ascending:true});
+
+    if(error) throw error;
+
+    agendaRows543=data||[];
+    renderAgenda543();
+
+  }catch(error){
+    console.error("Erro ao carregar agenda:",error);
+
+    const timeline=document.getElementById("agendaTimeline543");
+    if(timeline){
+      timeline.innerHTML=`
+        <div class="card agenda-empty">
+          <strong>Não foi possível carregar a agenda.</strong>
+          <span>${error?.message||"Tente atualizar a página."}</span>
+        </div>`;
+    }
+  }finally{
+    releaseAdminLoading543();
   }
-  agendaRows543=data||[]; renderAgenda543();
 }
 async function agendaSetStatus543(id,status){
   const label={confirmed:"confirmar",completed:"concluir",cancelled:"cancelar",no_show:"registrar falta neste"}[status]||"alterar";
@@ -570,21 +595,98 @@ async function agendaSetStatus543(id,status){
   await loadAgenda543();
 }
 function agendaMove543(delta){
-  const input=agendaDate543;
+  const input=document.getElementById("agendaDate543");
+  if(!input)return;
+
   const d=new Date(`${input.value||agendaLocalDate543()}T12:00:00-03:00`);
   d.setDate(d.getDate()+delta);
-  input.value=agendaLocalDate543(d); loadAgenda543();
+  input.value=agendaLocalDate543(d);
+  loadAgenda543();
 }
 document.addEventListener("DOMContentLoaded",()=>{
   setTimeout(()=>{
-    if(!document.getElementById("agendaDate543"))return;
-    agendaDate543.value=agendaLocalDate543();
-    loadAgenda543();
-    agendaDate543.addEventListener("change",loadAgenda543);
-    agendaSearch543.addEventListener("input",renderAgenda543);
-    agendaStatus543.addEventListener("change",renderAgenda543);
-    agendaPrevDay543.addEventListener("click",()=>agendaMove543(-1));
-    agendaNextDay543.addEventListener("click",()=>agendaMove543(1));
-    agendaTodayBtn543.addEventListener("click",()=>{agendaDate543.value=agendaLocalDate543();loadAgenda543()});
-  },800);
+    const date=document.getElementById("agendaDate543");
+    if(!date){
+      releaseAdminLoading543();
+      return;
+    }
+
+    const search=document.getElementById("agendaSearch543");
+    const status=document.getElementById("agendaStatus543");
+    const prev=document.getElementById("agendaPrevDay543");
+    const next=document.getElementById("agendaNextDay543");
+    const today=document.getElementById("agendaTodayBtn543");
+
+    date.value=agendaLocalDate543();
+
+    loadAgenda543()
+      .catch(err=>console.error(err))
+      .finally(releaseAdminLoading543);
+
+    date.addEventListener("change",loadAgenda543);
+    search?.addEventListener("input",renderAgenda543);
+    status?.addEventListener("change",renderAgenda543);
+    prev?.addEventListener("click",()=>agendaMove543(-1));
+    next?.addEventListener("click",()=>agendaMove543(1));
+    today?.addEventListener("click",()=>{
+      date.value=agendaLocalDate543();
+      loadAgenda543();
+    });
+  },500);
+});
+
+
+/* ===== HOTFIX 5.4.3 — LIBERAÇÃO DO OVERLAY ===== */
+function releaseAdminLoading543(){
+  const loadingEl=document.getElementById("loading");
+  if(loadingEl){
+    loadingEl.classList.add("off");
+    loadingEl.style.pointerEvents="none";
+    setTimeout(()=>{ loadingEl.style.display="none"; },250);
+  }
+
+  const shell=document.getElementById("adminShell")
+    || document.querySelector(".app-shell");
+
+  if(shell){
+    shell.classList.remove("hidden");
+  }
+}
+
+/* Garante que o Admin nunca fique preso em "Verificando permissões..." */
+document.addEventListener("DOMContentLoaded",()=>{
+  let attempts=0;
+
+  const watchdog=setInterval(async()=>{
+    attempts++;
+
+    try{
+      const {data:{session}}=await sb.auth.getSession();
+
+      if(session){
+        const {data:profile}=await sb
+          .from("profiles")
+          .select("role")
+          .eq("id",session.user.id)
+          .maybeSingle();
+
+        if(profile?.role==="admin"){
+          clearInterval(watchdog);
+          releaseAdminLoading543();
+          return;
+        }
+      }
+    }catch(err){
+      console.warn("Hotfix loading:",err);
+    }
+
+    /* depois de ~4s não deixamos o overlay bloquear a interface */
+    if(attempts>=20){
+      clearInterval(watchdog);
+      releaseAdminLoading543();
+    }
+  },200);
+
+  /* fallback absoluto */
+  setTimeout(releaseAdminLoading543,5000);
 });

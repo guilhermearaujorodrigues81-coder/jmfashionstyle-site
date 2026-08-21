@@ -176,3 +176,71 @@ Implementado:
 - Cliente pode cancelar solicitação pendente
 - Painel admin exibe planos selecionados pelos clientes
 - Estrutura preparada para ciclos, créditos, validade e pagamentos
+
+
+## Fase 5.3.3 — Créditos integrados à agenda
+
+- Corte = 1 crédito
+- Barba = 1 crédito
+- Corte + Barba = 2 créditos
+- Corte Infantil = 1 crédito
+- Outros = avulso
+- Bronze cobre Corte
+- Prata, Ouro e Family VIP cobrem Corte, Barba, Corte + Barba e Corte Infantil
+- Agendamento reserva créditos sem descontar
+- Cancelamento libera a reserva
+- Conclusão pelo admin desconta créditos
+- Extrato de créditos no painel do cliente
+- Serviços sem cobertura/saldo seguem como avulso
+- Saldo disponível considera créditos já reservados
+
+
+## Fase 5.3.4 — Acabamento da experiência de planos
+
+- Painel de plano reorganizado e menos poluído
+- Créditos disponíveis separados dos créditos reservados
+- Saldo total do ciclo e progresso de consumo
+- Benefícios do plano em destaque
+- Validade e status mais claros
+- Avisos para plano pendente, suspenso, sem saldo e ciclo próximo do fim
+- Atalhos para agendamento e extrato
+- Resumo administrativo com ativos, pendentes, suspensos e créditos em aberto
+
+
+## Fase 5.4.1 — Gestão operacional
+
+- Visão geral administrativa
+- Atendimentos de hoje
+- Próximos 7 dias
+- Total de clientes cadastrados
+- Planos ativos
+- Agenda do dia em destaque
+- Área de atenção operacional
+- Busca de clientes
+- Busca e filtro de assinantes
+- Removidos do resumo de planos: "Aguardando ativação" e "Créditos em aberto"
+- Solicitações pendentes continuam disponíveis na gestão de planos
+
+## Fase 5.4.2 — Gestão de Clientes
+
+- Ficha individual de cliente
+- Dados cadastrais
+- Plano, status, validade e saldo
+- Créditos disponíveis, reservados e saldo do ciclo
+- Próximos agendamentos
+- Histórico de atendimentos
+- Extrato de créditos
+- Acesso "Ver ficha" na base de clientes
+
+## Fase 5.4.3 — Agenda administrativa refinada
+
+- Visão Geral removida para deixar o Admin mais limpo
+- Admin focado em Agenda, Clientes e Planos
+- Agenda diária simples e operacional
+- Navegação por dia e botão Hoje
+- Busca por cliente/serviço e filtro por status
+- Contadores de pendentes e confirmados
+- Plano x avulso visível
+- Ações rápidas: Confirmar, Concluir, Falta e Cancelar
+- Bloqueio de horário preservado
+- Link direto para a ficha do cliente

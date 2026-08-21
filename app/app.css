@@ -593,3 +593,11 @@ html{scroll-behavior:smooth}
  .agenda-day-summary{align-items:flex-start;flex-direction:column}.agenda-item{grid-template-columns:1fr}
  .agenda-item-controls{grid-column:auto}
 }
+
+
+/* Hotfix 5.4.3 */
+.loading.off{
+  opacity:0 !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+}
