@@ -92,6 +92,58 @@
         </div>
       </div>
     </section>
+
+    <div class="section-title" id="agenda"><h2>Agendar atendimento</h2></div>
+
+    <section class="booking-layout">
+      <div class="card">
+        <h2>1. Escolha o serviço</h2>
+        <p style="color:#777;margin:6px 0 14px">Profissional: <strong>Cristiano — Barbeiro</strong></p>
+        <div id="serviceList" class="service-list"></div>
+      </div>
+
+      <div class="card">
+        <h2>2. Escolha a data</h2>
+        <label style="margin-top:12px">
+          Data
+          <input id="bookingDate" type="date">
+        </label>
+        <div class="calendar-note">
+          Atendimento de terça a sábado, das 09h às 19h. Domingo e segunda são fechados.
+        </div>
+
+        <h2 style="margin-top:20px">3. Escolha o horário</h2>
+        <div id="slotGrid" class="slot-grid"></div>
+
+        <label style="margin-top:16px">
+          Observações
+          <textarea id="bookingNotes" rows="3" placeholder="Opcional"></textarea>
+        </label>
+
+        <button id="bookButton" class="btn btn-gold" style="margin-top:14px" disabled>
+          Solicitar agendamento
+        </button>
+        <div id="bookingMessage" class="form-message" style="margin-top:10px"></div>
+      </div>
+    </section>
+
+    <div class="section-title"><h2>Meus agendamentos</h2></div>
+
+    <div class="card table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Serviço</th>
+            <th>Profissional</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="appointmentsBody"></tbody>
+      </table>
+    </div>
+
   </main>
 </div>
 

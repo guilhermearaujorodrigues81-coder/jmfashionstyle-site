@@ -92,3 +92,16 @@ document.addEventListener("click",async e=>{
     document.querySelector(".sidebar")?.classList.toggle("open");
   }
 });
+
+function statusLabel(status){
+  return {
+    pending:"Aguardando",
+    confirmed:"Confirmado",
+    completed:"Concluído",
+    cancelled:"Cancelado",
+    no_show:"Não compareceu"
+  }[status] || status;
+}
+function statusBadge(status){
+  return `<span class="badge badge-${status}">${statusLabel(status)}</span>`;
+}
