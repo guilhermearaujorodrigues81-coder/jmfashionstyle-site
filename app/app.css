@@ -519,3 +519,17 @@ html{scroll-behavior:smooth}
   .admin-filter-bar{align-items:stretch;flex-direction:column}
   .admin-select{max-width:none}
 }
+
+/* ===== FASE 5.4.2 — GESTÃO DE CLIENTES ===== */
+.client-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.detail-profile .profile-item:first-child{border-top:0}
+.client-credit-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
+.client-credit-summary>div{padding:13px;background:#f7f7f7;border:1px solid #eee;border-radius:10px}
+.client-credit-summary span{display:block;color:#777;font-size:.7rem}
+.client-credit-summary strong{display:block;font-size:1.25rem;margin-top:4px}
+.back-link{display:inline-block;margin-bottom:6px;color:#8c6815;text-decoration:none;font-size:.82rem;font-weight:800}
+.client-detail-link{display:block;margin-top:4px;color:#9a7117;text-decoration:none;font-size:.72rem;font-weight:900}
+.clickable-row{transition:.15s}
+.clickable-row:hover{background:#fffaf0}
+@media(max-width:800px){.client-detail-grid{grid-template-columns:1fr}}
+@media(max-width:520px){.client-credit-summary{grid-template-columns:1fr}}
