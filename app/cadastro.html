@@ -86,10 +86,6 @@ document.getElementById("signupForm").addEventListener("submit", async (e) => {
     return showMessage("message", "As senhas não são iguais.");
   }
 
-  if (!configured) {
-    return showMessage("message", "Primeiro precisamos conectar o projeto ao Supabase.");
-  }
-
   button.disabled = true;
   button.textContent = "Criando conta...";
 
@@ -106,23 +102,22 @@ document.getElementById("signupForm").addEventListener("submit", async (e) => {
     });
 
     if (error) {
+      const msg = (error.message || "").toLowerCase();
+      if (msg.includes("rate limit")) {
+        return showMessage("message", "Muitas tentativas em pouco tempo. Aguarde alguns minutos e tente novamente.");
+      }
       return showMessage("message", error.message);
     }
 
     form.reset();
-
     showMessage(
       "message",
-      "Cadastro criado com sucesso! Agora você já pode entrar na sua conta.",
+      "Cadastro realizado! Enviamos um e-mail de confirmação. Abra sua caixa de entrada e confirme o cadastro antes de tentar entrar na sua conta Studio JM.",
       "success"
     );
   } catch (err) {
-    console.error("Erro ao criar cadastro:", err);
-    showMessage(
-      "message",
-      "Não foi possível concluir o cadastro. Tente novamente.",
-      "error"
-    );
+    console.error(err);
+    showMessage("message", "Não foi possível concluir o cadastro. Tente novamente.");
   } finally {
     button.disabled = false;
     button.textContent = "Criar minha conta";

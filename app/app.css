@@ -242,3 +242,7 @@ th{font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:#777}
   .mobile-menu{display:inline-flex}
   .grid-3,.grid-2,.form-row{grid-template-columns:1fr}
 }
+
+/* Fase 5.1.1 */
+.auth-card .btn:disabled{opacity:.65;cursor:not-allowed;transform:none}
+.auth-card .form-message{line-height:1.55}
