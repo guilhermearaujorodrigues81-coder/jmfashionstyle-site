@@ -2,7 +2,7 @@
 const WHATSAPP="5511954773332";
 
 window.addEventListener("scroll",()=>{
-  document.querySelector(".nav").classList.toggle("scrolled",window.scrollY>40);
+  document.querySelector(".nav")?.classList.toggle("scrolled",window.scrollY>40);
 });
 
 document.getElementById("menuButton").addEventListener("click",()=>{
@@ -32,9 +32,16 @@ document.getElementById("closeModal").addEventListener("click",()=>modal.classLi
 modal.addEventListener("click",event=>{if(event.target===modal)modal.classList.remove("open")});
 
 document.querySelectorAll(".plan-button").forEach(button=>{
-  button.addEventListener("click",()=>{
-    const msg=encodeURIComponent(`Olá! Tenho interesse no Plano ${button.dataset.plan} do Studio JM.`);
-    window.open(`https://wa.me/${WHATSAPP}?text=${msg}`,"_blank");
+  button.addEventListener("click",event=>{
+    event.preventDefault();
+    const slugs={
+      "Bronze":"bronze",
+      "Prata":"prata",
+      "Ouro":"ouro",
+      "Family VIP":"family-vip"
+    };
+    const slug=button.dataset.planSlug || slugs[button.dataset.plan];
+    if(slug) window.location.href=`./app/selecionar-plano.html?plan=${encodeURIComponent(slug)}`;
   });
 });
 
@@ -43,35 +50,26 @@ document.getElementById("prevGallery").addEventListener("click",()=>gallery.scro
 document.getElementById("nextGallery").addEventListener("click",()=>gallery.scrollBy({left:340,behavior:"smooth"}));
 
 const serviceSelect=document.getElementById("service");
-Object.values(window.STUDIO_SERVICES).forEach(category=>{
-  category.items.forEach(item=>{
-    const option=document.createElement("option");
-    option.value=`${item[0]} — ${item[1]}`;
-    option.textContent=`${category.title}: ${item[0]} — ${item[1]}`;
-    serviceSelect.appendChild(option);
-  });
-});
-
 const dateInput=document.getElementById("date");
-dateInput.min=new Date().toISOString().split("T")[0];
+const legacyBookingForm=document.getElementById("bookingForm");
 
-document.getElementById("bookingForm").addEventListener("submit",event=>{
-  event.preventDefault();
-  const date=dateInput.value.split("-").reverse().join("/");
-  const msg=encodeURIComponent(
-`Olá! Gostaria de solicitar um agendamento no Studio JM.
+if(serviceSelect && dateInput && legacyBookingForm){
+  Object.values(window.STUDIO_SERVICES||{}).forEach(category=>{
+    category.items.forEach(item=>{
+      const option=document.createElement("option");
+      option.value=`${item[0]} — ${item[1]}`;
+      option.textContent=`${category.title}: ${item[0]} — ${item[1]}`;
+      serviceSelect.appendChild(option);
+    });
+  });
 
-Nome: ${document.getElementById("name").value}
-Telefone: ${document.getElementById("phone").value}
-Serviço: ${serviceSelect.value}
-Data: ${date}
-Horário: ${document.getElementById("time").value}
-Observações: ${document.getElementById("notes").value||"Nenhuma"}
+  dateInput.min=new Date().toISOString().split("T")[0];
 
-Por favor, confirme a disponibilidade.`
-  );
-  window.open(`https://wa.me/${WHATSAPP}?text=${msg}`,"_blank");
-});
+  legacyBookingForm.addEventListener("submit",event=>{
+    event.preventDefault();
+    window.location.href="./app/agendar.html";
+  });
+}
 
 const revealObserver=new IntersectionObserver(entries=>{
   entries.forEach(entry=>{
@@ -596,35 +594,4 @@ document.querySelectorAll('a[href="#agendar"], .open-booking').forEach(el=>{
 document.getElementById("bookingSystem")?.addEventListener("click",(e)=>{
   e.preventDefault();
   window.location.href="./app/agendar.html";
-});
-
-/* ===== FASE 5.3.1 — PLANOS DENTRO DO SISTEMA ===== */
-const studioPlanSlugs = {
-  "Bronze":"bronze",
-  "Prata":"prata",
-  "Ouro":"ouro",
-  "Family VIP":"family-vip"
-};
-
-document.addEventListener("click",(e)=>{
-  const btn=e.target.closest(".plan-button");
-  if(btn){
-    e.preventDefault();
-    const slug=btn.dataset.planSlug || studioPlanSlugs[btn.dataset.plan];
-    if(slug){
-      window.location.href=`./app/selecionar-plano.html?plan=${encodeURIComponent(slug)}`;
-    }
-    return;
-  }
-
-  const recommended=e.target.closest("#chooseRecommended");
-  if(recommended){
-    e.preventDefault();
-    const label=(document.getElementById("recommendedPlan")?.textContent||"")
-      .replace("Plano ","").trim();
-    const slug=studioPlanSlugs[label];
-    if(slug){
-      window.location.href=`./app/selecionar-plano.html?plan=${encodeURIComponent(slug)}`;
-    }
-  }
 });
