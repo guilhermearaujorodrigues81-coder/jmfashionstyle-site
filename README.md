@@ -138,3 +138,27 @@ Não incluído nesta fase:
 - "Área do cliente" muda para "Minha conta" ou "Painel Admin"
 - Login redireciona automaticamente usuários já autenticados
 - Base preparada para contratação de planos vinculada à conta autenticada
+
+## Fase 5.2.1 — Agenda
+
+Implementado:
+- Cristiano como profissional único
+- Terça a sábado
+- 09h às 19h
+- Serviços de 1 hora
+- Cliente escolhe serviço, data e horário
+- Horários ocupados ficam indisponíveis
+- Cliente pode cancelar
+- Admin pode confirmar, concluir, cancelar e marcar falta
+- Admin pode criar e remover bloqueios
+- Calendário mensal, semanal e diário estilo Google Agenda
+
+## Fase 5.2.2 — Agenda integrada ao site
+
+- Botões de agendamento do site levam ao sistema interno
+- WhatsApp deixa de ser canal de agendamento
+- WhatsApp permanece como SAC
+- Cliente sem login é levado ao login e retorna para a agenda
+- Cliente logado entra direto na agenda
+- Interface da área do cliente simplificada
+- Interface administrativa com foco na agenda

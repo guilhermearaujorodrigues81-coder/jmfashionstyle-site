@@ -278,3 +278,32 @@ th{font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:#777}
   .booking-layout{grid-template-columns:1fr}
   .slot-grid{grid-template-columns:repeat(3,1fr)}
 }
+
+/* ===== FASE 5.2.2 — INTERFACE LIMPA ===== */
+html{scroll-behavior:smooth}
+.client-welcome{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  margin-bottom:18px;
+}
+.client-welcome h2{font-size:1.65rem;margin:5px 0}
+.client-welcome p{color:#aaa}
+.eyebrow-app{
+  color:var(--gold2);
+  font-size:.7rem;
+  font-weight:1000;
+  letter-spacing:.15em;
+}
+.booking-layout .card{box-shadow:none}
+.booking-layout h2{font-size:1.05rem}
+.service-option{transition:.18s}
+.service-option:hover{border-color:#c9a85b}
+.section-title{margin-top:22px}
+.admin-calendar,.card:has(#calendar){box-shadow:none}
+.nav-list a{font-size:.88rem}
+@media(max-width:700px){
+  .client-welcome{align-items:flex-start;flex-direction:column}
+  .client-welcome .btn{width:100%}
+}

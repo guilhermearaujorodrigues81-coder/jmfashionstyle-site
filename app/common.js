@@ -105,3 +105,15 @@ function statusLabel(status){
 function statusBadge(status){
   return `<span class="badge badge-${status}">${statusLabel(status)}</span>`;
 }
+
+function getReturnTarget(defaultTarget="./cliente.html"){
+  const params=new URLSearchParams(window.location.search);
+  const next=params.get("next");
+  if(!next)return defaultTarget;
+
+  // Allow only same-app relative destinations.
+  if(next.startsWith("./") || next.startsWith("cliente.html") || next.startsWith("agendar.html")){
+    return next.startsWith("./") ? next : `./${next}`;
+  }
+  return defaultTarget;
+}

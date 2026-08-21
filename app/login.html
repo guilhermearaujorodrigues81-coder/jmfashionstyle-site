@@ -62,9 +62,11 @@
     .eq("id", session.user.id)
     .maybeSingle();
 
-  location.href = profile?.role === "admin"
-    ? "./admin.html"
-    : "./cliente.html";
+  if(profile?.role==="admin"){
+    location.href="./admin.html";
+  }else{
+    location.href=getReturnTarget("./cliente.html");
+  }
 })();
 
 document.getElementById("loginForm").addEventListener("submit", async (e) => {
@@ -120,7 +122,11 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
       return showMessage("message", "Login realizado, mas não foi possível carregar o perfil.");
     }
 
-    location.href = profile?.role === "admin" ? "./admin.html" : "./cliente.html";
+    if(profile?.role==="admin"){
+      location.href="./admin.html";
+    }else{
+      location.href=getReturnTarget("./cliente.html");
+    }
   } catch (err) {
     console.error(err);
     showMessage("message", "Não foi possível entrar agora. Tente novamente.");

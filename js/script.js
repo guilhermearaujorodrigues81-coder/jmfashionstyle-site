@@ -571,7 +571,7 @@ document.querySelectorAll(".counter-control button").forEach(button=>{
 
 document.getElementById("chooseRecommended")?.addEventListener("click",()=>{
   const message=encodeURIComponent(`Olá! Tenho interesse no Plano ${currentRecommendedPlan} do Studio JM. Gostaria de receber mais informações.`);
-  window.location.assign(`https://wa.me/${WHATSAPP}?text=${message}`);
+  window.location.assign("./app/agendar.html");
 });
 
 document.querySelectorAll(".faq-item>button").forEach(button=>{
@@ -585,3 +585,15 @@ document.querySelectorAll(".faq-item>button").forEach(button=>{
 });
 
 calculateRecommendedPlan();
+
+/* Fase 5.2.2 — agendamento interno */
+document.querySelectorAll('a[href="#agendar"], .open-booking').forEach(el=>{
+  el.addEventListener("click",(e)=>{
+    e.preventDefault();
+    window.location.href="./app/agendar.html";
+  });
+});
+document.getElementById("bookingSystem")?.addEventListener("click",(e)=>{
+  e.preventDefault();
+  window.location.href="./app/agendar.html";
+});
