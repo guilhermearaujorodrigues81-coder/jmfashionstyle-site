@@ -598,7 +598,6 @@ document.getElementById("bookingSystem")?.addEventListener("click",(e)=>{
   window.location.href="./app/agendar.html";
 });
 
-
 /* ===== FASE 5.3.1 — PLANOS DENTRO DO SISTEMA ===== */
 const studioPlanSlugs = {
   "Bronze":"bronze",
@@ -607,23 +606,25 @@ const studioPlanSlugs = {
   "Family VIP":"family-vip"
 };
 
-document.querySelectorAll(".plan-button").forEach(btn=>{
-  btn.addEventListener("click",(e)=>{
+document.addEventListener("click",(e)=>{
+  const btn=e.target.closest(".plan-button");
+  if(btn){
     e.preventDefault();
-    e.stopImmediatePropagation();
     const slug=btn.dataset.planSlug || studioPlanSlugs[btn.dataset.plan];
-    if(slug) window.location.href=`./app/selecionar-plano.html?plan=${encodeURIComponent(slug)}`;
-  },true);
-});
-
-document.getElementById("chooseRecommended")?.addEventListener("click",(e)=>{
-  e.preventDefault();
-  e.stopImmediatePropagation();
-
-  const label=(document.getElementById("recommendedPlan")?.textContent||"").replace("Plano ","").trim();
-  const slug=studioPlanSlugs[label];
-
-  if(slug){
-    window.location.href=`./app/selecionar-plano.html?plan=${encodeURIComponent(slug)}`;
+    if(slug){
+      window.location.href=`./app/selecionar-plano.html?plan=${encodeURIComponent(slug)}`;
+    }
+    return;
   }
-},true);
+
+  const recommended=e.target.closest("#chooseRecommended");
+  if(recommended){
+    e.preventDefault();
+    const label=(document.getElementById("recommendedPlan")?.textContent||"")
+      .replace("Plano ","").trim();
+    const slug=studioPlanSlugs[label];
+    if(slug){
+      window.location.href=`./app/selecionar-plano.html?plan=${encodeURIComponent(slug)}`;
+    }
+  }
+});
