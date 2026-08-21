@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Criar conta | Studio JM</title>
+<link rel="stylesheet" href="./app.css">
+</head>
+<body>
+<div class="auth-page">
+  <section class="auth-visual">
+    <div class="auth-copy">
+      <small>CADASTRO STUDIO JM</small>
+      <h1>Comece<br>por aqui.</h1>
+      <p>Crie sua conta para centralizar seu relacionamento com a Studio JM.</p>
+    </div>
+  </section>
+
+  <section class="auth-panel">
+    <div class="auth-card">
+      <div class="brand-mini">
+        <img src="../img/brand/logo.jpg" alt="Studio JM">
+        <div><strong>STUDIO JM</strong><span>Novo cliente</span></div>
+      </div>
+
+      <h2>Criar cadastro</h2>
+      <p>Seus dados poderão ser atualizados depois pela sua área.</p>
+
+      <form id="signupForm" class="form-grid">
+        <label>Nome completo
+          <input id="name" autocomplete="name" required maxlength="120">
+        </label>
+
+        <label>WhatsApp
+          <input id="phone" autocomplete="tel" required maxlength="30" placeholder="(11) 99999-9999">
+        </label>
+
+        <label>E-mail
+          <input id="email" type="email" autocomplete="email" required maxlength="180">
+        </label>
+
+        <div class="form-row">
+          <label>Senha
+            <input id="password" type="password" minlength="6" autocomplete="new-password" required>
+          </label>
+          <label>Confirmar senha
+            <input id="confirmPassword" type="password" minlength="6" autocomplete="new-password" required>
+          </label>
+        </div>
+
+        <label>
+          <span style="display:flex;gap:8px;align-items:flex-start;font-weight:500">
+            <input id="terms" type="checkbox" required style="width:auto;margin-top:2px">
+            Confirmo que os dados informados são meus e autorizo seu uso para atendimento e gestão da minha conta Studio JM.
+          </span>
+        </label>
+
+        <div id="message" class="form-message"></div>
+        <button class="btn btn-gold" type="submit">Criar minha conta</button>
+      </form>
+
+      <div class="auth-links">
+        Já possui cadastro? <a href="./login.html">Entrar</a><br>
+        <a href="../index.html">← Voltar para o site</a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./config.js"></script>
+<script src="./common.js"></script>
+<script>
+document.getElementById("signupForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+
+  if(password.value!==confirmPassword.value){
+    return showMessage("message","As senhas não são iguais.");
+  }
+
+  if(!configured){
+    return showMessage("message","Primeiro precisamos conectar o projeto ao Supabase.");
+  }
+
+  const button=e.submitter;
+  button.disabled=true;
+  button.textContent="Criando conta...";
+
+  const {error}=await sb.auth.signUp({
+    email:email.value.trim(),
+    password:password.value,
+    options:{
+      data:{
+        full_name:name.value.trim(),
+        phone:phone.value.trim()
+      }
+    }
+  });
+
+  if(error){
+    button.disabled=false;
+    button.textContent="Criar minha conta";
+    return showMessage("message",error.message);
+  }
+
+  signupForm.reset();
+  button.disabled=false;
+  button.textContent="Criar minha conta";
+  showMessage(
+    "message",
+    "Cadastro criado com sucesso. Se a confirmação por e-mail estiver ativa no Supabase, confirme o e-mail antes de entrar.",
+    "success"
+  );
+});
+</script>
+</body>
+</html>

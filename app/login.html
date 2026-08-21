@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Entrar | Studio JM</title>
+<link rel="stylesheet" href="./app.css">
+</head>
+<body>
+<div class="auth-page">
+  <section class="auth-visual">
+    <div class="auth-copy">
+      <small>STUDIO JM</small>
+      <h1>Sua conta.<br>Seu espaço.</h1>
+      <p>Acesse seus dados e, nas próximas etapas, acompanhe agenda, plano, créditos e pagamentos em um só lugar.</p>
+    </div>
+  </section>
+
+  <section class="auth-panel">
+    <div class="auth-card">
+      <div class="brand-mini">
+        <img src="../img/brand/logo.jpg" alt="Studio JM">
+        <div><strong>STUDIO JM</strong><span>Área do cliente</span></div>
+      </div>
+
+      <h2>Entrar</h2>
+      <p>Use o e-mail cadastrado para acessar sua conta.</p>
+
+      <form id="loginForm" class="form-grid">
+        <label>E-mail
+          <input id="email" type="email" autocomplete="email" required>
+        </label>
+        <label>Senha
+          <input id="password" type="password" autocomplete="current-password" minlength="6" required>
+        </label>
+        <div id="message" class="form-message"></div>
+        <button class="btn btn-gold" type="submit">Entrar</button>
+      </form>
+
+      <div class="auth-links">
+        Ainda não tem conta? <a href="./cadastro.html">Criar cadastro</a><br>
+        <a href="../index.html">← Voltar para o site</a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./config.js"></script>
+<script src="./common.js"></script>
+<script>
+document.getElementById("loginForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+
+  if(!configured){
+    return showMessage("message","Primeiro precisamos conectar o projeto ao Supabase.");
+  }
+
+  const button=e.submitter;
+  button.disabled=true;
+  button.textContent="Entrando...";
+
+  const {data,error}=await sb.auth.signInWithPassword({
+    email:email.value.trim(),
+    password:password.value
+  });
+
+  if(error){
+    button.disabled=false;
+    button.textContent="Entrar";
+    return showMessage("message","E-mail ou senha inválidos.");
+  }
+
+  const {data:profile}=await sb
+    .from("profiles")
+    .select("role")
+    .eq("id",data.user.id)
+    .single();
+
+  location.href=profile?.role==="admin"
+    ? "./admin.html"
+    : "./cliente.html";
+});
+</script>
+</body>
+</html>

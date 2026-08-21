@@ -100,3 +100,31 @@ Hero com vídeos otimizados e agendamento em cinco etapas com confirmação pelo
 - Ver avaliações abre a página de comentários
 - Avaliar a Studio JM abre o link específico de avaliação
 - Agendamento continua usando o calendário interno
+
+## Fase 4.3
+
+- Mantidos os cards principais Bronze, Prata, Ouro e Family VIP
+- Removida somente a segunda comparação em formato de tabela
+
+
+## Fase 5.1 — Base do sistema
+
+Implementado:
+
+- Supabase Auth
+- Cadastro de cliente
+- Login
+- Perfil individual
+- Edição de nome e telefone
+- Perfil `client`
+- Perfil `admin`
+- RLS no banco
+- Bloqueio do painel administrativo para clientes
+- Base administrativa de clientes
+- Busca por nome, e-mail e WhatsApp
+
+Não incluído nesta fase:
+- Agenda
+- Planos e créditos
+- Pagamentos
+- Automação
