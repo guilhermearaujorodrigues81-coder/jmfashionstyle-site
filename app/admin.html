@@ -18,7 +18,6 @@
     </div>
 
     <nav class="nav-list">
-      <a href="#visao-geral">⌂ Visão geral</a>
       <a class="active" href="#agenda">▦ Agenda</a>
       <a href="#clientes">♙ Clientes</a>
       <a href="#planos-clientes">◆ Planos</a>
@@ -42,23 +41,49 @@
         <span>Administrador</span>
       </div>
     </div>
-
-    <section class="grid grid-3">
-      <div class="card">
-        <span class="metric-label">Clientes cadastrados</span>
-        <div class="metric-value" id="clientCount">0</div>
+<section id="agenda" class="admin-agenda-section">
+      <div class="section-title agenda-title">
+        <div>
+          <h2>Agenda</h2>
+          <p class="section-subtitle">Gerencie o dia de forma rápida e objetiva.</p>
+        </div>
+        <div class="agenda-title-actions">
+          <button type="button" class="btn btn-light" id="newBlock">Bloquear horário</button>
+          <button type="button" class="btn btn-gold" id="agendaTodayBtn543">Hoje</button>
+        </div>
       </div>
 
-      <div class="card">
-        <span class="metric-label">Administradores</span>
-        <div class="metric-value" id="adminCount">0</div>
+      <div class="agenda-toolbar card">
+        <div class="agenda-date-nav">
+          <button type="button" class="btn btn-light agenda-nav-btn" id="agendaPrevDay543">←</button>
+          <label class="agenda-date-field">
+            <span>Data</span>
+            <input type="date" id="agendaDate543">
+          </label>
+          <button type="button" class="btn btn-light agenda-nav-btn" id="agendaNextDay543">→</button>
+        </div>
+        <div class="agenda-filters">
+          <input type="search" id="agendaSearch543" class="admin-search" placeholder="Buscar cliente ou serviço">
+          <select id="agendaStatus543" class="admin-search admin-select">
+            <option value="">Todos os status</option>
+            <option value="pending">Pendentes</option>
+            <option value="confirmed">Confirmados</option>
+            <option value="completed">Concluídos</option>
+            <option value="cancelled">Cancelados</option>
+            <option value="no_show">Faltas</option>
+          </select>
+        </div>
       </div>
 
-      <div class="card dark">
-        <span class="metric-label">Segurança</span>
-        <div class="metric-value gold">RLS ativa</div>
-        <small>Controle de acesso no banco</small>
+      <div class="agenda-day-summary">
+        <div><strong id="agendaDayLabel543">—</strong><span id="agendaDayCount543">0 atendimentos</span></div>
+        <div class="agenda-mini-stats">
+          <span><b id="agendaPendingCount543">0</b> pendentes</span>
+          <span><b id="agendaConfirmedCount543">0</b> confirmados</span>
+        </div>
       </div>
+
+      <div id="agendaTimeline543" class="agenda-timeline"></div>
     </section>
 
     <div class="section-title" id="clientes">
@@ -83,61 +108,7 @@
         <tbody id="clientsBody"></tbody>
       </table>
     </div>
-
-    
-    
-    <section class="admin-ops" id="visao-geral">
-      <div class="section-title">
-        <div>
-          <h2>Visão geral</h2>
-          <p class="section-subtitle">Resumo da operação da Studio JM.</p>
-        </div>
-      </div>
-
-      <div class="grid grid-4 ops-metrics">
-        <div class="card metric-card">
-          <span class="metric-label">Atendimentos hoje</span>
-          <div class="metric-value" id="opsTodayAppointments">0</div>
-        </div>
-        <div class="card metric-card">
-          <span class="metric-label">Próximos 7 dias</span>
-          <div class="metric-value" id="opsWeekAppointments">0</div>
-        </div>
-        <div class="card metric-card">
-          <span class="metric-label">Clientes cadastrados</span>
-          <div class="metric-value" id="opsClients">0</div>
-        </div>
-        <div class="card metric-card">
-          <span class="metric-label">Planos ativos</span>
-          <div class="metric-value" id="opsActivePlans">0</div>
-        </div>
-      </div>
-
-      <div class="ops-grid">
-        <div class="card">
-          <div class="section-title compact-title">
-            <div><h2>Agenda de hoje</h2><p class="section-subtitle">Atendimentos do dia em ordem de horário.</p></div>
-            <a class="btn btn-light btn-small" href="#agenda">Abrir agenda</a>
-          </div>
-          <div id="opsTodayList" class="ops-list"></div>
-        </div>
-
-        <div class="card">
-          <div class="section-title compact-title">
-            <div><h2>Atenção</h2><p class="section-subtitle">Itens que podem precisar de ação.</p></div>
-          </div>
-          <div id="opsAttentionList" class="ops-list"></div>
-        </div>
-      </div>
-    </section>
-
-<div class="section-title" id="agenda"><h2>Agenda</h2><button class="btn btn-gold" id="newBlock">Bloquear horário</button></div>
-    <div class="card">
-      <div id="calendar"></div>
-    </div>
-
-
-    <div class="section-title" id="planos-clientes"><h2>Planos dos clientes</h2></div>
+<div class="section-title" id="planos-clientes"><h2>Planos dos clientes</h2></div>
 
     <section class="grid grid-2 plan-admin-summary" id="planSummary534">
       <div class="card metric-card">

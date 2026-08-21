@@ -473,3 +473,118 @@ document.addEventListener("DOMContentLoaded",()=>{
   },900);
 });
 
+
+
+/* ===== FASE 5.4.3 — AGENDA ADMINISTRATIVA ===== */
+let agendaRows543=[];
+
+function agendaLocalDate543(date=new Date()){
+  return new Intl.DateTimeFormat("en-CA",{
+    timeZone:"America/Sao_Paulo",year:"numeric",month:"2-digit",day:"2-digit"
+  }).format(date);
+}
+function agendaRange543(key){
+  return {
+    start:new Date(`${key}T00:00:00-03:00`).toISOString(),
+    end:new Date(`${key}T23:59:59-03:00`).toISOString()
+  };
+}
+function agendaStatus543(s){
+  return {pending:"Pendente",confirmed:"Confirmado",completed:"Concluído",
+    cancelled:"Cancelado",no_show:"Falta"}[s]||s;
+}
+function agendaPretty543(key){
+  const d=new Date(`${key}T12:00:00-03:00`);
+  const t=d.toLocaleDateString("pt-BR",{timeZone:"America/Sao_Paulo",weekday:"long",day:"2-digit",month:"long"});
+  return t.charAt(0).toUpperCase()+t.slice(1);
+}
+function agendaActions543(a){
+  if(["completed","cancelled","no_show"].includes(a.status))return "";
+  const b=[];
+  if(a.status==="pending") b.push(`<button class="btn btn-light btn-small" onclick="agendaSetStatus543('${a.id}','confirmed')">Confirmar</button>`);
+  if(a.status==="confirmed"){
+    b.push(`<button class="btn btn-gold btn-small" onclick="agendaSetStatus543('${a.id}','completed')">Concluir</button>`);
+    b.push(`<button class="btn btn-light btn-small" onclick="agendaSetStatus543('${a.id}','no_show')">Falta</button>`);
+  }
+  b.push(`<button class="btn btn-danger btn-small" onclick="agendaSetStatus543('${a.id}','cancelled')">Cancelar</button>`);
+  return `<div class="agenda-actions">${b.join("")}</div>`;
+}
+function renderAgenda543(){
+  const box=document.getElementById("agendaTimeline543"); if(!box)return;
+  const q=(agendaSearch543?.value||"").trim().toLowerCase();
+  const st=agendaStatus543?.value||"";
+  const rows=agendaRows543.filter(a=>{
+    const text=`${a.profiles?.full_name||""} ${a.services?.name||""}`.toLowerCase();
+    return (!q||text.includes(q))&&(!st||a.status===st);
+  });
+
+  agendaDayCount543.textContent=`${agendaRows543.length} atendimento${agendaRows543.length===1?"":"s"}`;
+  agendaPendingCount543.textContent=agendaRows543.filter(a=>a.status==="pending").length;
+  agendaConfirmedCount543.textContent=agendaRows543.filter(a=>a.status==="confirmed").length;
+
+  if(!rows.length){
+    box.innerHTML=`<div class="card agenda-empty"><strong>Nenhum atendimento encontrado</strong><span>${agendaRows543.length?"Ajuste os filtros para ver outros resultados.":"A agenda está livre nesta data."}</span></div>`;
+    return;
+  }
+
+  box.innerHTML=rows.map(a=>{
+    const time=new Date(a.starts_at).toLocaleTimeString("pt-BR",{timeZone:"America/Sao_Paulo",hour:"2-digit",minute:"2-digit"});
+    const billing=a.billing_mode==="plan"
+      ? `<span class="agenda-billing plan">Plano • ${a.credits_reserved||0} crédito(s)</span>`
+      : `<span class="agenda-billing avulso">Avulso</span>`;
+    return `<article class="card agenda-item status-${a.status}">
+      <div class="agenda-item-time">${time}</div>
+      <div class="agenda-item-main">
+        <div class="agenda-item-head">
+          <div><strong>${a.profiles?.full_name||"Cliente"}</strong><span>${a.services?.name||"Serviço"}</span></div>
+          <span class="badge badge-${a.status}">${agendaStatus543(a.status)}</span>
+        </div>
+        <div class="agenda-item-meta">${billing}${a.notes?`<span class="agenda-note">Obs.: ${a.notes}</span>`:""}</div>
+      </div>
+      <div class="agenda-item-controls">
+        ${agendaActions543(a)}
+        <a class="client-detail-link agenda-client-link" href="./cliente-detalhe.html?id=${a.user_id}">Ver cliente</a>
+      </div>
+    </article>`;
+  }).join("");
+}
+async function loadAgenda543(){
+  const input=document.getElementById("agendaDate543"); if(!input)return;
+  const key=input.value||agendaLocalDate543(); input.value=key;
+  agendaDayLabel543.textContent=agendaPretty543(key);
+  const {start,end}=agendaRange543(key);
+  const {data,error}=await sb.from("appointments")
+    .select("*,profiles(full_name,phone),services(name)")
+    .gte("starts_at",start).lte("starts_at",end).order("starts_at",{ascending:true});
+  if(error){
+    agendaTimeline543.innerHTML=`<div class="card agenda-empty"><strong>Erro ao carregar agenda</strong><span>${error.message}</span></div>`;
+    return;
+  }
+  agendaRows543=data||[]; renderAgenda543();
+}
+async function agendaSetStatus543(id,status){
+  const label={confirmed:"confirmar",completed:"concluir",cancelled:"cancelar",no_show:"registrar falta neste"}[status]||"alterar";
+  if(!confirm(`Deseja ${label} atendimento?`))return;
+  const {error}=await sb.rpc("admin_set_appointment_status",{p_appointment_id:id,p_status:status});
+  if(error){alert(error.message);return}
+  await loadAgenda543();
+}
+function agendaMove543(delta){
+  const input=agendaDate543;
+  const d=new Date(`${input.value||agendaLocalDate543()}T12:00:00-03:00`);
+  d.setDate(d.getDate()+delta);
+  input.value=agendaLocalDate543(d); loadAgenda543();
+}
+document.addEventListener("DOMContentLoaded",()=>{
+  setTimeout(()=>{
+    if(!document.getElementById("agendaDate543"))return;
+    agendaDate543.value=agendaLocalDate543();
+    loadAgenda543();
+    agendaDate543.addEventListener("change",loadAgenda543);
+    agendaSearch543.addEventListener("input",renderAgenda543);
+    agendaStatus543.addEventListener("change",renderAgenda543);
+    agendaPrevDay543.addEventListener("click",()=>agendaMove543(-1));
+    agendaNextDay543.addEventListener("click",()=>agendaMove543(1));
+    agendaTodayBtn543.addEventListener("click",()=>{agendaDate543.value=agendaLocalDate543();loadAgenda543()});
+  },800);
+});
