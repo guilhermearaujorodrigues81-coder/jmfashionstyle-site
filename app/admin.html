@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Admin | Studio JM</title>
 <link rel="stylesheet" href="./app.css">
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.20/index.global.min.js"></script>
 </head>
 <body>
 <div id="loading" class="loading"><div><div class="spinner"></div>Verificando permissões...</div></div>
@@ -87,12 +86,14 @@
     </section>
 
     <div class="section-title" id="clientes">
-      <h2>Clientes</h2>
-      <input id="search" placeholder="Buscar por nome, e-mail ou WhatsApp" style="max-width:340px">
+      <div>
+        <h2>Clientes</h2>
+        <p class="section-subtitle">Consulte cadastros e abra a ficha completa de cada cliente.</p>
+      </div>
     </div>
 
     <div class="admin-filter-bar">
-      <input id="clientSearch534" class="admin-search" type="search" placeholder="Buscar cliente por nome, e-mail ou telefone">
+      <input id="clientSearch534" class="admin-search" type="search" placeholder="Buscar por nome, e-mail ou telefone">
     </div>
     <div class="card table-wrap">
       <table>
@@ -151,28 +152,7 @@
       </table>
     </div>
 
-<div class="section-title"><h2>Modelo de permissões</h2></div>
-
-    <section class="grid grid-2">
-      <div class="card">
-        <h2>Cliente</h2>
-        <div class="permissions-box">
-          <div class="permission"><strong>✓ Próprio perfil</strong><small>Pode consultar e editar nome e telefone.</small></div>
-          <div class="permission"><strong>✕ Outros clientes</strong><small>Não tem acesso.</small></div>
-          <div class="permission"><strong>✕ Administração</strong><small>Não consegue abrir o painel administrativo.</small></div>
-        </div>
-      </div>
-
-      <div class="card dark">
-        <h2>Administrador</h2>
-        <div class="permissions-box">
-          <div class="permission"><strong>✓ Base de clientes</strong><small>Consulta todos os perfis cadastrados.</small></div>
-          <div class="permission"><strong>✓ Gestão</strong><small>Permissão preparada para as próximas fases.</small></div>
-          <div class="permission"><strong>✓ Auditoria futura</strong><small>A estrutura será ampliada sem expor dados entre clientes.</small></div>
-        </div>
-      </div>
-    </section>
-  </main>
+</main>
 </div>
 
 

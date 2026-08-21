@@ -47,238 +47,77 @@ function render(data){
     : '<tr><td colspan="5" class="empty">Nenhum cadastro encontrado.</td></tr>';
 }
 
-document.getElementById("search")?.addEventListener("input",()=>{
-  const el=document.getElementById("search");
-  const q=(el?.value||"").trim().toLowerCase();
-  if(!q)return render(rows);
-  render(rows.filter(p=>
-    (p.full_name||"").toLowerCase().includes(q) ||
-    (p.email||"").toLowerCase().includes(q) ||
-    (p.phone||"").toLowerCase().includes(q)
-  ));
-});
-
-
-/* ===== FASE 5.2 — AGENDA ADMIN ===== */
-let studioCalendar=null;
+/* ===== BLOQUEIO DE HORÁRIO — AGENDA ADMIN ===== */
 let adminCristiano=null;
 
-async function loadAdminAgenda(){
-  const {data:professional}=await sb.from("professionals").select("*").eq("name","Cristiano").single();
-  adminCristiano=professional;
-
-  const {data:appointments}=await sb
-    .from("appointments")
-    .select("*,profiles(full_name,phone),services(name),professionals(name)")
-    .order("starts_at");
-
-  const {data:blocks}=await sb
-    .from("schedule_blocks")
-    .select("*")
-    .eq("professional_id",adminCristiano.id);
-
-  const events=[
-    ...(appointments||[]).map(a=>({
-      id:a.id,
-      title:`${a.profiles?.full_name||"Cliente"} • ${a.services?.name||""}`,
-      start:a.starts_at,
-      end:a.ends_at,
-      color:{
-        pending:"#d29b24",
-        confirmed:"#2c8c4c",
-        completed:"#3970b7",
-        cancelled:"#b84d4d",
-        no_show:"#777"
-      }[a.status],
-      extendedProps:{type:"appointment",data:a}
-    })),
-    ...(blocks||[]).map(b=>({
-      id:b.id,
-      title:`Bloqueado${b.reason?": "+b.reason:""}`,
-      start:b.starts_at,
-      end:b.ends_at,
-      color:"#111",
-      extendedProps:{type:"block",data:b}
-    }))
-  ];
-
-  studioCalendar=new FullCalendar.Calendar(document.getElementById("calendar"),{
-    locale:"pt-br",
-    initialView:"timeGridWeek",
-    firstDay:2,
-    hiddenDays:[0,1],
-    slotMinTime:"09:00:00",
-    slotMaxTime:"19:00:00",
-    allDaySlot:false,
-    height:"auto",
-    headerToolbar:{
-      left:"prev,next today",
-      center:"title",
-      right:"dayGridMonth,timeGridWeek,timeGridDay"
-    },
-    events,
-    businessHours:[{
-      daysOfWeek:[2,3,4,5,6],
-      startTime:"09:00",
-      endTime:"19:00"
-    }],
-    eventClick(info){
-      const p=info.event.extendedProps;
-      if(p.type==="appointment")openAppointmentModal(p.data);
-      else openBlockModal(p.data);
-    }
-  });
-
-  studioCalendar.render();
+async function ensureAdminProfessional544(){
+  if(adminCristiano)return adminCristiano;
+  const {data,error}=await sb.from("professionals").select("*").eq("name","Cristiano").single();
+  if(error)throw error;
+  adminCristiano=data;
+  return data;
 }
 
-function openAppointmentModal(a){
-  agendaModalTitle.textContent="Agendamento";
-  agendaModalBody.innerHTML=`
-    <div class="profile-list">
-      <div class="profile-item"><span>Cliente</span><strong>${a.profiles?.full_name||"—"}</strong></div>
-      <div class="profile-item"><span>WhatsApp</span><strong>${a.profiles?.phone||"—"}</strong></div>
-      <div class="profile-item"><span>Serviço</span><strong>${a.services?.name||"—"}</strong></div>
-      <div class="profile-item"><span>Data</span><strong>${formatDateTime(a.starts_at)}</strong></div>
-      <div class="profile-item"><span>Status</span><strong>${statusBadge(a.status)}</strong></div>
-      <div class="profile-item"><span>Utilização</span><strong>${a.billing_mode==="plan" ? "Plano" : "Avulso"}</strong></div>
-      <div class="profile-item"><span>Créditos</span><strong>${a.billing_mode==="plan" ? `${a.credits_reserved} reservado(s)` : "—"}</strong></div>
-    </div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px">
-      <button class="btn btn-gold" onclick="setAppointmentStatus('${a.id}','confirmed')">Confirmar</button>
-      <button class="btn btn-dark" onclick="setAppointmentStatus('${a.id}','completed')">Concluir</button>
-      <button class="btn btn-danger" onclick="setAppointmentStatus('${a.id}','cancelled')">Cancelar</button>
-      <button class="btn btn-light" onclick="setAppointmentStatus('${a.id}','no_show')">Não compareceu</button>
-    </div>
-  `;
-  agendaModal.classList.add("open");
-}
+document.getElementById("newBlock")?.addEventListener("click",async()=>{
+  try{
+    await ensureAdminProfessional544();
+    const title=document.getElementById("agendaModalTitle");
+    const body=document.getElementById("agendaModalBody");
+    const modal=document.getElementById("agendaModal");
+    if(!title||!body||!modal)return;
 
-async function setAppointmentStatus(id,status){
-  const {error}=await sb.rpc("admin_set_appointment_status",{
-    p_appointment_id:id,
-    p_status:status
-  });
-
-  if(error){
-    alert(error.message);
-    return;
+    title.textContent="Bloquear horário";
+    body.innerHTML=`
+      <form id="blockForm" class="form-grid">
+        <label>Data<input id="blockDate" type="date" required></label>
+        <div class="form-row">
+          <label>Início<input id="blockStart" type="time" required></label>
+          <label>Fim<input id="blockEnd" type="time" required></label>
+        </div>
+        <label>Motivo<input id="blockReason" placeholder="Almoço, compromisso, manutenção..."></label>
+        <button class="btn btn-gold" type="submit">Criar bloqueio</button>
+      </form>`;
+    document.getElementById("blockDate").value=agendaLocalDate543();
+    document.getElementById("blockForm").addEventListener("submit",createBlock544);
+    modal.classList.add("open");
+  }catch(error){
+    alert(error?.message||"Não foi possível preparar o bloqueio.");
   }
-
-  location.reload();
-}
-
-function openBlockModal(b){
-  agendaModalTitle.textContent="Horário bloqueado";
-  agendaModalBody.innerHTML=`
-    <p><strong>${b.reason||"Sem motivo informado"}</strong></p>
-    <p style="margin-top:8px">${formatDateTime(b.starts_at)} até ${formatDateTime(b.ends_at)}</p>
-    <button class="btn btn-danger" style="margin-top:16px" onclick="deleteBlock('${b.id}')">Remover bloqueio</button>
-  `;
-  agendaModal.classList.add("open");
-}
-
-async function deleteBlock(id){
-  const {error}=await sb.from("schedule_blocks").delete().eq("id",id);
-  if(error)return alert(error.message);
-  location.reload();
-}
-
-document.getElementById("newBlock")?.addEventListener("click",()=>{
-  agendaModalTitle.textContent="Bloquear horário";
-  agendaModalBody.innerHTML=`
-    <form id="blockForm" class="form-grid">
-      <label>Data<input id="blockDate" type="date" required></label>
-      <div class="form-row">
-        <label>Início<input id="blockStart" type="time" required></label>
-        <label>Fim<input id="blockEnd" type="time" required></label>
-      </div>
-      <label>Motivo<input id="blockReason" placeholder="Almoço, compromisso, manutenção..."></label>
-      <button class="btn btn-gold" type="submit">Criar bloqueio</button>
-    </form>
-  `;
-
-  document.getElementById("blockForm").addEventListener("submit",createBlock);
-  agendaModal.classList.add("open");
 });
 
-async function createBlock(e){
+async function createBlock544(e){
   e.preventDefault();
+  try{
+    const professional=await ensureAdminProfessional544();
+    const date=document.getElementById("blockDate")?.value;
+    const startValue=document.getElementById("blockStart")?.value;
+    const endValue=document.getElementById("blockEnd")?.value;
+    const reason=document.getElementById("blockReason")?.value.trim()||"";
 
-  const start=new Date(`${blockDate.value}T${blockStart.value}:00-03:00`);
-  const end=new Date(`${blockDate.value}T${blockEnd.value}:00-03:00`);
+    if(!date||!startValue||!endValue)return;
+    const start=new Date(`${date}T${startValue}:00-03:00`);
+    const end=new Date(`${date}T${endValue}:00-03:00`);
+    if(end<=start)return alert("O horário final precisa ser depois do horário inicial.");
 
-  const {error}=await sb.from("schedule_blocks").insert({
-    professional_id:adminCristiano.id,
-    starts_at:start.toISOString(),
-    ends_at:end.toISOString(),
-    reason:blockReason.value.trim()
-  });
+    const {error}=await sb.from("schedule_blocks").insert({
+      professional_id:professional.id,
+      starts_at:start.toISOString(),
+      ends_at:end.toISOString(),
+      reason
+    });
+    if(error)throw error;
 
-  if(error)return alert(error.message);
-  location.reload();
+    document.getElementById("agendaModal")?.classList.remove("open");
+    alert("Horário bloqueado com sucesso.");
+  }catch(error){
+    alert(error?.message||"Não foi possível criar o bloqueio.");
+  }
 }
 
 document.getElementById("closeAgendaModal")?.addEventListener("click",()=>document.getElementById("agendaModal")?.classList.remove("open"));
 document.getElementById("agendaModal")?.addEventListener("click",e=>{
   const modal=document.getElementById("agendaModal");
   if(e.target===modal)modal.classList.remove("open");
-});
-
-document.addEventListener("DOMContentLoaded",()=>{
-  // FullCalendar legado só inicia se a página ainda possuir #calendar.
-  if(!document.getElementById("calendar"))return;
-  const wait=setInterval(()=>{
-    const loading=document.getElementById("loading");
-    if(loading && !loading.classList.contains("off"))return;
-    clearInterval(wait);
-    loadAdminAgenda().catch(err=>console.error("Agenda legada:",err));
-  },200);
-});
-
-
-/* ===== FASE 5.3.1 — PLANOS NO ADMIN ===== */
-async function loadAdminSubscriptions(){
-  const {data,error}=await sb
-    .from("subscriptions")
-    .select("*,profiles(full_name,phone),plans(name,monthly_price)")
-    .order("selected_at",{ascending:false});
-
-  if(error){
-    console.error("Erro ao carregar planos:",error);
-    return;
-  }
-
-  subscriptionsBody.innerHTML=(data||[]).length
-    ? data.map(s=>`
-      <tr>
-        <td><strong>${s.profiles?.full_name||"—"}</strong></td>
-        <td>${s.plans?.name||"—"}</td>
-        <td>${Number(s.plans?.monthly_price||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}</td>
-        <td><span class="badge badge-${s.status}">${subscriptionStatusLabelAdmin(s.status)}</span></td>
-        <td>${formatDateTime(s.selected_at)}</td>
-      </tr>
-    `).join("")
-    : '<tr><td colspan="5" class="empty">Nenhum plano selecionado.</td></tr>';
-}
-
-function subscriptionStatusLabelAdmin(status){
-  return {
-    pending:"Aguardando ativação",
-    active:"Ativo",
-    suspended:"Suspenso",
-    expired:"Expirado",
-    cancelled:"Cancelado"
-  }[status]||status;
-}
-
-document.addEventListener("DOMContentLoaded",()=>{
-  const timer=setInterval(()=>{
-    if(document.getElementById("subscriptionsBody")){
-      clearInterval(timer);
-      loadAdminSubscriptions();
-    }
-  },200);
 });
 
 
@@ -352,99 +191,8 @@ document.addEventListener("DOMContentLoaded",()=>{
 });
 
 
-/* ===== FASE 5.4.1 — GESTÃO OPERACIONAL ===== */
-function localDateKey(date=new Date()){
-  return new Intl.DateTimeFormat("en-CA",{
-    timeZone:"America/Sao_Paulo",
-    year:"numeric",month:"2-digit",day:"2-digit"
-  }).format(date);
-}
-
-function startEndIsoForLocalDate(dateKey){
-  return {
-    start:new Date(`${dateKey}T00:00:00-03:00`).toISOString(),
-    end:new Date(`${dateKey}T23:59:59-03:00`).toISOString()
-  };
-}
-
-async function loadOperationalDashboard541(){
-  const today=localDateKey();
-  const {start,end}=startEndIsoForLocalDate(today);
-  const weekEnd=new Date(new Date(`${today}T00:00:00-03:00`).getTime()+7*86400000).toISOString();
-
-  const [
-    todayRes,
-    weekRes,
-    clientsRes,
-    plansRes,
-    pendingRes
-  ]=await Promise.all([
-    sb.from("appointments")
-      .select("id,starts_at,status,profiles(full_name),services(name)")
-      .gte("starts_at",start).lte("starts_at",end)
-      .neq("status","cancelled")
-      .order("starts_at",{ascending:true}),
-    sb.from("appointments")
-      .select("id",{count:"exact",head:true})
-      .gte("starts_at",new Date().toISOString())
-      .lt("starts_at",weekEnd)
-      .in("status",["pending","confirmed"]),
-    sb.from("profiles").select("id",{count:"exact",head:true}),
-    sb.from("subscriptions").select("id",{count:"exact",head:true}).eq("status","active"),
-    sb.from("subscriptions")
-      .select("id,selected_at,profiles(full_name),plans(name)")
-      .eq("status","pending")
-      .order("selected_at",{ascending:true})
-      .limit(5)
-  ]);
-
-  const todayRows=todayRes.data||[];
-
-  if(document.getElementById("opsTodayAppointments")) opsTodayAppointments.textContent=todayRows.length;
-  if(document.getElementById("opsWeekAppointments")) opsWeekAppointments.textContent=weekRes.count||0;
-  if(document.getElementById("opsClients")) opsClients.textContent=clientsRes.count||0;
-  if(document.getElementById("opsActivePlans")) opsActivePlans.textContent=plansRes.count||0;
-
-  if(document.getElementById("opsTodayList")){
-    opsTodayList.innerHTML=todayRows.length
-      ? todayRows.map(a=>`
-        <div class="ops-row">
-          <div class="ops-time">${new Date(a.starts_at).toLocaleTimeString("pt-BR",{timeZone:"America/Sao_Paulo",hour:"2-digit",minute:"2-digit"})}</div>
-          <div class="ops-row-main">
-            <strong>${a.profiles?.full_name||"Cliente"}</strong>
-            <small>${a.services?.name||"Serviço"}</small>
-          </div>
-          <span class="badge badge-${a.status}">${statusLabel(a.status)}</span>
-        </div>`).join("")
-      : '<div class="ops-empty">Nenhum atendimento agendado para hoje.</div>';
-  }
-
-  if(document.getElementById("opsAttentionList")){
-    const pending=pendingRes.data||[];
-    const pendingAppointments=todayRows.filter(a=>a.status==="pending");
-
-    let items=[];
-    if(pendingAppointments.length){
-      items.push(`<div class="ops-alert"><strong>${pendingAppointments.length} agendamento(s) pendente(s) hoje</strong><small>Confira a agenda e confirme os horários.</small></div>`);
-    }
-    if(pending.length){
-      items.push(`<div class="ops-alert"><strong>${pending.length} plano(s) aguardando ativação</strong><small>Eles continuam visíveis na gestão de planos, sem ocupar um indicador no resumo.</small></div>`);
-    }
-    if(!items.length){
-      items.push('<div class="ops-empty">Nenhuma pendência operacional no momento.</div>');
-    }
-    opsAttentionList.innerHTML=items.join("");
-  }
-}
-
-function statusLabel(s){
-  return {
-    pending:"Pendente",confirmed:"Confirmado",completed:"Concluído",
-    cancelled:"Cancelado",no_show:"Falta"
-  }[s]||s;
-}
-
-function hookAdminFilters541(){
+/* ===== FILTROS DO ADMIN ===== */
+function hookAdminFilters544(){
   const clientSearch=document.getElementById("clientSearch534");
   clientSearch?.addEventListener("input",()=>{
     const q=clientSearch.value.trim().toLowerCase();
@@ -459,29 +207,16 @@ function hookAdminFilters541(){
   function applyPlanFilter(){
     const q=(planSearch?.value||"").trim().toLowerCase();
     const status=planStatus?.value||"";
+    const labels={active:"ativo",pending:"aguardando ativação",suspended:"suspenso",cancelled:"cancelado",expired:"expirado"};
     document.querySelectorAll("#subscriptionsBody tr").forEach(tr=>{
       const text=tr.textContent.toLowerCase();
-      const matchesText=text.includes(q);
-      const statusLabels={
-        active:"ativo",pending:"aguardando ativação",suspended:"suspenso",
-        cancelled:"cancelado",expired:"expirado"
-      };
-      const matchesStatus=!status || text.includes(statusLabels[status]||status);
-      tr.style.display=(matchesText&&matchesStatus)?"":"none";
+      tr.style.display=(text.includes(q)&&(!status||text.includes(labels[status]||status)))?"":"none";
     });
   }
-
   planSearch?.addEventListener("input",applyPlanFilter);
   planStatus?.addEventListener("change",applyPlanFilter);
 }
-
-document.addEventListener("DOMContentLoaded",()=>{
-  setTimeout(()=>{
-    loadOperationalDashboard541();
-    hookAdminFilters541();
-  },900);
-});
-
+document.addEventListener("DOMContentLoaded",hookAdminFilters544);
 
 
 /* ===== FASE 5.4.3 — AGENDA ADMINISTRATIVA ===== */
@@ -520,16 +255,21 @@ function agendaActions543(a){
 }
 function renderAgenda543(){
   const box=document.getElementById("agendaTimeline543"); if(!box)return;
-  const q=(agendaSearch543?.value||"").trim().toLowerCase();
-  const st=agendaStatus543?.value||"";
+  const searchEl=document.getElementById("agendaSearch543");
+  const statusEl=document.getElementById("agendaStatus543");
+  const q=(searchEl?.value||"").trim().toLowerCase();
+  const st=statusEl?.value||"";
   const rows=agendaRows543.filter(a=>{
     const text=`${a.profiles?.full_name||""} ${a.services?.name||""}`.toLowerCase();
     return (!q||text.includes(q))&&(!st||a.status===st);
   });
 
-  agendaDayCount543.textContent=`${agendaRows543.length} atendimento${agendaRows543.length===1?"":"s"}`;
-  agendaPendingCount543.textContent=agendaRows543.filter(a=>a.status==="pending").length;
-  agendaConfirmedCount543.textContent=agendaRows543.filter(a=>a.status==="confirmed").length;
+  const countEl=document.getElementById("agendaDayCount543");
+  const pendingEl=document.getElementById("agendaPendingCount543");
+  const confirmedEl=document.getElementById("agendaConfirmedCount543");
+  if(countEl)countEl.textContent=`${agendaRows543.length} atendimento${agendaRows543.length===1?"":"s"}`;
+  if(pendingEl)pendingEl.textContent=agendaRows543.filter(a=>a.status==="pending").length;
+  if(confirmedEl)confirmedEl.textContent=agendaRows543.filter(a=>a.status==="confirmed").length;
 
   if(!rows.length){
     box.innerHTML=`<div class="card agenda-empty"><strong>Nenhum atendimento encontrado</strong><span>${agendaRows543.length?"Ajuste os filtros para ver outros resultados.":"A agenda está livre nesta data."}</span></div>`;
@@ -661,41 +401,3 @@ function releaseAdminLoading543(){
     shell.classList.remove("hidden");
   }
 }
-
-/* Garante que o Admin nunca fique preso em "Verificando permissões..." */
-document.addEventListener("DOMContentLoaded",()=>{
-  let attempts=0;
-
-  const watchdog=setInterval(async()=>{
-    attempts++;
-
-    try{
-      const {data:{session}}=await sb.auth.getSession();
-
-      if(session){
-        const {data:profile}=await sb
-          .from("profiles")
-          .select("role")
-          .eq("id",session.user.id)
-          .maybeSingle();
-
-        if(profile?.role==="admin"){
-          clearInterval(watchdog);
-          releaseAdminLoading543();
-          return;
-        }
-      }
-    }catch(err){
-      console.warn("Hotfix loading:",err);
-    }
-
-    /* depois de ~4s não deixamos o overlay bloquear a interface */
-    if(attempts>=20){
-      clearInterval(watchdog);
-      releaseAdminLoading543();
-    }
-  },200);
-
-  /* fallback absoluto */
-  setTimeout(releaseAdminLoading543,5000);
-});

@@ -601,3 +601,14 @@ html{scroll-behavior:smooth}
   visibility:hidden !important;
   pointer-events:none !important;
 }
+
+/* ===== FASE 5.4.4 — REVISÃO FINAL ===== */
+#clientes,#planos-clientes{scroll-margin-top:20px}
+.admin-filter-bar{margin-bottom:10px}
+#clientes + .admin-filter-bar{margin-top:-4px}
+.nav-list a{transition:background .15s ease,color .15s ease}
+.agenda-item-controls .client-detail-link{display:inline-flex}
+@media(max-width:720px){
+  .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .table-wrap table{min-width:720px}
+}
