@@ -71,46 +71,62 @@
 <script src="./config.js"></script>
 <script src="./common.js"></script>
 <script>
-document.getElementById("signupForm").addEventListener("submit",async e=>{
+document.getElementById("signupForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  if(password.value!==confirmPassword.value){
-    return showMessage("message","As senhas não são iguais.");
+  const form = document.getElementById("signupForm");
+  const nameInput = document.getElementById("name");
+  const phoneInput = document.getElementById("phone");
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
+  const confirmPasswordInput = document.getElementById("confirmPassword");
+  const button = e.submitter;
+
+  if (passwordInput.value !== confirmPasswordInput.value) {
+    return showMessage("message", "As senhas não são iguais.");
   }
 
-  if(!configured){
-    return showMessage("message","Primeiro precisamos conectar o projeto ao Supabase.");
+  if (!configured) {
+    return showMessage("message", "Primeiro precisamos conectar o projeto ao Supabase.");
   }
 
-  const button=e.submitter;
-  button.disabled=true;
-  button.textContent="Criando conta...";
+  button.disabled = true;
+  button.textContent = "Criando conta...";
 
-  const {error}=await sb.auth.signUp({
-    email:email.value.trim(),
-    password:password.value,
-    options:{
-      data:{
-        full_name:name.value.trim(),
-        phone:phone.value.trim()
+  try {
+    const { error } = await sb.auth.signUp({
+      email: emailInput.value.trim(),
+      password: passwordInput.value,
+      options: {
+        data: {
+          full_name: nameInput.value.trim(),
+          phone: phoneInput.value.trim()
+        }
       }
+    });
+
+    if (error) {
+      return showMessage("message", error.message);
     }
-  });
 
-  if(error){
-    button.disabled=false;
-    button.textContent="Criar minha conta";
-    return showMessage("message",error.message);
+    form.reset();
+
+    showMessage(
+      "message",
+      "Cadastro criado com sucesso! Agora você já pode entrar na sua conta.",
+      "success"
+    );
+  } catch (err) {
+    console.error("Erro ao criar cadastro:", err);
+    showMessage(
+      "message",
+      "Não foi possível concluir o cadastro. Tente novamente.",
+      "error"
+    );
+  } finally {
+    button.disabled = false;
+    button.textContent = "Criar minha conta";
   }
-
-  signupForm.reset();
-  button.disabled=false;
-  button.textContent="Criar minha conta";
-  showMessage(
-    "message",
-    "Cadastro criado com sucesso. Se a confirmação por e-mail estiver ativa no Supabase, confirme o e-mail antes de entrar.",
-    "success"
-  );
 });
 </script>
 </body>
