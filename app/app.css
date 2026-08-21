@@ -376,3 +376,7 @@ html{scroll-behavior:smooth}
   .plan-confirm-layout{grid-template-columns:1fr}
   .plan-account-head{flex-direction:column}
 }
+
+/* Fase 5.3.2 */
+.btn-small{padding:8px 10px;font-size:.78rem;white-space:nowrap}
+.table-actions{display:flex;gap:6px;flex-wrap:wrap}

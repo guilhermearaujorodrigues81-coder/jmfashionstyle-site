@@ -324,3 +324,25 @@ cancelPlanSelection?.addEventListener("click",async()=>{
 
   await loadMyPlan();
 });
+
+
+/* ===== FASE 5.3.2 — DETALHES DO CICLO ===== */
+async function refreshPlanCycle532(){
+  if(!authData)return;
+  const {data:s}=await sb.from("subscriptions")
+    .select("*,plans(*)")
+    .eq("user_id",authData.session.user.id)
+    .in("status",["pending","active","suspended"])
+    .order("selected_at",{ascending:false}).limit(1).maybeSingle();
+  if(!s)return;
+
+  if(s.status==="active" || s.status==="suspended"){
+    accountCredits.textContent=`${s.credits_remaining} de ${s.credits_total}`;
+    if(s.ends_at){
+      const end=new Date(s.ends_at+"T23:59:59");
+      const days=Math.max(0,Math.ceil((end-new Date())/86400000));
+      accountValidity.textContent=`${new Date(s.ends_at+"T12:00:00").toLocaleDateString("pt-BR")} • ${days} dia${days===1?"":"s"}`;
+    }
+  }
+}
+document.addEventListener("DOMContentLoaded",()=>setTimeout(refreshPlanCycle532,800));

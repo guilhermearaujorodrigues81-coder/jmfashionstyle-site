@@ -264,3 +264,51 @@ document.addEventListener("DOMContentLoaded",()=>{
     }
   },200);
 });
+
+
+/* ===== FASE 5.3.2 — GESTÃO DE ATIVAÇÃO/CICLO ===== */
+async function loadAdminSubscriptions532(){
+  const {data,error}=await sb.from("subscriptions")
+    .select("*,profiles(full_name,phone),plans(name,monthly_price)")
+    .order("selected_at",{ascending:false});
+  if(error){ console.error(error); return; }
+
+  subscriptionsBody.innerHTML=(data||[]).length ? data.map(s=>{
+    let actions="";
+    if(s.status==="pending") actions=`<button class="btn btn-gold btn-small" onclick="subscriptionAction('activate','${s.id}')">Ativar</button>`;
+    if(s.status==="active") actions=`
+      <button class="btn btn-light btn-small" onclick="subscriptionAction('renew','${s.id}')">Renovar ciclo</button>
+      <button class="btn btn-danger btn-small" onclick="subscriptionAction('suspend','${s.id}')">Suspender</button>`;
+    if(s.status==="suspended") actions=`<button class="btn btn-gold btn-small" onclick="subscriptionAction('resume','${s.id}')">Reativar</button>`;
+
+    const saldo=s.status==="active" ? `${s.credits_remaining}/${s.credits_total}` : "—";
+    const validade=s.ends_at ? new Date(s.ends_at+"T12:00:00").toLocaleDateString("pt-BR") : "—";
+    return `<tr>
+      <td><strong>${s.profiles?.full_name||"—"}</strong></td>
+      <td>${s.plans?.name||"—"}</td>
+      <td>${Number(s.plans?.monthly_price||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}</td>
+      <td><span class="badge badge-${s.status}">${subscriptionStatusLabelAdmin(s.status)}</span></td>
+      <td>${saldo}</td>
+      <td>${validade}</td>
+      <td><div class="table-actions">${actions}</div></td>
+    </tr>`;
+  }).join("") : '<tr><td colspan="7" class="empty">Nenhum plano selecionado.</td></tr>';
+}
+
+async function subscriptionAction(action,id){
+  const labels={activate:"ativar",renew:"renovar o ciclo de",suspend:"suspender",resume:"reativar"};
+  if(!confirm(`Deseja ${labels[action]} este plano?`)) return;
+  const fn={
+    activate:"admin_activate_subscription",
+    renew:"admin_renew_subscription",
+    suspend:"admin_suspend_subscription",
+    resume:"admin_resume_subscription"
+  }[action];
+  const {error}=await sb.rpc(fn,{p_subscription_id:id});
+  if(error){ alert(error.message); return; }
+  await loadAdminSubscriptions532();
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+  setTimeout(()=>{ if(document.getElementById("subscriptionsBody")) loadAdminSubscriptions532(); },700);
+});
