@@ -18,6 +18,7 @@
     </div>
 
     <nav class="nav-list">
+      <a href="#visao-geral">⌂ Visão geral</a>
       <a class="active" href="#agenda">▦ Agenda</a>
       <a href="#clientes">♙ Clientes</a>
       <a href="#planos-clientes">◆ Planos</a>
@@ -65,6 +66,9 @@
       <input id="search" placeholder="Buscar por nome, e-mail ou WhatsApp" style="max-width:340px">
     </div>
 
+    <div class="admin-filter-bar">
+      <input id="clientSearch534" class="admin-search" type="search" placeholder="Buscar cliente por nome, e-mail ou telefone">
+    </div>
     <div class="card table-wrap">
       <table>
         <thead>
@@ -81,7 +85,53 @@
     </div>
 
     
-    <div class="section-title" id="agenda"><h2>Agenda</h2><button class="btn btn-gold" id="newBlock">Bloquear horário</button></div>
+    
+    <section class="admin-ops" id="visao-geral">
+      <div class="section-title">
+        <div>
+          <h2>Visão geral</h2>
+          <p class="section-subtitle">Resumo da operação da Studio JM.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-4 ops-metrics">
+        <div class="card metric-card">
+          <span class="metric-label">Atendimentos hoje</span>
+          <div class="metric-value" id="opsTodayAppointments">0</div>
+        </div>
+        <div class="card metric-card">
+          <span class="metric-label">Próximos 7 dias</span>
+          <div class="metric-value" id="opsWeekAppointments">0</div>
+        </div>
+        <div class="card metric-card">
+          <span class="metric-label">Clientes cadastrados</span>
+          <div class="metric-value" id="opsClients">0</div>
+        </div>
+        <div class="card metric-card">
+          <span class="metric-label">Planos ativos</span>
+          <div class="metric-value" id="opsActivePlans">0</div>
+        </div>
+      </div>
+
+      <div class="ops-grid">
+        <div class="card">
+          <div class="section-title compact-title">
+            <div><h2>Agenda de hoje</h2><p class="section-subtitle">Atendimentos do dia em ordem de horário.</p></div>
+            <a class="btn btn-light btn-small" href="#agenda">Abrir agenda</a>
+          </div>
+          <div id="opsTodayList" class="ops-list"></div>
+        </div>
+
+        <div class="card">
+          <div class="section-title compact-title">
+            <div><h2>Atenção</h2><p class="section-subtitle">Itens que podem precisar de ação.</p></div>
+          </div>
+          <div id="opsAttentionList" class="ops-list"></div>
+        </div>
+      </div>
+    </section>
+
+<div class="section-title" id="agenda"><h2>Agenda</h2><button class="btn btn-gold" id="newBlock">Bloquear horário</button></div>
     <div class="card">
       <div id="calendar"></div>
     </div>
@@ -89,25 +139,30 @@
 
     <div class="section-title" id="planos-clientes"><h2>Planos dos clientes</h2></div>
 
-    <section class="grid grid-4 plan-admin-summary" id="planSummary534">
+    <section class="grid grid-2 plan-admin-summary" id="planSummary534">
       <div class="card metric-card">
         <span class="metric-label">Planos ativos</span>
         <div class="metric-value" id="adminActivePlans">0</div>
       </div>
-      <div class="card metric-card">
-        <span class="metric-label">Aguardando ativação</span>
-        <div class="metric-value" id="adminPendingPlans">0</div>
-      </div>
+      
       <div class="card metric-card">
         <span class="metric-label">Suspensos</span>
         <div class="metric-value" id="adminSuspendedPlans">0</div>
       </div>
-      <div class="card metric-card">
-        <span class="metric-label">Créditos em aberto</span>
-        <div class="metric-value" id="adminOpenCredits">0</div>
-      </div>
+      
     </section>
 
+    <div class="admin-filter-bar">
+      <input id="planSearch534" class="admin-search" type="search" placeholder="Buscar assinante ou plano">
+      <select id="planStatusFilter534" class="admin-search admin-select">
+        <option value="">Todos os status</option>
+        <option value="active">Ativos</option>
+        <option value="pending">Aguardando ativação</option>
+        <option value="suspended">Suspensos</option>
+        <option value="cancelled">Cancelados</option>
+        <option value="expired">Expirados</option>
+      </select>
+    </div>
     <div class="card table-wrap">
       <table>
         <thead>

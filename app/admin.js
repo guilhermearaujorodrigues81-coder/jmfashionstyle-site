@@ -324,9 +324,9 @@ async function loadPlanSummary534(){
 
   const rows=data||[];
   adminActivePlans.textContent=rows.filter(x=>x.status==="active").length;
-  adminPendingPlans.textContent=rows.filter(x=>x.status==="pending").length;
+  if(document.getElementById("adminPendingPlans")) adminPendingPlans.textContent=rows.filter(x=>x.status==="pending").length;
   adminSuspendedPlans.textContent=rows.filter(x=>x.status==="suspended").length;
-  adminOpenCredits.textContent=rows
+  if(document.getElementById("adminOpenCredits")) adminOpenCredits.textContent=rows
     .filter(x=>x.status==="active")
     .reduce((sum,x)=>sum+(Number(x.credits_remaining)||0),0);
 }
@@ -335,4 +335,135 @@ document.addEventListener("DOMContentLoaded",()=>{
   setTimeout(()=>{
     if(document.getElementById("planSummary534"))loadPlanSummary534();
   },700);
+});
+
+
+/* ===== FASE 5.4.1 — GESTÃO OPERACIONAL ===== */
+function localDateKey(date=new Date()){
+  return new Intl.DateTimeFormat("en-CA",{
+    timeZone:"America/Sao_Paulo",
+    year:"numeric",month:"2-digit",day:"2-digit"
+  }).format(date);
+}
+
+function startEndIsoForLocalDate(dateKey){
+  return {
+    start:new Date(`${dateKey}T00:00:00-03:00`).toISOString(),
+    end:new Date(`${dateKey}T23:59:59-03:00`).toISOString()
+  };
+}
+
+async function loadOperationalDashboard541(){
+  const today=localDateKey();
+  const {start,end}=startEndIsoForLocalDate(today);
+  const weekEnd=new Date(new Date(`${today}T00:00:00-03:00`).getTime()+7*86400000).toISOString();
+
+  const [
+    todayRes,
+    weekRes,
+    clientsRes,
+    plansRes,
+    pendingRes
+  ]=await Promise.all([
+    sb.from("appointments")
+      .select("id,starts_at,status,profiles(full_name),services(name)")
+      .gte("starts_at",start).lte("starts_at",end)
+      .neq("status","cancelled")
+      .order("starts_at",{ascending:true}),
+    sb.from("appointments")
+      .select("id",{count:"exact",head:true})
+      .gte("starts_at",new Date().toISOString())
+      .lt("starts_at",weekEnd)
+      .in("status",["pending","confirmed"]),
+    sb.from("profiles").select("id",{count:"exact",head:true}),
+    sb.from("subscriptions").select("id",{count:"exact",head:true}).eq("status","active"),
+    sb.from("subscriptions")
+      .select("id,selected_at,profiles(full_name),plans(name)")
+      .eq("status","pending")
+      .order("selected_at",{ascending:true})
+      .limit(5)
+  ]);
+
+  const todayRows=todayRes.data||[];
+
+  if(document.getElementById("opsTodayAppointments")) opsTodayAppointments.textContent=todayRows.length;
+  if(document.getElementById("opsWeekAppointments")) opsWeekAppointments.textContent=weekRes.count||0;
+  if(document.getElementById("opsClients")) opsClients.textContent=clientsRes.count||0;
+  if(document.getElementById("opsActivePlans")) opsActivePlans.textContent=plansRes.count||0;
+
+  if(document.getElementById("opsTodayList")){
+    opsTodayList.innerHTML=todayRows.length
+      ? todayRows.map(a=>`
+        <div class="ops-row">
+          <div class="ops-time">${new Date(a.starts_at).toLocaleTimeString("pt-BR",{timeZone:"America/Sao_Paulo",hour:"2-digit",minute:"2-digit"})}</div>
+          <div class="ops-row-main">
+            <strong>${a.profiles?.full_name||"Cliente"}</strong>
+            <small>${a.services?.name||"Serviço"}</small>
+          </div>
+          <span class="badge badge-${a.status}">${statusLabel(a.status)}</span>
+        </div>`).join("")
+      : '<div class="ops-empty">Nenhum atendimento agendado para hoje.</div>';
+  }
+
+  if(document.getElementById("opsAttentionList")){
+    const pending=pendingRes.data||[];
+    const pendingAppointments=todayRows.filter(a=>a.status==="pending");
+
+    let items=[];
+    if(pendingAppointments.length){
+      items.push(`<div class="ops-alert"><strong>${pendingAppointments.length} agendamento(s) pendente(s) hoje</strong><small>Confira a agenda e confirme os horários.</small></div>`);
+    }
+    if(pending.length){
+      items.push(`<div class="ops-alert"><strong>${pending.length} plano(s) aguardando ativação</strong><small>Eles continuam visíveis na gestão de planos, sem ocupar um indicador no resumo.</small></div>`);
+    }
+    if(!items.length){
+      items.push('<div class="ops-empty">Nenhuma pendência operacional no momento.</div>');
+    }
+    opsAttentionList.innerHTML=items.join("");
+  }
+}
+
+function statusLabel(s){
+  return {
+    pending:"Pendente",confirmed:"Confirmado",completed:"Concluído",
+    cancelled:"Cancelado",no_show:"Falta"
+  }[s]||s;
+}
+
+function hookAdminFilters541(){
+  const clientSearch=document.getElementById("clientSearch534");
+  clientSearch?.addEventListener("input",()=>{
+    const q=clientSearch.value.trim().toLowerCase();
+    document.querySelectorAll("#clientsBody tr").forEach(tr=>{
+      tr.style.display=tr.textContent.toLowerCase().includes(q)?"":"none";
+    });
+  });
+
+  const planSearch=document.getElementById("planSearch534");
+  const planStatus=document.getElementById("planStatusFilter534");
+
+  function applyPlanFilter(){
+    const q=(planSearch?.value||"").trim().toLowerCase();
+    const status=planStatus?.value||"";
+    document.querySelectorAll("#subscriptionsBody tr").forEach(tr=>{
+      const text=tr.textContent.toLowerCase();
+      const matchesText=text.includes(q);
+      const statusLabels={
+        active:"ativo",pending:"aguardando ativação",suspended:"suspenso",
+        cancelled:"cancelado",expired:"expirado"
+      };
+      const matchesStatus=!status || text.includes(statusLabels[status]||status);
+      tr.style.display=(matchesText&&matchesStatus)?"":"none";
+    });
+  }
+
+  planSearch?.addEventListener("input",applyPlanFilter);
+  planStatus?.addEventListener("change",applyPlanFilter);
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+  setTimeout(()=>{
+    loadOperationalDashboard541();
+    hookAdminFilters541();
+  },900);
 });

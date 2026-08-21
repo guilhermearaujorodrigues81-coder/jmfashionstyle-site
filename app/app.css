@@ -476,3 +476,46 @@ html{scroll-behavior:smooth}
 @media(max-width:480px){
   .plan-balance-side{grid-template-columns:1fr}
 }
+
+/* ===== FASE 5.4.1 — GESTÃO OPERACIONAL ===== */
+.admin-ops{margin-bottom:24px}
+.ops-metrics{margin-bottom:16px}
+.ops-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:16px}
+.compact-title{margin-top:0;align-items:center}
+.ops-list{display:flex;flex-direction:column}
+.ops-row{
+  display:flex;align-items:center;gap:12px;padding:11px 0;
+  border-bottom:1px solid #eee
+}
+.ops-row:last-child{border-bottom:0}
+.ops-time{
+  width:52px;font-weight:1000;font-size:.9rem;color:#8b650e
+}
+.ops-row-main{flex:1;min-width:0}
+.ops-row-main strong,.ops-row-main small{display:block}
+.ops-row-main small{color:#888;margin-top:2px}
+.ops-alert{
+  padding:12px;border:1px solid #ead9ac;background:#fff8e7;
+  border-radius:10px;margin-bottom:8px
+}
+.ops-alert strong,.ops-alert small{display:block}
+.ops-alert small{color:#7a6a43;margin-top:4px;line-height:1.4}
+.ops-empty{padding:20px 6px;color:#888;text-align:center}
+.admin-filter-bar{
+  display:flex;gap:8px;align-items:center;margin-bottom:10px
+}
+.admin-search{
+  width:100%;padding:11px 12px;border:1px solid #ddd;border-radius:9px;
+  background:#fff;font:inherit
+}
+.admin-select{max-width:210px}
+.plan-admin-summary.grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:900px){
+  .ops-grid{grid-template-columns:1fr}
+  .ops-metrics{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:620px){
+  .ops-metrics{grid-template-columns:1fr 1fr}
+  .admin-filter-bar{align-items:stretch;flex-direction:column}
+  .admin-select{max-width:none}
+}
