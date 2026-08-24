@@ -666,3 +666,20 @@ html{scroll-behavior:smooth}
   font-size:.76rem;
   line-height:1.45;
 }
+
+/* ===== FASE 5.4.6 — NOVO ADMIN / UX OPERACIONAL ===== */
+.admin-tab-nav button{width:100%;border:0;background:transparent;color:inherit;text-align:left;font:inherit;cursor:pointer;padding:11px 12px;border-radius:9px}
+.admin-tab-nav button:hover,.admin-tab-nav button.active{background:#1c1c1c;color:#f1c05e}
+.admin-tab-panel{display:none}.admin-tab-panel.active{display:block}
+.today-hero{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:14px}
+.today-hero h2{margin:5px 0;font-size:1.9rem}.today-hero p{color:#aaa}.today-hero-actions{display:flex;gap:8px;flex-wrap:wrap}
+.today-next{margin-bottom:18px;box-shadow:none}.next-appointment-box{display:flex;align-items:center;gap:14px;margin-top:9px}
+.next-appointment-time{font-size:1.7rem;font-weight:1000;color:#a97913}.next-appointment-main{flex:1}
+.next-appointment-main strong,.next-appointment-main span{display:block}.next-appointment-main span{color:#777;margin-top:2px;font-size:.82rem}
+.day-grid-546{display:flex;flex-direction:column;gap:7px}
+.day-slot-546{display:grid;grid-template-columns:70px minmax(0,1fr) auto;align-items:center;gap:12px;padding:12px 14px;border:1px solid #e9e9e9;border-radius:11px;background:#fff}
+.day-slot-time{font-weight:1000;color:#7f641d}.day-slot-main strong,.day-slot-main span{display:block}.day-slot-main span{font-size:.76rem;color:#777;margin-top:2px}
+.day-slot-546.free{background:#fbfbfb;border-style:dashed}.day-slot-546.free .day-slot-main strong{color:#4d7d5a}.day-slot-546.blocked{background:#f3f3f3}
+.day-slot-546.appointment.status-pending{border-left:4px solid #d3a437}.day-slot-546.appointment.status-confirmed{border-left:4px solid #4774a8}.day-slot-546.appointment.status-completed{border-left:4px solid #4f8a5e}.day-slot-546.appointment.status-no_show{border-left:4px solid #777}
+.agenda-page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:14px}.agenda-page-head h2{font-size:1.6rem}.agenda-page-actions{display:flex;gap:8px;flex-wrap:wrap}
+@media(max-width:760px){.today-hero{align-items:flex-start;flex-direction:column}.today-hero-actions{width:100%}.today-hero-actions .btn{flex:1}.next-appointment-box{align-items:flex-start;flex-wrap:wrap}.day-slot-546{grid-template-columns:58px minmax(0,1fr)}.day-slot-546>.btn,.day-slot-546>a.btn{grid-column:2;justify-self:start}.agenda-page-head{flex-direction:column}}

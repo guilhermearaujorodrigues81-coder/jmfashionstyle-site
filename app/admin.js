@@ -586,3 +586,72 @@ async function releaseScheduleBlock545(id){
     alert(error?.message||"Não foi possível liberar o horário.");
   }
 }
+
+/* ===== FASE 5.4.6 — NOVO ADMIN / UX OPERACIONAL ===== */
+const adminTabMeta546={hoje:["Hoje","Operação diária da Studio JM."],agenda:["Agenda","Controle de horários, bloqueios e atendimentos."],clientes:["Clientes","Cadastros e histórico dos clientes."],planos:["Planos","Gestão dos planos e créditos."]};
+
+function openAdminTab546(tab){
+  document.querySelectorAll("[data-admin-panel]").forEach(p=>p.classList.toggle("active",p.dataset.adminPanel===tab));
+  document.querySelectorAll("[data-admin-tab]").forEach(b=>b.classList.toggle("active",b.dataset.adminTab===tab));
+  const meta=adminTabMeta546[tab]||adminTabMeta546.hoje;
+  document.getElementById("adminPageTitle").textContent=meta[0];
+  document.getElementById("adminPageSubtitle").textContent=meta[1];
+  history.replaceState(null,"",`#${tab}`);
+  if(tab==="agenda")setTimeout(loadAgenda543,50);
+  if(tab==="hoje")setTimeout(loadToday546,50);
+}
+
+function bootAdminTabs546(){
+  const hash=location.hash.replace("#","");
+  const tab=adminTabMeta546[hash]?hash:"hoje";
+  document.querySelectorAll("[data-admin-tab]").forEach(btn=>btn.addEventListener("click",()=>openAdminTab546(btn.dataset.adminTab)));
+  openAdminTab546(tab);
+}
+
+function localKey546(date=new Date()){
+  return new Intl.DateTimeFormat("en-CA",{timeZone:"America/Sao_Paulo",year:"numeric",month:"2-digit",day:"2-digit"}).format(date);
+}
+function prettyToday546(){
+  const t=new Date().toLocaleDateString("pt-BR",{timeZone:"America/Sao_Paulo",weekday:"long",day:"2-digit",month:"long"});
+  return t.charAt(0).toUpperCase()+t.slice(1);
+}
+function statusLabel546(s){return {pending:"Pendente",confirmed:"Confirmado",completed:"Concluído",cancelled:"Cancelado",no_show:"Falta"}[s]||s}
+
+async function loadToday546(){
+  const grid=document.getElementById("todayTimeline546"),nextBox=document.getElementById("nextAppointment546");
+  if(!grid||!nextBox)return;
+  document.getElementById("todayDate546").textContent=prettyToday546();
+  const key=localKey546(),{start,end}=agendaRange543(key);
+  const [ar,br]=await Promise.all([
+    sb.from("appointments").select("*,profiles(full_name,phone),services(name)").gte("starts_at",start).lte("starts_at",end).order("starts_at",{ascending:true}),
+    sb.from("schedule_blocks").select("id,starts_at,ends_at,reason").lt("starts_at",end).gt("ends_at",start).order("starts_at",{ascending:true})
+  ]);
+  if(ar.error||br.error){grid.innerHTML='<div class="card agenda-empty">Não foi possível carregar o dia.</div>';return}
+  const appointments=ar.data||[],blocks=br.data||[],now=Date.now();
+  const next=appointments.find(a=>new Date(a.starts_at).getTime()>=now&&["pending","confirmed"].includes(a.status));
+  nextBox.innerHTML=next?`<div class="next-appointment-time">${new Date(next.starts_at).toLocaleTimeString("pt-BR",{timeZone:"America/Sao_Paulo",hour:"2-digit",minute:"2-digit"})}</div><div class="next-appointment-main"><strong>${next.profiles?.full_name||"Cliente"}</strong><span>${next.services?.name||"Serviço"} • ${statusLabel546(next.status)}</span></div><a class="btn btn-light btn-small" href="./cliente-detalhe.html?id=${next.user_id}">Ver cliente</a>`:'<div class="ops-empty">Nenhum próximo atendimento hoje.</div>';
+
+  const slots=[];
+  for(let hour=9;hour<19;hour++){
+    const ss=new Date(`${key}T${String(hour).padStart(2,"0")}:00:00-03:00`),ee=new Date(ss.getTime()+3600000);
+    const a=appointments.find(x=>new Date(x.starts_at)<ee&&new Date(x.ends_at)>ss&&x.status!=="cancelled");
+    const b=blocks.find(x=>new Date(x.starts_at)<ee&&new Date(x.ends_at)>ss);
+    slots.push({hour,type:a?"appointment":b?"block":"free",data:a||b||null});
+  }
+  grid.innerHTML=slots.map(s=>{
+    const label=`${String(s.hour).padStart(2,"0")}:00`;
+    if(s.type==="free")return `<div class="day-slot-546 free"><div class="day-slot-time">${label}</div><div class="day-slot-main"><strong>Livre</strong><span>Disponível para agendamento</span></div></div>`;
+    if(s.type==="block")return `<div class="day-slot-546 blocked"><div class="day-slot-time">${label}</div><div class="day-slot-main"><strong>🔒 Bloqueado</strong><span>${s.data.reason||"Horário indisponível"}</span></div><button class="btn btn-light btn-small" onclick="releaseScheduleBlock545('${s.data.id}')">Liberar</button></div>`;
+    const a=s.data;
+    return `<div class="day-slot-546 appointment status-${a.status}"><div class="day-slot-time">${label}</div><div class="day-slot-main"><strong>${a.profiles?.full_name||"Cliente"}</strong><span>${a.services?.name||"Serviço"} • ${statusLabel546(a.status)}</span></div><a class="btn btn-light btn-small" href="./cliente-detalhe.html?id=${a.user_id}">Cliente</a></div>`;
+  }).join("");
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+  setTimeout(()=>{
+    bootAdminTabs546();
+    loadToday546();
+    document.getElementById("goAgendaToday546")?.addEventListener("click",()=>{openAdminTab546("agenda");const d=document.getElementById("agendaDate543");if(d)d.value=localKey546();loadAgenda543()});
+    document.getElementById("newBlockAgenda546")?.addEventListener("click",()=>document.getElementById("newBlock")?.click());
+  },500);
+});
