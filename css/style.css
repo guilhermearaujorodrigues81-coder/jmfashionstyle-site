@@ -784,3 +784,20 @@ body.modal-open{overflow:hidden}
   color:#111;
   border:1px solid #d9c69f;
 }
+
+/* Fase 5.4.7 — QR Code */
+.footer-qr{
+  display:flex;
+  gap:13px;
+  align-items:center;
+}
+.footer-qr img{
+  width:104px;
+  height:104px;
+  padding:5px;
+  border-radius:10px;
+  background:#fff;
+  object-fit:contain;
+}
+.footer-qr h3{margin-bottom:4px}
+.footer-qr p{font-size:.8rem;color:#aaa;max-width:180px}

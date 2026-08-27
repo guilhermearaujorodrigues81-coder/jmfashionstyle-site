@@ -39,6 +39,10 @@
           <input id="email" type="email" autocomplete="email" required maxlength="180">
         </label>
 
+        <label>Data de aniversário <small class="field-help">Opcional</small>
+          <input id="birthDate" type="date" autocomplete="bday">
+        </label>
+
         <div class="form-row">
           <label>Senha
             <input id="password" type="password" minlength="6" autocomplete="new-password" required>
@@ -78,6 +82,7 @@ document.getElementById("signupForm").addEventListener("submit", async (e) => {
   const nameInput = document.getElementById("name");
   const phoneInput = document.getElementById("phone");
   const emailInput = document.getElementById("email");
+  const birthDateInput = document.getElementById("birthDate");
   const passwordInput = document.getElementById("password");
   const confirmPasswordInput = document.getElementById("confirmPassword");
   const button = e.submitter;
@@ -96,7 +101,8 @@ document.getElementById("signupForm").addEventListener("submit", async (e) => {
       options: {
         data: {
           full_name: nameInput.value.trim(),
-          phone: phoneInput.value.trim()
+          phone: phoneInput.value.trim(),
+          birth_date: birthDateInput.value || null
         }
       }
     });

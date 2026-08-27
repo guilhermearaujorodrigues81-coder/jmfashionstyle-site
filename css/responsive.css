@@ -1,122 +1,205 @@
 
-@media(max-width:1000px){
-  .services-grid{grid-template-columns:repeat(2,1fr)}
-  .plans-grid{grid-template-columns:repeat(2,1fr)}
-  .booking-grid{grid-template-columns:1fr}
-  .gallery-track img{flex-basis:calc(50% - 7px)}
-}
-@media(max-width:720px){
-  .desktop-whatsapp{display:none}
-  .menu-button{display:block}
-  .nav-links{display:none;position:absolute;top:78px;left:0;right:0;background:#080808;flex-direction:column;padding:20px}
-  .nav-links.open{display:flex}
-  .brand small{display:none}
-  .hero{min-height:610px;background-position:60% center}
-  .metrics-grid{grid-template-columns:1fr 1fr}
-  .metrics-grid div:nth-child(2){border-right:0}
-  .metrics-grid div:nth-child(-n+2){border-bottom:1px solid #443512}
-  .services-grid,.plans-grid,.footer-grid{grid-template-columns:1fr}
-  .booking-form{grid-template-columns:1fr}
-  .booking-form .full{grid-column:auto}
-  .gallery-track img{flex-basis:86%}
-}
+/* ==========================================================
+   STUDIO JM — RESPONSIVIDADE 5.4.7
+   Celulares, tablets e telas intermediárias
+   ========================================================== */
 
-@media(max-width:1000px){
+/* TABLETS / NOTEBOOKS MENORES */
+@media (max-width:1100px){
+  .container{width:min(94%,980px)}
+  .nav-inner{gap:12px}
+  .nav-links{gap:13px;font-size:.78rem}
+  .brand img{width:52px;height:52px}
+  .services-grid,.plans-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .trust-grid{grid-template-columns:repeat(2,1fr)}
-  .testimonials-grid{grid-template-columns:1fr}
-}
-@media(max-width:720px){
-  .hero{min-height:700px}
-  .hero h1{font-size:clamp(3rem,15vw,4.4rem)}
-  .hero-badges{display:none}
-  .trust-grid{grid-template-columns:1fr}
-  .trust-grid div{border-right:0;border-bottom:1px solid #eee}
-}
-
-@media(max-width:720px){
-  .hero-video-overlay{background:linear-gradient(to right,rgba(0,0,0,.88),rgba(0,0,0,.48)),linear-gradient(to top,rgba(0,0,0,.62),transparent)}
-  .wizard-panel{padding:25px 16px}
-  .choice-grid,.service-choice,.date-time-grid,.wizard-client-grid{grid-template-columns:1fr}
-  .wizard-client-grid .full{grid-column:auto}
-  .time-buttons{grid-template-columns:repeat(3,1fr)}
-  .wizard-actions{position:sticky;bottom:-25px;background:#111;padding:15px 0 5px}
-}
-@media(prefers-reduced-motion:reduce){
-  .hero-video{
-    display:block !important;
-    transition:opacity .25s ease !important;
-    transform:none !important;
-  }
-  .hero-video.active{
-    opacity:1;
-    transform:none !important;
-  }
-  .reveal{
-    opacity:1;
-    transform:none;
-    transition:none;
-  }
-}
-  .video-hero{background:linear-gradient(90deg,rgba(0,0,0,.95),rgba(0,0,0,.55)),url("../img/gallery/salao-1.jpg") center/cover}
-}
-
-@media(max-width:760px){
-  .calendar-time-layout{grid-template-columns:1fr}
-  .calendar-day{min-height:39px}
-}
-
-@media(max-width:1000px){
+  .testimonials-grid,.review-cards{grid-template-columns:1fr 1fr}
+  .booking-grid,.google-profile-grid{grid-template-columns:1fr}
+  .google-map-card,.google-map-card iframe{min-height:420px}
+  .gallery-track img{flex-basis:calc(50% - 7px)}
+  .club-highlights{grid-template-columns:repeat(2,1fr)}
   .savings-calculator{grid-template-columns:1fr 1fr}
   .calculator-result{grid-column:1/-1}
+  .footer-grid{grid-template-columns:repeat(2,1fr)}
 }
-@media(max-width:720px){
+
+/* TABLET PORTRAIT E CELULAR GRANDE */
+@media (max-width:820px){
+  body{overflow-x:hidden}
+  section{padding:58px 0}
+  .container{width:92%}
+
+  .nav{background:rgba(5,5,5,.98)}
+  .nav-inner{height:70px}
+  .menu-button{display:block;order:3}
+  .desktop-whatsapp{display:none}
+  .brand{min-width:0}
+  .brand img{width:46px;height:46px}
+  .brand strong{font-size:.9rem}
+  .brand small{font-size:.58rem}
+
+  .nav-links{
+    display:none;
+    position:absolute;
+    top:70px;
+    left:0;right:0;
+    flex-direction:column;
+    gap:0;
+    padding:10px 4%;
+    background:#080808;
+    border-top:1px solid #262626;
+    box-shadow:0 16px 28px rgba(0,0,0,.28);
+    max-height:calc(100vh - 70px);
+    overflow-y:auto;
+  }
+  .nav-links.open{display:flex}
+  .nav-links li{width:100%}
+  .nav-links a{
+    display:block;
+    width:100%;
+    padding:13px 8px;
+    border-bottom:1px solid #1c1c1c;
+  }
+
+  .hero{min-height:680px}
+  .hero-content{padding-top:105px;padding-bottom:55px}
+  .hero h1{font-size:clamp(2.8rem,12vw,5rem)}
+  .hero p{font-size:1rem}
+  .hero-badges{gap:7px}
+  .hero-badges span{font-size:.68rem}
+  .hero-actions .btn{min-width:165px}
+
+  .metrics{margin-top:-25px}
+  .metrics-grid{grid-template-columns:1fr 1fr}
+  .metrics-grid div{padding:17px 10px}
+  .metrics-grid div:nth-child(2n){border-right:0}
+  .metrics-grid div:nth-child(-n+2){border-bottom:1px solid #443512}
+
+  .trust-grid{grid-template-columns:1fr 1fr}
+  .trust-grid div:nth-child(2n){border-right:0}
+
+  .services-grid,.plans-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .service-card img{height:190px}
+  .gallery-track img{flex-basis:72%;height:210px}
+
+  .choice-grid{grid-template-columns:repeat(2,1fr)}
+  .calendar-time-layout{grid-template-columns:1fr}
+  .wizard-panel{width:min(94vw,760px);padding:24px 18px}
+  .wizard-client-grid,.service-choice{grid-template-columns:1fr}
+  .time-buttons{grid-template-columns:repeat(4,1fr)}
+
+  .google-proof-bar{grid-template-columns:repeat(2,1fr)}
+  .google-proof-bar>div:nth-child(2n){border-right:0}
+  .review-cards,.testimonials-grid{grid-template-columns:1fr}
+
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .footer-qr{grid-column:1/-1}
+}
+
+/* CELULARES */
+@media (max-width:600px){
+  section{padding:46px 0}
+  .container{width:91%}
+  .brand small{display:none}
+
+  .hero{min-height:650px}
+  .hero-content{padding-top:90px}
+  .hero h1{font-size:clamp(2.5rem,14vw,4rem);line-height:1}
+  .hero p{margin:18px 0;font-size:.94rem}
+  .hero-badges{display:none}
+  .hero-actions{display:grid;grid-template-columns:1fr;width:100%}
+  .hero-actions .btn{width:100%}
+
+  .metrics-grid{grid-template-columns:1fr 1fr}
+  .metrics strong{font-size:1rem}
+  .metrics span{font-size:.72rem}
+
+  .trust-grid{grid-template-columns:1fr}
+  .trust-grid div{border-right:0;border-bottom:1px solid #eee}
+
+  .services-grid,.plans-grid{grid-template-columns:1fr}
+  .service-card img{height:210px}
+  .plan-card{padding:22px}
+
+  .gallery-track img{flex-basis:88%;height:205px}
+  .gallery-controls button{width:38px;height:38px}
+
+  .booking-grid{gap:20px}
+  .booking-grid h2{font-size:2rem}
+  .booking-form{grid-template-columns:1fr;padding:18px}
+  .booking-form .full{grid-column:auto}
+
+  .wizard-panel{
+    width:100%;
+    max-height:95vh;
+    border-radius:14px;
+    padding:22px 14px;
+  }
+  .wizard-header{padding-right:24px}
+  .wizard-steps span{width:29px;height:29px;font-size:.75rem}
+  .choice-grid{grid-template-columns:1fr}
+  .time-buttons{grid-template-columns:repeat(3,1fr)}
+  .wizard-actions{
+    position:sticky;
+    bottom:-22px;
+    background:#111;
+    padding:13px 0 4px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+  }
+  .wizard-submit{grid-column:1/-1}
+
   .club-highlights,.savings-calculator{grid-template-columns:1fr}
   .calculator-result{grid-column:auto}
-  .club-comparison{padding:16px}
-}
-
-@media(max-width:720px){
-  .comparison-heading h3{font-size:1.65rem}
-  .comparison-table{min-width:680px}
-  .comparison-row{grid-template-columns:1.22fr .9fr .9fr}
-  .comparison-row>div{padding:13px 11px}
-}
-
-@media(max-width:720px){
-  .all-plans-table{min-width:1050px}
-  .all-plans-table .comparison-row{
-    grid-template-columns:180px repeat(4,215px);
-  }
-  .comparison-scroll{
-    position:relative;
-    padding-bottom:8px;
-  }
+  .club-comparison,.premium-comparison{border-radius:12px}
+  .comparison-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
   .comparison-scroll::after{
     content:"Deslize para comparar →";
-    position:sticky;
-    left:12px;
     display:inline-block;
-    margin:10px 0 3px 12px;
+    position:sticky;
+    left:10px;
+    margin:9px 10px;
     padding:6px 10px;
     border-radius:999px;
-    background:#111;
-    color:#fff;
-    font-size:.68rem;
-    font-weight:800;
+    background:#111;color:#fff;
+    font-size:.67rem;font-weight:800;
   }
+
+  .google-business-card{padding:20px 14px}
+  .google-rating{align-items:flex-start}
+  .google-rating>strong{font-size:2.5rem}
+  .google-actions,.review-actions{display:grid;grid-template-columns:1fr}
+  .google-actions .btn,.review-actions .btn{width:100%}
+  .google-map-card,.google-map-card iframe{min-height:330px}
+  .google-proof-bar{grid-template-columns:1fr}
+  .google-proof-bar>div{border-right:0;border-bottom:1px solid #332b1a}
+
+  .footer-grid{grid-template-columns:1fr}
+  .footer-qr{grid-column:auto;align-items:center}
+  .footer-qr img{width:92px}
+  .floating-whatsapp{
+    right:12px;bottom:12px;
+    padding:11px 14px;
+    font-size:.82rem;
+  }
+
+  .modal{padding:10px}
+  .modal-content{padding:20px 15px}
 }
 
-@media(max-width:1000px){
-  .google-profile-grid{grid-template-columns:1fr}
-  .google-proof-bar{grid-template-columns:repeat(2,1fr)}
-  .google-proof-bar>div:nth-child(2){border-right:0}
-  .google-proof-bar>div:nth-child(-n+2){border-bottom:1px solid #332b1a}
-  .review-cards{grid-template-columns:1fr}
+/* CELULARES PEQUENOS */
+@media (max-width:390px){
+  .brand strong{font-size:.78rem}
+  .hero h1{font-size:2.45rem}
+  .metrics-grid{grid-template-columns:1fr}
+  .metrics-grid div{border-right:0!important;border-bottom:1px solid #443512}
+  .metrics-grid div:last-child{border-bottom:0}
+  .time-buttons{grid-template-columns:repeat(2,1fr)}
 }
-@media(max-width:720px){
-  .google-business-card{padding:22px 16px}
-  .google-rating>strong{font-size:2.7rem}
-  .google-actions .btn{width:100%}
-  .google-map-card,.google-map-card iframe{min-height:380px}
-  .google-proof-bar{grid-template-columns:1fr 1fr}
+
+/* MOVIMENTO REDUZIDO */
+@media (prefers-reduced-motion:reduce){
+  *{scroll-behavior:auto!important}
+  .hero-video{transition:none!important;transform:none!important}
+  .reveal{opacity:1!important;transform:none!important;transition:none!important}
 }

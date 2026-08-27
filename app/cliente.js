@@ -13,6 +13,7 @@ async function init(){
   profileName.textContent=p.full_name||"—";
   profileEmail.textContent=authData.session.user.email||"—";
   profilePhone.textContent=p.phone||"—";
+  profileBirthDate.textContent=formatBirthDate547(p.birth_date);
   profileSince.textContent=formatDateTime(p.created_at);
 
   loadingOff();
@@ -21,6 +22,7 @@ async function init(){
 editProfile.addEventListener("click",()=>{
   editName.value=authData.profile.full_name||"";
   editPhone.value=authData.profile.phone||"";
+  editBirthDate.value=authData.profile.birth_date||"";
   profileModal.classList.add("open");
 });
 
@@ -40,6 +42,7 @@ profileForm.addEventListener("submit",async e=>{
     .update({
       full_name:editName.value.trim(),
       phone:editPhone.value.trim(),
+      birth_date:editBirthDate.value || null,
       updated_at:new Date().toISOString()
     })
     .eq("id",authData.session.user.id)
@@ -53,6 +56,7 @@ profileForm.addEventListener("submit",async e=>{
   authData.profile=data;
   profileName.textContent=data.full_name||"—";
   profilePhone.textContent=data.phone||"—";
+  profileBirthDate.textContent=formatBirthDate547(data.birth_date);
   userName.textContent=data.full_name||authData.session.user.email;
   avatar.textContent=initials(data.full_name);
 
@@ -571,3 +575,12 @@ document.addEventListener("DOMContentLoaded",()=>{
     }
   },120);
 });
+
+
+/* ===== FASE 5.4.7 — ANIVERSÁRIO ===== */
+function formatBirthDate547(value){
+  if(!value)return "Não informado";
+  const [y,m,d]=value.split("-");
+  if(!y||!m||!d)return value;
+  return `${d}/${m}/${y}`;
+}

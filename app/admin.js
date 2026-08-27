@@ -40,11 +40,12 @@ function render(data){
         </td>
         <td>${p.email||"—"}</td>
         <td>${p.phone||"—"}</td>
+        <td>${formatBirthdayAdmin547(p.birth_date)}</td>
         <td><span class="badge badge-${p.role}">${p.role==="admin"?"Administrador":"Cliente"}</span></td>
         <td>${formatDateTime(p.created_at)}</td>
       </tr>
     `).join("")
-    : '<tr><td colspan="5" class="empty">Nenhum cadastro encontrado.</td></tr>';
+    : '<tr><td colspan="6" class="empty">Nenhum cadastro encontrado.</td></tr>';
 }
 
 /* ===== BLOQUEIO DE HORÁRIO — AGENDA ADMIN ===== */
@@ -655,3 +656,11 @@ document.addEventListener("DOMContentLoaded",()=>{
     document.getElementById("newBlockAgenda546")?.addEventListener("click",()=>document.getElementById("newBlock")?.click());
   },500);
 });
+
+
+/* ===== FASE 5.4.7 — ANIVERSÁRIOS NO ADMIN ===== */
+function formatBirthdayAdmin547(value){
+  if(!value)return "—";
+  const parts=value.split("-");
+  return parts.length===3 ? `${parts[2]}/${parts[1]}` : value;
+}

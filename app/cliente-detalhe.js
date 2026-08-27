@@ -15,7 +15,7 @@ function rowsEmpty(cols,text){return `<tr><td colspan="${cols}" class="empty">${
  if(error||!p){alert("Cliente não encontrado.");location.href="./admin.html#clientes";return}
 
  detailName.textContent=p.full_name||"Cliente"; dName.textContent=p.full_name||"—";
- dEmail.textContent=p.email||"—"; dPhone.textContent=p.phone||"—"; dSince.textContent=fmt(p.created_at);
+ dEmail.textContent=p.email||"—"; dPhone.textContent=p.phone||"—"; dBirthDate.textContent=formatBirth547(p.birth_date); dSince.textContent=fmt(p.created_at);
 
  const {data:sub}=await sb.from("subscriptions").select("*,plans(*)").eq("user_id",id)
    .in("status",["pending","active","suspended"]).order("selected_at",{ascending:false}).limit(1).maybeSingle();
@@ -48,3 +48,8 @@ function rowsEmpty(cols,text){return `<tr><td colspan="${cols}" class="empty">${
 
  loading.classList.add("off");detailShell.classList.remove("hidden");
 })();
+function formatBirth547(value){
+ if(!value)return "Não informado";
+ const parts=value.split("-");
+ return parts.length===3?`${parts[2]}/${parts[1]}/${parts[0]}`:value;
+}

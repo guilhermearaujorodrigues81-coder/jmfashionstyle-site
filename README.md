@@ -244,3 +244,58 @@ Implementado:
 - Ações rápidas: Confirmar, Concluir, Falta e Cancelar
 - Bloqueio de horário preservado
 - Link direto para a ficha do cliente
+
+
+## Fase 5.4.4 — Revisão final / base estável
+
+Revisão feita sobre a versão 5.4.3 corrigida enviada após validação no GitHub.
+
+Ajustes:
+- removido FullCalendar legado e sua dependência externa do Admin;
+- removida lógica antiga da Visão Geral que já não existia na interface;
+- removida duplicidade de busca na área de Clientes;
+- removido bloco técnico "Modelo de permissões" do painel operacional;
+- corrigido "Bloquear horário", que ainda dependia da inicialização do calendário antigo;
+- removido carregamento duplicado antigo de planos;
+- navegação da ficha do cliente alinhada com Agenda / Clientes / Planos;
+- removido link morto para "Visão geral";
+- reduzidas referências JavaScript implícitas a IDs do DOM;
+- mantidos Agenda, Clientes, Planos, créditos e regras existentes.
+
+
+## Fase 5.4.5 — Gestão de Bloqueios
+
+- Bloqueios aparecem diretamente na Agenda do Admin
+- Horário inicial e final visíveis
+- Motivo do bloqueio visível
+- Botão "Liberar horário"
+- Ao liberar, o registro é removido de `schedule_blocks`
+- O horário volta a ficar disponível imediatamente para clientes
+- Opção "Bloquear o dia inteiro" (09h às 19h)
+- Bloqueio parcial continua disponível
+- Bloqueios e atendimentos aparecem juntos em ordem cronológica
+
+## Fase 5.4.6 — Novo Admin / UX Operacional
+- Abas reais: Hoje, Agenda, Clientes e Planos
+- Apenas uma área aparece por vez
+- Tela Hoje com próximo atendimento
+- Grade 09h–19h mostrando Livre, Bloqueado e atendimentos
+- Bloqueio pode ser liberado na tela Hoje
+- Agenda completa permanece em aba separada
+- Clientes e Planos separados
+- Estrutura pronta para futura aba Financeiro
+
+
+## Fase 5.4.7 — Cadastro, QR Code e Responsividade
+
+- Campo opcional "Data de aniversário" no cadastro
+- Cliente pode adicionar/alterar aniversário em Minha Conta
+- Aniversário visível na lista administrativa e ficha do cliente
+- QR Code oficial preparado para: https://studiojmoficial.com.br/
+- QR Code incluído no rodapé do site
+- QR Code em PNG disponível em `img/qrcode-studiojmoficial.png`
+- Responsividade do site público refeita para celular/tablet
+- Menu mobile, hero, cards, planos, galeria, mapas e tabelas ajustados
+- Área do cliente e Admin ajustadas para tablets e celulares
+- Sidebar do sistema vira menu lateral móvel em telas menores
+- Tabelas administrativas passam a ter rolagem horizontal segura
