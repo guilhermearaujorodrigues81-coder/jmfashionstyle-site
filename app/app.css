@@ -799,3 +799,31 @@ html{scroll-behavior:smooth}
   .user-chip span:last-child{display:none}
   table{min-width:580px}
 }
+
+
+/* ==========================================================
+   HOTFIX 5.4.7.1 — MENU LATERAL MOBILE
+   ========================================================== */
+.sidebar-overlay{
+  position:fixed;
+  inset:0;
+  z-index:2990;
+  background:rgba(0,0,0,.48);
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:opacity .2s ease,visibility .2s ease;
+}
+.sidebar-overlay.show{
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+}
+body.sidebar-open{
+  overflow:hidden;
+}
+@media(max-width:820px){
+  .sidebar{
+    z-index:3000;
+  }
+}

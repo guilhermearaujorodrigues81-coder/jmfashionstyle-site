@@ -83,13 +83,84 @@ async function requireAdmin(){
   return auth;
 }
 
+function ensureMobileSidebarOverlay(){
+  let overlay=document.querySelector(".sidebar-overlay");
+  if(!overlay){
+    overlay=document.createElement("div");
+    overlay.className="sidebar-overlay";
+    overlay.setAttribute("aria-hidden","true");
+    document.body.appendChild(overlay);
+  }
+  return overlay;
+}
+
+function openMobileSidebar(){
+  const sidebar=document.querySelector(".sidebar");
+  if(!sidebar)return;
+
+  const overlay=ensureMobileSidebarOverlay();
+  sidebar.classList.add("open");
+  overlay.classList.add("show");
+  document.body.classList.add("sidebar-open");
+}
+
+function closeMobileSidebar(){
+  const sidebar=document.querySelector(".sidebar");
+  const overlay=document.querySelector(".sidebar-overlay");
+
+  sidebar?.classList.remove("open");
+  overlay?.classList.remove("show");
+  document.body.classList.remove("sidebar-open");
+}
+
+function toggleMobileSidebar(){
+  const sidebar=document.querySelector(".sidebar");
+  if(!sidebar)return;
+
+  if(sidebar.classList.contains("open")){
+    closeMobileSidebar();
+  }else{
+    openMobileSidebar();
+  }
+}
+
 document.addEventListener("click",async e=>{
   if(e.target.closest("[data-logout]")){
     await sb?.auth.signOut();
     location.href="./login.html";
+    return;
   }
+
   if(e.target.closest(".mobile-menu")){
-    document.querySelector(".sidebar")?.classList.toggle("open");
+    e.preventDefault();
+    e.stopPropagation();
+    toggleMobileSidebar();
+    return;
+  }
+
+  if(e.target.closest(".sidebar-overlay")){
+    closeMobileSidebar();
+    return;
+  }
+
+  /* Ao selecionar qualquer item do menu no celular, fecha automaticamente. */
+  if(
+    window.matchMedia("(max-width: 820px)").matches &&
+    e.target.closest(".sidebar .nav-list a, .sidebar .nav-list button")
+  ){
+    closeMobileSidebar();
+  }
+});
+
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape"){
+    closeMobileSidebar();
+  }
+});
+
+window.addEventListener("resize",()=>{
+  if(window.innerWidth>820){
+    closeMobileSidebar();
   }
 });
 
