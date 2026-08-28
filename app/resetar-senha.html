@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Nova senha | Studio JM</title>
+  <link rel="stylesheet" href="./app.css">
+</head>
+<body class="auth-page">
+  <aside class="auth-visual"></aside>
+
+  <main class="auth-panel">
+    <section class="auth-card">
+      <div class="auth-brand">
+        <img src="../img/brand/logo.jpg" alt="Studio JM">
+        <div><strong>STUDIO JM</strong><small>Área do cliente</small></div>
+      </div>
+
+      <h2>Criar nova senha</h2>
+      <p>Escolha uma nova senha para sua conta.</p>
+
+      <form id="resetForm">
+        <label>Nova senha
+          <input id="password" type="password" autocomplete="new-password" minlength="6" required>
+        </label>
+
+        <label>Confirmar senha
+          <input id="confirmPassword" type="password" autocomplete="new-password" minlength="6" required>
+        </label>
+
+        <div id="resetMessage" class="form-message"></div>
+
+        <button class="btn btn-gold btn-full" id="resetButton" type="submit">Salvar nova senha</button>
+      </form>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./config.js"></script>
+  <script src="./common.js"></script>
+  <script>
+    const form=document.getElementById("resetForm");
+    const password=document.getElementById("password");
+    const confirmPassword=document.getElementById("confirmPassword");
+    const button=document.getElementById("resetButton");
+
+    form.addEventListener("submit",async e=>{
+      e.preventDefault();
+
+      if(password.value!==confirmPassword.value){
+        return showMessage("resetMessage","As senhas não coincidem.");
+      }
+
+      button.disabled=true;
+      button.textContent="Salvando...";
+
+      const {error}=await sb.auth.updateUser({password:password.value});
+
+      button.disabled=false;
+      button.textContent="Salvar nova senha";
+
+      if(error){
+        return showMessage("resetMessage",error.message);
+      }
+
+      showMessage("resetMessage","Senha alterada com sucesso. Redirecionando...","success");
+
+      setTimeout(async()=>{
+        await sb.auth.signOut();
+        location.href="./login.html";
+      },1200);
+    });
+  </script>
+</body>
+</html>
