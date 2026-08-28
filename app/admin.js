@@ -166,6 +166,113 @@ async function createBlock544(e){
   }
 }
 
+/* ===== AGENDA OPERACIONAL 6.0 — ENCAIXE RÁPIDO ===== */
+let adminServices60=[];
+
+function escapeAdmin60(value){
+  const el=document.createElement("div");
+  el.textContent=String(value??"");
+  return el.innerHTML;
+}
+
+async function openNewAppointment60(presetTime=""){
+  try{
+    const professional=await ensureAdminProfessional544();
+    const {data:services,error}=await sb.from("services")
+      .select("id,name,duration_minutes").eq("active",true).order("sort_order");
+    if(error)throw error;
+    adminServices60=services||[];
+
+    const clients=rows.filter(profile=>profile.role==="client")
+      .sort((a,b)=>(a.full_name||"").localeCompare(b.full_name||"","pt-BR"));
+    const selectedDate=document.getElementById("agendaDate543")?.value||agendaLocalDate543();
+    const title=document.getElementById("agendaModalTitle");
+    const body=document.getElementById("agendaModalBody");
+    const modal=document.getElementById("agendaModal");
+    if(!title||!body||!modal)return;
+
+    title.textContent="Novo agendamento";
+    body.innerHTML=`
+      <form id="appointmentForm60" class="form-grid appointment-form-60">
+        <label>Cliente
+          <input id="appointmentClientSearch60" type="search" placeholder="Digite o nome ou WhatsApp" autocomplete="off">
+          <select id="appointmentClient60" size="5" required>
+            <option value="">Selecione um cliente</option>
+            ${clients.map(client=>`<option value="${client.id}">${escapeAdmin60(client.full_name||"Sem nome")} · ${escapeAdmin60(client.phone||"sem telefone")}</option>`).join("")}
+          </select>
+        </label>
+        <div class="form-row">
+          <label>Data<input id="appointmentDate60" type="date" value="${selectedDate}" required></label>
+          <label>Horário<input id="appointmentTime60" type="time" min="09:00" max="18:00" step="3600" value="${presetTime||"09:00"}" required></label>
+        </div>
+        <label>Serviço
+          <select id="appointmentService60" required>
+            <option value="">Selecione o serviço</option>
+            ${adminServices60.map(service=>`<option value="${service.id}">${escapeAdmin60(service.name)} · ${service.duration_minutes} min</option>`).join("")}
+          </select>
+        </label>
+        <label>Observação
+          <textarea id="appointmentNotes60" placeholder="Preferência, encaixe, origem do contato..." rows="3"></textarea>
+        </label>
+        <div class="appointment-origin-60"><span>Origem</span><div>
+          ${["Presencial","WhatsApp","Telefone","Site"].map((origin,index)=>`<label><input type="radio" name="appointmentOrigin60" value="${origin}" ${index===0?"checked":""}><span>${origin}</span></label>`).join("")}
+        </div></div>
+        <div id="appointmentMessage60" class="form-message"></div>
+        <button class="btn btn-gold appointment-submit-60" type="submit">Confirmar agendamento</button>
+      </form>`;
+
+    const search=document.getElementById("appointmentClientSearch60");
+    const select=document.getElementById("appointmentClient60");
+    search?.addEventListener("input",()=>{
+      const query=search.value.trim().toLowerCase();
+      [...select.options].forEach((option,index)=>{
+        if(index===0)return;
+        option.hidden=query&&!option.textContent.toLowerCase().includes(query);
+      });
+    });
+    document.getElementById("appointmentForm60")?.addEventListener("submit",event=>createAdminAppointment60(event,professional));
+    modal.classList.add("open");
+    setTimeout(()=>search?.focus(),80);
+  }catch(error){
+    alert(error?.message||"Não foi possível preparar o agendamento.");
+  }
+}
+
+async function createAdminAppointment60(event,professional){
+  event.preventDefault();
+  const button=event.currentTarget.querySelector("button[type=submit]");
+  const message=document.getElementById("appointmentMessage60");
+  const userId=document.getElementById("appointmentClient60")?.value;
+  const serviceId=document.getElementById("appointmentService60")?.value;
+  const date=document.getElementById("appointmentDate60")?.value;
+  const time=document.getElementById("appointmentTime60")?.value;
+  const note=document.getElementById("appointmentNotes60")?.value.trim()||"";
+  const origin=document.querySelector('input[name="appointmentOrigin60"]:checked')?.value||"Presencial";
+  if(!userId||!serviceId||!date||!time)return;
+
+  button.disabled=true;
+  button.textContent="Agendando...";
+  message?.classList.remove("show","error","success");
+  const start=new Date(`${date}T${time}:00-03:00`);
+  const {error}=await sb.rpc("admin_create_appointment_v60",{
+    p_user_id:userId,p_professional_id:professional.id,p_service_id:serviceId,
+    p_starts_at:start.toISOString(),p_notes:note||null,p_origin:origin
+  });
+  if(error){
+    if(message){message.textContent=error.message;message.classList.add("show","error")}
+    button.disabled=false;
+    button.textContent="Confirmar agendamento";
+    return;
+  }
+  document.getElementById("agendaModal")?.classList.remove("open");
+  const agendaDate=document.getElementById("agendaDate543");
+  if(agendaDate)agendaDate.value=date;
+  await Promise.all([loadAgenda543(),loadToday546()]);
+}
+
+document.getElementById("newAppointment")?.addEventListener("click",()=>openNewAppointment60());
+document.getElementById("newAppointmentAgenda")?.addEventListener("click",()=>openNewAppointment60());
+
 document.getElementById("closeAgendaModal")?.addEventListener("click",()=>document.getElementById("agendaModal")?.classList.remove("open"));
 document.getElementById("agendaModal")?.addEventListener("click",e=>{
   const modal=document.getElementById("agendaModal");
@@ -299,7 +406,13 @@ function agendaActions543(a){
   if(["completed","cancelled","no_show"].includes(a.status))return "";
   const b=[];
   if(a.status==="pending") b.push(`<button class="btn btn-light btn-small" onclick="agendaSetStatus543('${a.id}','confirmed')">Confirmar</button>`);
-  if(a.status==="confirmed"){
+  if(!a.operational_stage||a.operational_stage==="scheduled"){
+    b.push(`<button class="btn btn-arrival btn-small" onclick="agendaSetStage60('${a.id}','arrived')">✓ Cliente chegou</button>`);
+  }
+  if(a.operational_stage==="arrived"){
+    b.push(`<button class="btn btn-dark btn-small" onclick="agendaSetStage60('${a.id}','in_service')">▶ Iniciar</button>`);
+  }
+  if(a.status==="confirmed"||a.operational_stage==="in_service"){
     b.push(`<button class="btn btn-gold btn-small" onclick="agendaSetStatus543('${a.id}','completed')">Concluir</button>`);
     b.push(`<button class="btn btn-light btn-small" onclick="agendaSetStatus543('${a.id}','no_show')">Falta</button>`);
   }
@@ -423,6 +536,7 @@ function renderAgenda543(){
     const billing=a.billing_mode==="plan"
       ? `<span class="agenda-billing plan">Plano • ${a.credits_reserved||0} crédito(s)</span>`
       : `<span class="agenda-billing avulso">Avulso</span>`;
+    const stage={arrived:"Cliente presente",in_service:"Em atendimento"}[a.operational_stage];
 
     return `
       <article class="card agenda-item status-${a.status}">
@@ -439,6 +553,7 @@ function renderAgenda543(){
 
           <div class="agenda-item-meta">
             ${billing}
+            ${stage?`<span class="operation-stage stage-${a.operational_stage}">${stage}</span>`:""}
             ${a.notes?`<span class="agenda-note">Obs.: ${a.notes}</span>`:""}
           </div>
         </div>
@@ -479,6 +594,18 @@ function bootPremiumAdminUI(){
     renderAgenda543();
   }));
   statusSelect?.addEventListener("change",syncQuickFilters);
+
+  setInterval(()=>{
+    if(document.visibilityState!=="visible")return;
+    loadAgenda543();
+    loadToday546();
+  },45000);
+  document.addEventListener("visibilitychange",()=>{
+    if(document.visibilityState==="visible"){
+      loadAgenda543();
+      loadToday546();
+    }
+  });
 }
 
 document.addEventListener("DOMContentLoaded",bootPremiumAdminUI);
@@ -535,7 +662,17 @@ async function agendaSetStatus543(id,status){
   if(!confirm(`Deseja ${label} atendimento?`))return;
   const {error}=await sb.rpc("admin_set_appointment_status",{p_appointment_id:id,p_status:status});
   if(error){alert(error.message);return}
-  await loadAgenda543();
+  if(["completed","cancelled","no_show"].includes(status)){
+    await sb.from("appointments").update({operational_stage:"done"}).eq("id",id);
+  }
+  await Promise.all([loadAgenda543(),loadToday546()]);
+}
+async function agendaSetStage60(id,stage){
+  const {error}=await sb.from("appointments")
+    .update({operational_stage:stage,updated_at:new Date().toISOString()})
+    .eq("id",id);
+  if(error){alert(error.message);return}
+  await Promise.all([loadAgenda543(),loadToday546()]);
 }
 function agendaMove543(delta){
   const input=document.getElementById("agendaDate543");
@@ -669,10 +806,11 @@ async function loadToday546(){
   }
   grid.innerHTML=slots.map(s=>{
     const label=`${String(s.hour).padStart(2,"0")}:00`;
-    if(s.type==="free")return `<div class="day-slot-546 free"><div class="day-slot-time">${label}</div><div class="day-slot-main"><strong>Livre</strong><span>Disponível para agendamento</span></div></div>`;
+    if(s.type==="free")return `<div class="day-slot-546 free"><div class="day-slot-time">${label}</div><div class="day-slot-main"><strong>Livre</strong><span>Disponível para agendamento</span></div><button class="btn btn-light btn-small" onclick="openNewAppointment60('${label}')">＋ Agendar</button></div>`;
     if(s.type==="block")return `<div class="day-slot-546 blocked"><div class="day-slot-time">${label}</div><div class="day-slot-main"><strong>🔒 Bloqueado</strong><span>${s.data.reason||"Horário indisponível"}</span></div><button class="btn btn-light btn-small" onclick="releaseScheduleBlock545('${s.data.id}')">Liberar</button></div>`;
     const a=s.data;
-    return `<div class="day-slot-546 appointment status-${a.status}"><div class="day-slot-time">${label}</div><div class="day-slot-main"><strong>${a.profiles?.full_name||"Cliente"}</strong><span>${a.services?.name||"Serviço"} • ${statusLabel546(a.status)}</span></div><a class="btn btn-light btn-small" href="./cliente-detalhe.html?id=${a.user_id}">Cliente</a></div>`;
+    const stageLabel={arrived:" • Cliente presente",in_service:" • Em atendimento"}[a.operational_stage]||"";
+    return `<div class="day-slot-546 appointment status-${a.status}"><div class="day-slot-time">${label}</div><div class="day-slot-main"><strong>${a.profiles?.full_name||"Cliente"}</strong><span>${a.services?.name||"Serviço"} • ${statusLabel546(a.status)}${stageLabel}</span></div><div class="day-slot-actions">${agendaActions543(a)}<a class="btn btn-light btn-small" href="./cliente-detalhe.html?id=${a.user_id}">Cliente</a></div></div>`;
   }).join("");
 }
 

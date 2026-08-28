@@ -13,6 +13,19 @@ Site oficial do Studio JM.
 - Botões e áreas de toque ampliados para uso confortável
 - Estrutura, autenticação, regras do Supabase e dados existentes preservados
 
+## Agenda Operacional 6.0
+
+- Novo agendamento criado diretamente pelo salão
+- Busca e seleção de cliente pelo nome ou WhatsApp
+- Origem do contato: presencial, WhatsApp, telefone ou site
+- Encaixe direto ao tocar em um horário livre
+- Etapas operacionais: agendado, cliente presente, em atendimento e finalizado
+- Atualização automática da agenda a cada 45 segundos e ao retornar para a tela
+- Reserva automática de créditos quando o cliente possui plano válido
+
+Antes de usar os novos controles, execute no SQL Editor do Supabase:
+`supabase/fase_6_0_agenda_operacional.sql`
+
 ## Como publicar no GitHub
 
 1. Extraia o ZIP.
