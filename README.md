@@ -299,3 +299,12 @@ Ajustes:
 - Área do cliente e Admin ajustadas para tablets e celulares
 - Sidebar do sistema vira menu lateral móvel em telas menores
 - Tabelas administrativas passam a ter rolagem horizontal segura
+
+
+## Fase 5.4.7.2 — Recuperação de senha
+- Restaurado "Esqueci minha senha" na tela de login
+- Página própria para solicitar link de recuperação
+- Redirecionamento dinâmico pelo domínio atual (`window.location.origin`)
+- Página de redefinição de senha
+- Mensagem para verificar também a pasta de spam
+- Compatível com `studiojmoficial.com.br`
