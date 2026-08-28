@@ -2,6 +2,17 @@
 
 Site oficial do Studio JM.
 
+## Versão 6.0 — Premium e tablet-first
+
+- Nova direção visual premium no site público
+- Painel administrativo redesenhado para a rotina do salão
+- Agenda com cartões maiores, hierarquia visual e status por cor
+- Filtros rápidos para pendentes, confirmados e concluídos
+- Relógio operacional e resumo do dia em destaque
+- Navegação compacta em tablet e barra inferior no celular
+- Botões e áreas de toque ampliados para uso confortável
+- Estrutura, autenticação, regras do Supabase e dados existentes preservados
+
 ## Como publicar no GitHub
 
 1. Extraia o ZIP.

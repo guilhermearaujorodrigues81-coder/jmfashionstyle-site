@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Admin | Studio JM</title>
 <link rel="stylesheet" href="./app.css">
+<link rel="stylesheet" href="./admin-premium.css">
 </head>
 <body>
 <div id="loading" class="loading"><div><div class="spinner"></div>Verificando permissões...</div></div>
@@ -13,14 +14,14 @@
   <aside class="sidebar">
     <div class="sidebar-brand">
       <img src="../img/brand/logo.jpg" alt="Studio JM">
-      <div><strong>STUDIO JM</strong><small>Administração</small></div>
+      <div><strong>STUDIO JM</strong><small>Central do salão</small></div>
     </div>
 
     <nav class="nav-list admin-tab-nav">
-  <button type="button" class="active" data-admin-tab="hoje">⌂ Hoje</button>
-  <button type="button" data-admin-tab="agenda">▦ Agenda</button>
-  <button type="button" data-admin-tab="clientes">♙ Clientes</button>
-  <button type="button" data-admin-tab="planos">◆ Planos</button>
+  <button type="button" class="active" data-admin-tab="hoje"><span class="nav-icon">⌂</span><span>Hoje</span></button>
+  <button type="button" data-admin-tab="agenda"><span class="nav-icon">▦</span><span>Agenda</span></button>
+  <button type="button" data-admin-tab="clientes"><span class="nav-icon">♙</span><span>Clientes</span></button>
+  <button type="button" data-admin-tab="planos"><span class="nav-icon">◆</span><span>Planos</span></button>
   <a href="../index.html">← Site Studio JM</a>
 </nav>
 
@@ -32,19 +33,23 @@
   <main class="main">
   <div class="topbar">
     <div>
-      <button class="btn btn-dark mobile-menu">☰</button>
+      <button class="btn btn-dark mobile-menu" aria-label="Abrir menu">☰</button>
+      <span class="topbar-kicker">PAINEL OPERACIONAL</span>
       <h1 id="adminPageTitle">Hoje</h1>
-      <p id="adminPageSubtitle">Operação diária da Studio JM.</p>
+      <p id="adminPageSubtitle">Tudo o que você precisa para conduzir o dia.</p>
     </div>
-    <div class="user-chip"><span class="avatar">JM</span><span>Admin</span></div>
+    <div class="topbar-side">
+      <div class="live-status"><span class="live-dot"></span><div><strong id="adminLiveClock">--:--</strong><small>Salão em operação</small></div></div>
+      <div class="user-chip"><span class="avatar">JM</span><span>Admin</span></div>
+    </div>
   </div>
 
   <section class="admin-tab-panel active" data-admin-panel="hoje">
     <div class="today-hero card dark">
-      <div><span class="eyebrow-app">HOJE</span><h2 id="todayDate546">—</h2><p>Cristiano • 09h às 19h</p></div>
+      <div><span class="eyebrow-app">RESUMO DO DIA</span><h2 id="todayDate546">—</h2><p><span class="availability-dot"></span>Cristiano • 09h às 19h</p></div>
       <div class="today-hero-actions">
-        <button class="btn btn-gold" id="goAgendaToday546">Abrir agenda</button>
-        <button class="btn btn-light" id="newBlock">Bloquear horário</button>
+        <button class="btn btn-gold" id="goAgendaToday546">Ver agenda completa</button>
+        <button class="btn btn-light" id="newBlock">＋ Bloquear horário</button>
       </div>
     </div>
     <div class="today-next card">
@@ -60,7 +65,7 @@
       <div><h2>Agenda</h2><p class="section-subtitle">Controle diário dos horários e atendimentos.</p></div>
       <div class="agenda-page-actions">
         <button class="btn btn-light" id="agendaTodayBtn543">Hoje</button>
-        <button class="btn btn-gold" id="newBlockAgenda546">Bloquear horário</button>
+        <button class="btn btn-gold" id="newBlockAgenda546">＋ Bloquear horário</button>
       </div>
     </div>
     <div class="agenda-toolbar card">
@@ -79,6 +84,12 @@
     <div class="agenda-day-summary">
       <div><strong id="agendaDayLabel543">—</strong><span id="agendaDayCount543">0 atendimentos</span></div>
       <div class="agenda-mini-stats"><span><b id="agendaPendingCount543">0</b> pendentes</span><span><b id="agendaConfirmedCount543">0</b> confirmados</span></div>
+    </div>
+    <div class="agenda-quick-filters" aria-label="Filtros rápidos">
+      <button type="button" class="quick-filter active" data-agenda-status="">Todos</button>
+      <button type="button" class="quick-filter" data-agenda-status="pending"><span class="filter-dot pending"></span>Pendentes</button>
+      <button type="button" class="quick-filter" data-agenda-status="confirmed"><span class="filter-dot confirmed"></span>Confirmados</button>
+      <button type="button" class="quick-filter" data-agenda-status="completed"><span class="filter-dot completed"></span>Concluídos</button>
     </div>
     <div id="agendaTimeline543" class="agenda-timeline"></div>
   </section>

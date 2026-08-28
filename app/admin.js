@@ -454,6 +454,34 @@ function renderAgenda543(){
       </article>`;
   }).join("");
 }
+
+/* Interações da interface operacional 6.0 */
+function bootPremiumAdminUI(){
+  const clock=document.getElementById("adminLiveClock");
+  const updateClock=()=>{
+    if(clock)clock.textContent=new Intl.DateTimeFormat("pt-BR",{
+      hour:"2-digit",minute:"2-digit",timeZone:"America/Sao_Paulo"
+    }).format(new Date());
+  };
+  updateClock();
+  setInterval(updateClock,30000);
+
+  const statusSelect=document.getElementById("agendaStatus543");
+  const quickFilters=[...document.querySelectorAll("[data-agenda-status]")];
+  const syncQuickFilters=()=>{
+    quickFilters.forEach(button=>button.classList.toggle(
+      "active",button.dataset.agendaStatus===(statusSelect?.value||"")
+    ));
+  };
+  quickFilters.forEach(button=>button.addEventListener("click",()=>{
+    if(statusSelect)statusSelect.value=button.dataset.agendaStatus||"";
+    syncQuickFilters();
+    renderAgenda543();
+  }));
+  statusSelect?.addEventListener("change",syncQuickFilters);
+}
+
+document.addEventListener("DOMContentLoaded",bootPremiumAdminUI);
 async function loadAgenda543(){
   const input=document.getElementById("agendaDate543");
   if(!input)return;
