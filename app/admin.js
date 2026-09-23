@@ -7,46 +7,23 @@ async function init(){
   try{
     const auth=await requireAdmin();
     if(!auth)return;
-
+    adminReady=true;
     const {data,error}=await sb.rpc("admin_list_profiles");
     if(error)throw error;
-
     rows=data||[];
-    render(rows);
-
-    // Estes cards foram removidos na 5.4.3; só atualiza se existirem.
-    const clientCountEl=document.getElementById("clientCount");
-    const adminCountEl=document.getElementById("adminCount");
-    if(clientCountEl)clientCountEl.textContent=rows.filter(x=>x.role==="client").length;
-    if(adminCountEl)adminCountEl.textContent=rows.filter(x=>x.role==="admin").length;
+    const hours=await sb.from("business_hours").select("weekday,is_open,opens_at,closes_at");
+    businessHours62=hours.error?null:hours.data;
+    bootAdminTabs546();
+    bootAdminUI62();
+    bootPremiumAdminUI();
+    await Promise.all([loadAgenda543(),loadToday546(),loadAdminSubscriptions532()]);
   }catch(error){
     console.error("Erro ao iniciar Admin:",error);
-    alert(error?.message||"Não foi possível carregar o painel administrativo.");
-  }finally{
-    loadingOff();
-    if(typeof releaseAdminLoading543==="function")releaseAdminLoading543();
-  }
+    feedback62("Não foi possível carregar o painel. Atualize a página para tentar novamente.",true);
+  }finally{releaseAdminLoading543()}
 }
 
-function render(data){
-  clientsBody.innerHTML=data.length
-    ? data.map(p=>`
-      <tr class="clickable-row">
-        <td>
-          <strong>${p.full_name||"—"}</strong>
-          ${p.role==="client"
-            ? `<a class="client-detail-link" href="./cliente-detalhe.html?id=${p.id}">Ver ficha</a>`
-            : ""}
-        </td>
-        <td>${p.email||"—"}</td>
-        <td>${p.phone||"—"}</td>
-        <td>${formatBirthdayAdmin547(p.birth_date)}</td>
-        <td><span class="badge badge-${p.role}">${p.role==="admin"?"Administrador":"Cliente"}</span></td>
-        <td>${formatDateTime(p.created_at)}</td>
-      </tr>
-    `).join("")
-    : '<tr><td colspan="6" class="empty">Nenhum cadastro encontrado.</td></tr>';
-}
+function render(data=rows){renderClients62(data)}
 
 /* ===== BLOQUEIO DE HORÁRIO — AGENDA ADMIN ===== */
 let adminCristiano=null;
@@ -93,7 +70,7 @@ document.getElementById("newBlock")?.addEventListener("click",async()=>{
         <button class="btn btn-gold" type="submit">Criar bloqueio</button>
       </form>`;
     document.getElementById("blockDate").value=
-      document.getElementById("agendaDate543")?.value || agendaLocalDate543();
+      activeDate62();
 
     const fullDay=document.getElementById("blockFullDay");
     const fields=document.getElementById("blockTimeFields");
@@ -115,6 +92,9 @@ document.getElementById("newBlock")?.addEventListener("click",async()=>{
 
 async function createBlock544(e){
   e.preventDefault();
+  const submit=e.currentTarget.querySelector("button[type=submit]");
+  if(submit.disabled)return;
+  submit.disabled=true;
 
   try{
     const professional=await ensureAdminProfessional544();
@@ -154,16 +134,16 @@ async function createBlock544(e){
 
     document.getElementById("agendaModal")?.classList.remove("open");
 
-    await loadAgenda543();
+    await refreshAdmin62();
 
-    alert(fullDay
+    feedback62(fullDay
       ? "Dia bloqueado com sucesso."
       : "Horário bloqueado com sucesso."
     );
 
   }catch(error){
     alert(error?.message||"Não foi possível criar o bloqueio.");
-  }
+  }finally{submit.disabled=false;}
 }
 
 /* ===== AGENDA OPERACIONAL 6.0 — ENCAIXE RÁPIDO ===== */
@@ -185,7 +165,7 @@ async function openNewAppointment60(presetTime=""){
 
     const clients=rows.filter(profile=>profile.role==="client")
       .sort((a,b)=>(a.full_name||"").localeCompare(b.full_name||"","pt-BR"));
-    const selectedDate=document.getElementById("agendaDate543")?.value||agendaLocalDate543();
+    const selectedDate=activeDate62();
     const title=document.getElementById("agendaModalTitle");
     const body=document.getElementById("agendaModalBody");
     const modal=document.getElementById("agendaModal");
@@ -254,6 +234,7 @@ async function createAdminAppointment60(event,professional){
   button.textContent="Agendando...";
   message?.classList.remove("show","error","success");
   const start=new Date(`${date}T${time}:00-03:00`);
+  try{
   const {error}=await sb.rpc("admin_create_appointment_v60",{
     p_user_id:userId,p_professional_id:professional.id,p_service_id:serviceId,
     p_starts_at:start.toISOString(),p_notes:note||null,p_origin:origin
@@ -267,7 +248,11 @@ async function createAdminAppointment60(event,professional){
   document.getElementById("agendaModal")?.classList.remove("open");
   const agendaDate=document.getElementById("agendaDate543");
   if(agendaDate)agendaDate.value=date;
-  await Promise.all([loadAgenda543(),loadToday546()]);
+  await refreshAdmin62();
+  feedback62("Agendamento criado.");
+  }catch(error){
+    if(message){message.textContent="Não foi possível agendar. Tente novamente.";message.classList.add("show","error")}
+  }finally{button.disabled=false;button.textContent="Confirmar agendamento";}
 }
 
 document.getElementById("newAppointment")?.addEventListener("click",()=>openNewAppointment60());
@@ -282,31 +267,28 @@ document.getElementById("agendaModal")?.addEventListener("click",e=>{
 
 /* ===== FASE 5.3.2 — GESTÃO DE ATIVAÇÃO/CICLO ===== */
 async function loadAdminSubscriptions532(){
-  const {data,error}=await sb.from("subscriptions")
-    .select("*,profiles(full_name,phone),plans(name,monthly_price)")
-    .order("selected_at",{ascending:false});
-  if(error){ console.error(error); return; }
-
-  subscriptionsBody.innerHTML=(data||[]).length ? data.map(s=>{
-    let actions="";
-    if(s.status==="pending") actions=`<button class="btn btn-gold btn-small" onclick="subscriptionAction('activate','${s.id}')">Ativar</button>`;
-    if(s.status==="active") actions=`
-      <button class="btn btn-light btn-small" onclick="subscriptionAction('renew','${s.id}')">Renovar ciclo</button>
-      <button class="btn btn-danger btn-small" onclick="subscriptionAction('suspend','${s.id}')">Suspender</button>`;
-    if(s.status==="suspended") actions=`<button class="btn btn-gold btn-small" onclick="subscriptionAction('resume','${s.id}')">Reativar</button>`;
-
-    const saldo=s.status==="active" ? `${s.credits_remaining}/${s.credits_total}` : "—";
-    const validade=s.ends_at ? new Date(s.ends_at+"T12:00:00").toLocaleDateString("pt-BR") : "—";
-    return `<tr>
-      <td><strong>${s.profiles?.full_name||"—"}</strong></td>
-      <td>${s.plans?.name||"—"}</td>
-      <td>${Number(s.plans?.monthly_price||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}</td>
-      <td><span class="badge badge-${s.status}">${subscriptionStatusLabelAdmin(s.status)}</span></td>
-      <td>${saldo}</td>
-      <td>${validade}</td>
-      <td><div class="table-actions">${actions}</div></td>
-    </tr>`;
-  }).join("") : '<tr><td colspan="7" class="empty">Nenhum plano selecionado.</td></tr>';
+  const request=++summaryRequest62;
+  try{
+    const [subs,reservations,upcoming]=await Promise.all([
+      allRows62(()=>sb.from("subscriptions").select("*,profiles(full_name,phone),plans(name,monthly_price)").order("selected_at",{ascending:false}).order("id")),
+      allRows62(()=>sb.from("appointments").select("id,subscription_id,credits_reserved").eq("billing_mode","plan").eq("credits_charged",false).in("status",["pending","confirmed"]).order("id")),
+      allRows62(()=>sb.from("appointments").select("id,user_id,starts_at,services(name)").gte("starts_at",new Date().toISOString()).in("status",["pending","confirmed"]).order("starts_at").order("id"))
+    ]);
+    if(request!==summaryRequest62)return;
+    adminSubscriptions62=subs;
+    reservedBySubscription62=new Map();
+    for(const a of reservations)reservedBySubscription62.set(a.subscription_id,(reservedBySubscription62.get(a.subscription_id)||0)+Number(a.credits_reserved||0));
+    upcomingByClient62=new Map();
+    for(const a of upcoming)if(!upcomingByClient62.has(a.user_id))upcomingByClient62.set(a.user_id,a);
+    summaryReady62=true;
+    renderSubscriptions62();render(rows);renderAttention62();renderNext62();
+  }catch(error){
+    if(request!==summaryRequest62)return;
+    summaryReady62=false;
+    document.getElementById("subscriptionsBody").innerHTML='<tr><td colspan="6" class="empty">Não foi possível carregar os planos. <button class="btn btn-light" onclick="loadAdminSubscriptions532()">Tentar novamente</button></td></tr>';
+    render(rows);renderAttention62();renderNext62();
+    feedback62("Não foi possível atualizar planos e créditos. Tente novamente.",true);
+  }
 }
 
 async function subscriptionAction(action,id){
@@ -318,64 +300,14 @@ async function subscriptionAction(action,id){
     suspend:"admin_suspend_subscription",
     resume:"admin_resume_subscription"
   }[action];
-  const {error}=await sb.rpc(fn,{p_subscription_id:id});
-  if(error){ alert(error.message); return; }
-  await loadAdminSubscriptions532();
-}
-
-document.addEventListener("DOMContentLoaded",()=>{
-  setTimeout(()=>{ if(document.getElementById("subscriptionsBody")) loadAdminSubscriptions532(); },700);
-});
-
-
-/* ===== FASE 5.3.4 — RESUMO DE PLANOS NO ADMIN ===== */
-async function loadPlanSummary534(){
-  const {data,error}=await sb.from("subscriptions")
-    .select("status,credits_remaining");
-  if(error)return;
-
-  const rows=data||[];
-  adminActivePlans.textContent=rows.filter(x=>x.status==="active").length;
-  if(document.getElementById("adminPendingPlans")) adminPendingPlans.textContent=rows.filter(x=>x.status==="pending").length;
-  adminSuspendedPlans.textContent=rows.filter(x=>x.status==="suspended").length;
-  if(document.getElementById("adminOpenCredits")) adminOpenCredits.textContent=rows
-    .filter(x=>x.status==="active")
-    .reduce((sum,x)=>sum+(Number(x.credits_remaining)||0),0);
-}
-
-document.addEventListener("DOMContentLoaded",()=>{
-  setTimeout(()=>{
-    if(document.getElementById("planSummary534"))loadPlanSummary534();
-  },700);
-});
-
-
-/* ===== FILTROS DO ADMIN ===== */
-function hookAdminFilters544(){
-  const clientSearch=document.getElementById("clientSearch534");
-  clientSearch?.addEventListener("input",()=>{
-    const q=clientSearch.value.trim().toLowerCase();
-    document.querySelectorAll("#clientsBody tr").forEach(tr=>{
-      tr.style.display=tr.textContent.toLowerCase().includes(q)?"":"none";
-    });
+  await mutation62(`subscription:${id}`,async()=>{
+    const {error}=await sb.rpc(fn,{p_subscription_id:id});
+    if(error)throw error;
+    await refreshAdmin62();
+    feedback62("Plano atualizado.");
   });
-
-  const planSearch=document.getElementById("planSearch534");
-  const planStatus=document.getElementById("planStatusFilter534");
-
-  function applyPlanFilter(){
-    const q=(planSearch?.value||"").trim().toLowerCase();
-    const status=planStatus?.value||"";
-    const labels={active:"ativo",pending:"aguardando ativação",suspended:"suspenso",cancelled:"cancelado",expired:"expirado"};
-    document.querySelectorAll("#subscriptionsBody tr").forEach(tr=>{
-      const text=tr.textContent.toLowerCase();
-      tr.style.display=(text.includes(q)&&(!status||text.includes(labels[status]||status)))?"":"none";
-    });
-  }
-  planSearch?.addEventListener("input",applyPlanFilter);
-  planStatus?.addEventListener("change",applyPlanFilter);
 }
-document.addEventListener("DOMContentLoaded",hookAdminFilters544);
+
 
 
 /* ===== FASE 5.4.3 — AGENDA ADMINISTRATIVA ===== */
@@ -420,154 +352,14 @@ function agendaActions543(a){
   return `<div class="agenda-actions">${b.join("")}</div>`;
 }
 function renderAgenda543(){
-  const box=document.getElementById("agendaTimeline543");
-  if(!box)return;
-
-  const searchEl=document.getElementById("agendaSearch543");
-  const statusEl=document.getElementById("agendaStatus543");
-  const q=(searchEl?.value||"").trim().toLowerCase();
-  const st=statusEl?.value||"";
-
-  const appointmentItems=agendaRows543
-    .filter(a=>{
-      const text=`${a.profiles?.full_name||""} ${a.services?.name||""}`.toLowerCase();
-      return (!q||text.includes(q))&&(!st||a.status===st);
-    })
-    .map(a=>({
-      type:"appointment",
-      starts_at:a.starts_at,
-      data:a
-    }));
-
-  const blockItems=agendaBlocks545
-    .filter(b=>{
-      const text=`bloqueio ${b.reason||""}`.toLowerCase();
-      return (!q||text.includes(q)) && (!st);
-    })
-    .map(b=>({
-      type:"block",
-      starts_at:b.starts_at,
-      data:b
-    }));
-
-  const items=[...appointmentItems,...blockItems]
-    .sort((a,b)=>new Date(a.starts_at)-new Date(b.starts_at));
-
-  const countEl=document.getElementById("agendaDayCount543");
-  const pendingEl=document.getElementById("agendaPendingCount543");
-  const confirmedEl=document.getElementById("agendaConfirmedCount543");
-
-  if(countEl){
-    const appts=agendaRows543.length;
-    const blocks=agendaBlocks545.length;
-    countEl.textContent=
-      `${appts} atendimento${appts===1?"":"s"} • ${blocks} bloqueio${blocks===1?"":"s"}`;
-  }
-  if(pendingEl)pendingEl.textContent=agendaRows543.filter(a=>a.status==="pending").length;
-  if(confirmedEl)confirmedEl.textContent=agendaRows543.filter(a=>a.status==="confirmed").length;
-
-  if(!items.length){
-    box.innerHTML=`
-      <div class="card agenda-empty">
-        <strong>Nenhum item encontrado</strong>
-        <span>${agendaRows543.length||agendaBlocks545.length
-          ? "Ajuste os filtros para ver outros resultados."
-          : "A agenda está totalmente livre nesta data."
-        }</span>
-      </div>`;
-    return;
-  }
-
-  box.innerHTML=items.map(item=>{
-    if(item.type==="block"){
-      const b=item.data;
-
-      const start=new Date(b.starts_at);
-      const end=new Date(b.ends_at);
-
-      const startTime=start.toLocaleTimeString("pt-BR",{
-        timeZone:"America/Sao_Paulo",
-        hour:"2-digit",minute:"2-digit"
-      });
-
-      const endTime=end.toLocaleTimeString("pt-BR",{
-        timeZone:"America/Sao_Paulo",
-        hour:"2-digit",minute:"2-digit"
-      });
-
-      return `
-        <article class="card agenda-item agenda-block-item">
-          <div class="agenda-item-time">
-            ${startTime}
-            <small>até ${endTime}</small>
-          </div>
-
-          <div class="agenda-item-main">
-            <div class="agenda-item-head">
-              <div>
-                <strong>🔒 Horário bloqueado</strong>
-                <span>${b.reason||"Sem motivo informado"}</span>
-              </div>
-              <span class="badge badge-blocked">Bloqueado</span>
-            </div>
-            <div class="agenda-item-meta">
-              <span class="agenda-billing blocked">Indisponível para agendamento</span>
-            </div>
-          </div>
-
-          <div class="agenda-item-controls">
-            <button
-              type="button"
-              class="btn btn-light btn-small"
-              onclick="releaseScheduleBlock545('${b.id}')">
-              Liberar horário
-            </button>
-          </div>
-        </article>`;
-    }
-
-    const a=item.data;
-
-    const time=new Date(a.starts_at).toLocaleTimeString("pt-BR",{
-      timeZone:"America/Sao_Paulo",
-      hour:"2-digit",minute:"2-digit"
-    });
-
-    const billing=a.billing_mode==="plan"
-      ? `<span class="agenda-billing plan">Plano • ${a.credits_reserved||0} crédito(s)</span>`
-      : `<span class="agenda-billing avulso">Avulso</span>`;
-    const stage={arrived:"Cliente presente",in_service:"Em atendimento"}[a.operational_stage];
-
-    return `
-      <article class="card agenda-item status-${a.status}">
-        <div class="agenda-item-time">${time}</div>
-
-        <div class="agenda-item-main">
-          <div class="agenda-item-head">
-            <div>
-              <strong>${a.profiles?.full_name||"Cliente"}</strong>
-              <span>${a.services?.name||"Serviço"}</span>
-            </div>
-            <span class="badge badge-${a.status}">${agendaStatus543(a.status)}</span>
-          </div>
-
-          <div class="agenda-item-meta">
-            ${billing}
-            ${stage?`<span class="operation-stage stage-${a.operational_stage}">${stage}</span>`:""}
-            ${a.notes?`<span class="agenda-note">Obs.: ${a.notes}</span>`:""}
-          </div>
-        </div>
-
-        <div class="agenda-item-controls">
-          ${agendaActions543(a)}
-          <a
-            class="client-detail-link agenda-client-link"
-            href="./cliente-detalhe.html?id=${a.user_id}">
-            Ver cliente
-          </a>
-        </div>
-      </article>`;
-  }).join("");
+  const q=document.getElementById("agendaSearch543").value;
+  const st=document.getElementById("agendaStatus543").value;
+  const key=document.getElementById("agendaDate543").value||agendaLocalDate543();
+  if(loadedAgendaKey62!==key)return;
+  document.getElementById("agendaDayCount543").textContent=`${agendaRows543.length} atendimento(s) • ${agendaBlocks545.length} bloqueio(s)`;
+  document.getElementById("agendaPendingCount543").textContent=agendaRows543.filter(a=>a.status==="pending").length;
+  document.getElementById("agendaConfirmedCount543").textContent=agendaRows543.filter(a=>a.status==="confirmed").length;
+  renderTimeline62(document.getElementById("agendaTimeline543"),key,agendaRows543,agendaBlocks545,q,st);
 }
 
 /* Interações da interface operacional 6.0 */
@@ -597,23 +389,25 @@ function bootPremiumAdminUI(){
 
   setInterval(()=>{
     if(document.visibilityState!=="visible")return;
-    loadAgenda543();
-    loadToday546();
+    refreshAdmin62();
   },45000);
   document.addEventListener("visibilitychange",()=>{
     if(document.visibilityState==="visible"){
-      loadAgenda543();
-      loadToday546();
+      refreshAdmin62();
     }
   });
 }
 
-document.addEventListener("DOMContentLoaded",bootPremiumAdminUI);
+
 async function loadAgenda543(){
   const input=document.getElementById("agendaDate543");
-  if(!input)return;
-
+  if(!input||!adminReady)return;
+  const request=++agendaRequest62;
+  const box=document.getElementById("agendaTimeline543");
+  box.setAttribute("aria-busy","true");
+  if(loadedAgendaKey62!==input.value)box.innerHTML='<p class="empty">Carregando horários...</p>';
   try{
+    const professional=await ensureAdminProfessional544();
     const key=input.value||agendaLocalDate543();
     input.value=key;
 
@@ -624,27 +418,30 @@ async function loadAgenda543(){
 
     const [appointmentsRes,blocksRes]=await Promise.all([
       sb.from("appointments")
-        .select("*,profiles(full_name,phone),services(name)")
+        .select("*,profiles(full_name,phone),services(name)").eq("professional_id",professional.id)
         .gte("starts_at",start)
         .lte("starts_at",end)
         .order("starts_at",{ascending:true}),
 
       sb.from("schedule_blocks")
-        .select("id,starts_at,ends_at,reason,professional_id")
+        .select("id,starts_at,ends_at,reason,professional_id").eq("professional_id",professional.id)
         .lt("starts_at",end)
         .gt("ends_at",start)
         .order("starts_at",{ascending:true})
     ]);
 
+    if(request!==agendaRequest62||input.value!==key)return;
     if(appointmentsRes.error)throw appointmentsRes.error;
     if(blocksRes.error)throw blocksRes.error;
 
+    loadedAgendaKey62=key;
     agendaRows543=appointmentsRes.data||[];
     agendaBlocks545=blocksRes.data||[];
 
     renderAgenda543();
 
   }catch(error){
+    if(request!==agendaRequest62)return;
     console.error("Erro ao carregar agenda:",error);
 
     const box=document.getElementById("agendaTimeline543");
@@ -652,28 +449,34 @@ async function loadAgenda543(){
       box.innerHTML=`
         <div class="card agenda-empty">
           <strong>Não foi possível carregar a agenda.</strong>
-          <span>${error?.message||"Tente atualizar a página."}</span>
+          <span>${escapeAdmin60(error?.message||"Tente atualizar a página.")}</span>
         </div>`;
     }
-  }
+  }finally{if(request===agendaRequest62)box.setAttribute("aria-busy","false")}
 }
 async function agendaSetStatus543(id,status){
   const label={confirmed:"confirmar",completed:"concluir",cancelled:"cancelar",no_show:"registrar falta neste"}[status]||"alterar";
   if(!confirm(`Deseja ${label} atendimento?`))return;
-  const {error}=await sb.rpc("admin_set_appointment_status",{p_appointment_id:id,p_status:status});
-  if(error){alert(error.message);return}
-  if(["completed","cancelled","no_show"].includes(status)){
-    await sb.from("appointments").update({operational_stage:"done"}).eq("id",id);
-  }
-  await Promise.all([loadAgenda543(),loadToday546()]);
+  await mutation62(`appointment:${id}`,async()=>{
+    const {error}=await sb.rpc("admin_set_appointment_status",{p_appointment_id:id,p_status:status});
+    if(error)throw error;
+    let stageError=null;
+    if(["completed","cancelled","no_show"].includes(status)){
+      const result=await sb.from("appointments").update({operational_stage:"done"}).eq("id",id);
+      stageError=result.error;
+    }
+    await refreshAdmin62();
+    feedback62(stageError?"Atendimento atualizado. Não foi possível atualizar a etapa operacional.":"Atendimento atualizado.",!!stageError);
+  });
 }
 async function agendaSetStage60(id,stage){
-  const {error}=await sb.from("appointments")
-    .update({operational_stage:stage,updated_at:new Date().toISOString()})
-    .eq("id",id);
-  if(error){alert(error.message);return}
-  await Promise.all([loadAgenda543(),loadToday546()]);
+  await mutation62(`appointment:${id}`,async()=>{
+    const {error}=await sb.from("appointments").update({operational_stage:stage,updated_at:new Date().toISOString()}).eq("id",id);
+    if(error)throw error;
+    await refreshAdmin62();feedback62("Etapa atualizada.");
+  });
 }
+
 function agendaMove543(delta){
   const input=document.getElementById("agendaDate543");
   if(!input)return;
@@ -683,37 +486,6 @@ function agendaMove543(delta){
   input.value=agendaLocalDate543(d);
   loadAgenda543();
 }
-document.addEventListener("DOMContentLoaded",()=>{
-  setTimeout(()=>{
-    const date=document.getElementById("agendaDate543");
-    if(!date){
-      releaseAdminLoading543();
-      return;
-    }
-
-    const search=document.getElementById("agendaSearch543");
-    const status=document.getElementById("agendaStatus543");
-    const prev=document.getElementById("agendaPrevDay543");
-    const next=document.getElementById("agendaNextDay543");
-    const today=document.getElementById("agendaTodayBtn543");
-
-    date.value=agendaLocalDate543();
-
-    loadAgenda543()
-      .catch(err=>console.error(err))
-      .finally(releaseAdminLoading543);
-
-    date.addEventListener("change",loadAgenda543);
-    search?.addEventListener("input",renderAgenda543);
-    status?.addEventListener("change",renderAgenda543);
-    prev?.addEventListener("click",()=>agendaMove543(-1));
-    next?.addEventListener("click",()=>agendaMove543(1));
-    today?.addEventListener("click",()=>{
-      date.value=agendaLocalDate543();
-      loadAgenda543();
-    });
-  },500);
-});
 
 
 /* ===== HOTFIX 5.4.3 — LIBERAÇÃO DO OVERLAY ===== */
@@ -737,20 +509,11 @@ function releaseAdminLoading543(){
 /* ===== FASE 5.4.5 — LIBERAR BLOQUEIO ===== */
 async function releaseScheduleBlock545(id){
   if(!confirm("Deseja liberar este horário para novos agendamentos?"))return;
-
-  try{
-    const {error}=await sb
-      .from("schedule_blocks")
-      .delete()
-      .eq("id",id);
-
+  await mutation62(`block:${id}`,async()=>{
+    const {error}=await sb.from("schedule_blocks").delete().eq("id",id);
     if(error)throw error;
-
-    await loadAgenda543();
-
-  }catch(error){
-    alert(error?.message||"Não foi possível liberar o horário.");
-  }
+    await refreshAdmin62();feedback62("Horário liberado.");
+  });
 }
 
 /* ===== FASE 5.4.6 — NOVO ADMIN / UX OPERACIONAL ===== */
@@ -763,8 +526,8 @@ function openAdminTab546(tab){
   document.getElementById("adminPageTitle").textContent=meta[0];
   document.getElementById("adminPageSubtitle").textContent=meta[1];
   history.replaceState(null,"",`#${tab}`);
-  if(tab==="agenda")setTimeout(loadAgenda543,50);
-  if(tab==="hoje")setTimeout(loadToday546,50);
+  closeMobileSidebar();
+  syncSidebar62();
 }
 
 function bootAdminTabs546(){
@@ -784,49 +547,300 @@ function prettyToday546(){
 function statusLabel546(s){return {pending:"Pendente",confirmed:"Confirmado",completed:"Concluído",cancelled:"Cancelado",no_show:"Falta"}[s]||s}
 
 async function loadToday546(){
-  const grid=document.getElementById("todayTimeline546"),nextBox=document.getElementById("nextAppointment546");
-  if(!grid||!nextBox)return;
+  if(!adminReady)return;
+  const request=++todayRequest62;
+  const grid=document.getElementById("todayTimeline546");
   document.getElementById("todayDate546").textContent=prettyToday546();
-  const key=localKey546(),{start,end}=agendaRange543(key);
-  const [ar,br]=await Promise.all([
-    sb.from("appointments").select("*,profiles(full_name,phone),services(name)").gte("starts_at",start).lte("starts_at",end).order("starts_at",{ascending:true}),
-    sb.from("schedule_blocks").select("id,starts_at,ends_at,reason").lt("starts_at",end).gt("ends_at",start).order("starts_at",{ascending:true})
-  ]);
-  if(ar.error||br.error){grid.innerHTML='<div class="card agenda-empty">Não foi possível carregar o dia.</div>';return}
-  const appointments=ar.data||[],blocks=br.data||[],now=Date.now();
-  const next=appointments.find(a=>new Date(a.starts_at).getTime()>=now&&["pending","confirmed"].includes(a.status));
-  nextBox.innerHTML=next?`<div class="next-appointment-time">${new Date(next.starts_at).toLocaleTimeString("pt-BR",{timeZone:"America/Sao_Paulo",hour:"2-digit",minute:"2-digit"})}</div><div class="next-appointment-main"><strong>${next.profiles?.full_name||"Cliente"}</strong><span>${next.services?.name||"Serviço"} • ${statusLabel546(next.status)}</span></div><a class="btn btn-light btn-small" href="./cliente-detalhe.html?id=${next.user_id}">Ver cliente</a>`:'<div class="ops-empty">Nenhum próximo atendimento hoje.</div>';
-
-  const slots=[];
-  for(let hour=9;hour<19;hour++){
-    const ss=new Date(`${key}T${String(hour).padStart(2,"0")}:00:00-03:00`),ee=new Date(ss.getTime()+3600000);
-    const a=appointments.find(x=>new Date(x.starts_at)<ee&&new Date(x.ends_at)>ss&&x.status!=="cancelled");
-    const b=blocks.find(x=>new Date(x.starts_at)<ee&&new Date(x.ends_at)>ss);
-    slots.push({hour,type:a?"appointment":b?"block":"free",data:a||b||null});
-  }
-  grid.innerHTML=slots.map(s=>{
-    const label=`${String(s.hour).padStart(2,"0")}:00`;
-    if(s.type==="free")return `<div class="day-slot-546 free"><div class="day-slot-time">${label}</div><div class="day-slot-main"><strong>Livre</strong><span>Disponível para agendamento</span></div><button class="btn btn-light btn-small" onclick="openNewAppointment60('${label}')">＋ Agendar</button></div>`;
-    if(s.type==="block")return `<div class="day-slot-546 blocked"><div class="day-slot-time">${label}</div><div class="day-slot-main"><strong>🔒 Bloqueado</strong><span>${s.data.reason||"Horário indisponível"}</span></div><button class="btn btn-light btn-small" onclick="releaseScheduleBlock545('${s.data.id}')">Liberar</button></div>`;
-    const a=s.data;
-    const stageLabel={arrived:" • Cliente presente",in_service:" • Em atendimento"}[a.operational_stage]||"";
-    return `<div class="day-slot-546 appointment status-${a.status}"><div class="day-slot-time">${label}</div><div class="day-slot-main"><strong>${a.profiles?.full_name||"Cliente"}</strong><span>${a.services?.name||"Serviço"} • ${statusLabel546(a.status)}${stageLabel}</span></div><div class="day-slot-actions">${agendaActions543(a)}<a class="btn btn-light btn-small" href="./cliente-detalhe.html?id=${a.user_id}">Cliente</a></div></div>`;
-  }).join("");
+  grid.setAttribute("aria-busy","true");
+  try{
+    const professional=await ensureAdminProfessional544();
+    const key=localKey546(),{start,end}=agendaRange543(key);
+    const [ar,br]=await Promise.all([
+      sb.from("appointments").select("*,profiles(full_name,phone),services(name)").eq("professional_id",professional.id).gte("starts_at",start).lte("starts_at",end).order("starts_at"),
+      sb.from("schedule_blocks").select("id,starts_at,ends_at,reason").eq("professional_id",professional.id).lt("starts_at",end).gt("ends_at",start).order("starts_at")
+    ]);
+    if(request!==todayRequest62)return;
+    if(ar.error||br.error)throw ar.error||br.error;
+    todayAppointments62=ar.data||[];
+    renderTimeline62(grid,key,todayAppointments62,br.data||[]);
+    renderNext62();renderAttention62();
+  }catch(error){
+    if(request!==todayRequest62)return;
+    todayAppointments62=null;
+    grid.innerHTML='<div class="card empty">Não foi possível carregar o dia. <button class="btn btn-light" onclick="loadToday546()">Tentar novamente</button></div>';
+    document.getElementById("nextAppointment546").textContent="Próximo atendimento indisponível. Atualize a agenda.";
+    renderAttention62();
+  }finally{if(request===todayRequest62)grid.setAttribute("aria-busy","false")}
 }
-
-document.addEventListener("DOMContentLoaded",()=>{
-  setTimeout(()=>{
-    bootAdminTabs546();
-    loadToday546();
-    document.getElementById("goAgendaToday546")?.addEventListener("click",()=>{openAdminTab546("agenda");const d=document.getElementById("agendaDate543");if(d)d.value=localKey546();loadAgenda543()});
-    document.getElementById("newBlockAgenda546")?.addEventListener("click",()=>document.getElementById("newBlock")?.click());
-  },500);
-});
-
 
 /* ===== FASE 5.4.7 — ANIVERSÁRIOS NO ADMIN ===== */
 function formatBirthdayAdmin547(value){
   if(!value)return "—";
   const parts=value.split("-");
   return parts.length===3 ? `${parts[2]}/${parts[1]}` : value;
+}
+
+/* Interface operacional 6.2. As mutações continuam usando os RPCs existentes. */
+let adminReady=false,agendaRequest62=0,todayRequest62=0,summaryRequest62=0;
+let loadedAgendaKey62="",summaryReady62=false,adminSubscriptions62=[],todayAppointments62=null;
+let reservedBySubscription62=new Map(),upcomingByClient62=new Map();
+let drawerRequest62=0,drawerClient62=null,drawerOpener62=null,feedbackTimer62,businessHours62=null;
+const mutations62=new Set();
+const el62=id=>document.getElementById(id);
+const text62=value=>escapeAdmin60(value).replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+const normalize62=value=>String(value||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
+const time62=value=>new Date(value).toLocaleTimeString("pt-BR",{timeZone:"America/Sao_Paulo",hour:"2-digit",minute:"2-digit"});
+const dateTime62=value=>value?new Date(value).toLocaleString("pt-BR",{timeZone:"America/Sao_Paulo",day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"}):"—";
+const validity62=sub=>sub?.ends_at?new Date(`${sub.ends_at}T12:00:00-03:00`).toLocaleDateString("pt-BR",{timeZone:"America/Sao_Paulo"}):sub?.status==="pending"?"Após ativação":"—";
+function subscriptionStatusLabelAdmin(status){return {active:"Ativo",pending:"Aguardando ativação",suspended:"Suspenso",cancelled:"Cancelado",expired:"Expirado"}[status]||status}
+function activeDate62(){return document.querySelector('[data-admin-panel="hoje"].active')?localKey546():(el62("agendaDate543").value||localKey546())}
+function feedback62(message,error=false){
+  const box=el62("adminFeedback");if(!box)return;
+  clearTimeout(feedbackTimer62);box.textContent=message;box.hidden=false;
+  box.classList.toggle("error",error);box.setAttribute("role",error?"alert":"status");
+  if(!error)feedbackTimer62=setTimeout(()=>box.hidden=true,5000);
+}
+async function allRows62(query){
+  const result=[];
+  for(let offset=0;;offset+=500){
+    const {data,error}=await query().range(offset,offset+499);
+    if(error)throw error;
+    result.push(...(data||[]));
+    if((data||[]).length<500)return result;
+  }
+}
+async function refreshAdmin62(){
+  if(!adminReady)return;
+  await Promise.all([loadAgenda543(),loadToday546(),loadAdminSubscriptions532()]);
+  if(el62("clientDrawer").open&&drawerClient62)await openClient62(drawerClient62,false);
+}
+async function mutation62(key,action){
+  if(mutations62.has(key))return;
+  mutations62.add(key);document.body.classList.add("admin-saving");
+  try{await action()}catch(error){feedback62(error?.message||"Não foi possível salvar. Tente novamente.",true)}
+  finally{mutations62.delete(key);if(!mutations62.size)document.body.classList.remove("admin-saving")}
+}
+function currentSub62(userId){return adminSubscriptions62.find(s=>s.user_id===userId&&["pending","active","suspended"].includes(s.status))}
+function creditText62(sub){
+  if(!summaryReady62)return "Indisponível";
+  if(!sub||sub.status==="pending")return "—";
+  const reserved=reservedBySubscription62.get(sub.id)||0;
+  return `${Math.max(0,Number(sub.credits_remaining||0)-reserved)} disponíveis · ${reserved} reservados`;
+}
+function clientMatches62(profile,query){
+  const q=normalize62(query);if(!q)return true;
+  if(normalize62(`${profile.full_name||""} ${profile.email||""} ${profile.phone||""}`).includes(q))return true;
+  const digits=q.replace(/\D/g,"");
+  return digits.length>=3&&/^[\d\s()+.-]+$/.test(q)&&String(profile.phone||"").replace(/\D/g,"").includes(digits);
+}
+function renderClients62(data=rows){
+  const q=el62("clientSearch534").value;
+  const filtered=data.filter(p=>clientMatches62(p,q));
+  el62("clientsBody").innerHTML=filtered.length?filtered.map(p=>{
+    const sub=summaryReady62?currentSub62(p.id):null,upcoming=upcomingByClient62.get(p.id);
+    const detail=`./cliente-detalhe.html?id=${encodeURIComponent(p.id)}`;
+    return `<tr class="clickable-row" ${p.role==="client"?`data-client-href="${detail}"`:""}>
+      <td data-label="Cliente"><strong>${text62(p.full_name||"Sem nome")}</strong><small>${text62(p.email||"E-mail não informado")}</small>${p.role==="client"?`<a class="client-detail-link" href="${detail}">Ver ficha</a>`:'<small>Administrador</small>'}</td>
+      <td data-label="WhatsApp">${text62(p.phone||"—")}</td>
+      <td data-label="Plano">${text62(summaryReady62?(sub?.plans?.name||"Sem plano"):"Indisponível")}</td>
+      <td data-label="Créditos">${text62(creditText62(sub))}</td>
+      <td data-label="Próximo horário">${summaryReady62?(upcoming?dateTime62(upcoming.starts_at):"Sem agendamento"):"Indisponível"}</td>
+      <td data-label="Aniversário">${text62(formatBirthdayAdmin547(p.birth_date))}</td>
+      <td data-label="Status"><span class="badge badge-${text62(sub?.status||"neutral")}">${text62(summaryReady62?(sub?subscriptionStatusLabelAdmin(sub.status):p.role==="admin"?"Administrador":"Sem plano"):"Indisponível")}</span></td>
+    </tr>`;
+  }).join(""):'<tr><td colspan="7" class="empty">Nenhum cliente encontrado. Tente outro nome, telefone ou e-mail.</td></tr>';
+}
+function renderSubscriptions62(){
+  const query=normalize62(el62("planSearch534").value),status=el62("planStatusFilter534").value;
+  document.querySelectorAll("[data-plan-status]").forEach(b=>{const active=b.dataset.planStatus===status;b.classList.toggle("active",active);b.setAttribute("aria-pressed",String(active))});
+  const filtered=adminSubscriptions62.filter(s=>(!status||s.status===status)&&(!query||normalize62(`${s.profiles?.full_name||""} ${s.profiles?.phone||""} ${s.plans?.name||""}`).includes(query)));
+  el62("subscriptionsBody").innerHTML=filtered.length?filtered.map(s=>{
+    let actions="";
+    if(s.status==="pending")actions=`<button class="btn btn-gold" onclick="subscriptionAction('activate','${text62(s.id)}')">Ativar</button>`;
+    if(s.status==="active")actions=`<button class="btn btn-light" onclick="subscriptionAction('renew','${text62(s.id)}')">Renovar ciclo</button><button class="btn btn-danger" onclick="subscriptionAction('suspend','${text62(s.id)}')">Suspender</button>`;
+    if(s.status==="suspended")actions=`<button class="btn btn-gold" onclick="subscriptionAction('resume','${text62(s.id)}')">Reativar</button>`;
+    return `<tr><td data-label="Cliente"><button class="client-name" data-client-id="${text62(s.user_id)}">${text62(s.profiles?.full_name||"Cliente")}</button></td>
+      <td data-label="Plano"><strong>${text62(s.plans?.name||"—")}</strong><small>${Number(s.plans?.monthly_price||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}/mês</small></td>
+      <td data-label="Créditos">${text62(creditText62(s))}</td><td data-label="Validade">${validity62(s)}</td>
+      <td data-label="Status"><span class="badge badge-${text62(s.status)}">${text62(subscriptionStatusLabelAdmin(s.status))}</span></td>
+      <td data-label="Ações">${actions?`<details class="plan-actions"><summary>Administrar</summary><div class="table-actions">${actions}</div></details>`:"—"}</td></tr>`;
+  }).join(""):'<tr><td colspan="6" class="empty">Nenhum plano encontrado para estes filtros.</td></tr>';
+}
+function renderTimeline62(box,key,appointments,blocks,query="",status=""){
+  const q=normalize62(query),filtered=!!q||!!status;
+  const weekday=new Date(`${key}T12:00:00-03:00`).getUTCDay();
+  const hours=businessHours62?.find(h=>h.weekday===weekday);
+  const events=appointments.map(data=>({kind:"appointment",data}));
+  // Keep every hour visible, including hours covered by a full-day block.
+  for(const block of blocks){
+    const dayStart=+new Date(`${key}T00:00:00-03:00`),dayEnd=dayStart+86400000;
+    let cursor=Math.max(dayStart,+new Date(block.starts_at));
+    const end=Math.min(dayEnd,+new Date(block.ends_at));
+    while(cursor<end){
+      const next=Math.min(end,dayStart+(Math.floor((cursor-dayStart)/3600000)+1)*3600000);
+      events.push({kind:"block",data:{...block,starts_at:new Date(cursor).toISOString(),ends_at:new Date(next).toISOString()}});
+      cursor=next;
+    }
+  }
+  // Fill the uncovered portions of each hour; partial blocks never hide a free interval.
+  if(!filtered){
+    for(let hour=9;hour<19;hour++){
+      const start=+new Date(`${key}T${String(hour).padStart(2,"0")}:00:00-03:00`),end=start+3600000;
+      const occupied=[...appointments.filter(a=>a.status!=="cancelled"),...blocks]
+        .map(a=>[Math.max(start,+new Date(a.starts_at)),Math.min(end,+new Date(a.ends_at))])
+        .filter(([a,b])=>a<b).sort((a,b)=>a[0]-b[0]);
+      let cursor=start;
+      for(const [a,b] of occupied){if(a>cursor)events.push({kind:"free",data:{starts_at:new Date(cursor).toISOString(),ends_at:new Date(a).toISOString()}});cursor=Math.max(cursor,b)}
+      if(cursor<end)events.push({kind:"free",data:{starts_at:new Date(cursor).toISOString(),ends_at:new Date(end).toISOString()}});
+    }
+  }
+  const visible=events.filter(({kind,data:a})=>{
+    if(kind==="appointment")return (!status||a.status===status)&&(!q||normalize62(`${a.profiles?.full_name||""} ${a.profiles?.phone||""} ${a.services?.name||""}`).includes(q));
+    return !status&&(!q||normalize62(`bloqueado ${a.reason||""}`).includes(q));
+  }).sort((a,b)=>new Date(a.data.starts_at)-new Date(b.data.starts_at)||a.kind.localeCompare(b.kind));
+  const expanded=new Set([...box.querySelectorAll("details[open][data-event-key]")].map(d=>d.dataset.eventKey));
+  const focusKey=document.activeElement?.dataset.focusKey;
+  box.innerHTML=visible.length?visible.map(({kind,data:a})=>{
+    const time=`<span class="slot-time">${time62(a.starts_at)}<small>até ${time62(a.ends_at)}</small></span>`;
+    if(kind==="free"){
+      const startTime=time62(a.starts_at),endTime=time62(a.ends_at);
+      const available=hours?.is_open&&startTime>=String(hours.opens_at).slice(0,5)&&endTime<=String(hours.closes_at).slice(0,5);
+      return `<div class="schedule-row free">${time}<div class="slot-main"><strong>${available?"Livre":"Indisponível"}</strong><span>${available?"Disponível":businessHours62?"Fora do expediente":"Expediente não carregado"}</span></div><span class="free-symbol" aria-hidden="true">○</span></div>`;
+    }
+    const eventKey=`${kind}-${a.id}${kind==="block"?`-${a.starts_at}`:""}`;
+    if(kind==="block")return `<details class="schedule-row blocked" data-event-key="${text62(eventKey)}" ${expanded.has(eventKey)?"open":""}><summary data-focus-key="${text62(eventKey)}">${time}<span class="slot-main"><strong>${text62(a.reason||"Horário bloqueado")}</strong><span>Indisponível para agendamento</span></span><span class="badge badge-blocked">Bloqueado</span><span class="row-chevron" aria-hidden="true">⌄</span></summary><div class="slot-actions"><button class="btn btn-light" onclick="releaseScheduleBlock545('${text62(a.id)}')">Liberar horário</button></div></details>`;
+    const stage={arrived:"Cliente presente",in_service:"Em atendimento"}[a.operational_stage];
+    return `<details class="schedule-row status-${text62(a.status)}" data-event-key="${text62(eventKey)}" ${expanded.has(eventKey)?"open":""}><summary data-focus-key="${text62(eventKey)}">${time}<span class="slot-main"><button class="client-name" data-client-id="${text62(a.user_id)}">${text62(a.profiles?.full_name||"Cliente")}</button><span>${text62(a.services?.name||"Serviço")}${stage?` · ${stage}`:""}</span></span><span class="badge badge-${text62(a.status)}">${text62(agendaStatus543(a.status))}</span><span class="row-chevron" aria-hidden="true">⌄</span></summary><div class="slot-actions"><div class="slot-context">${a.billing_mode==="plan"?`Plano · ${Number(a.credits_reserved)||0} crédito(s) reservados`:"Atendimento avulso"}${a.notes?`<p>${text62(a.notes)}</p>`:""}</div>${agendaActions543(a)}<button class="btn btn-light" data-client-id="${text62(a.user_id)}">Ver cliente</button></div></details>`;
+  }).join(""):'<div class="card empty">Nenhum resultado. Ajuste a busca ou o status.</div>';
+  if(!filtered)box.insertAdjacentHTML("beforeend",'<div class="schedule-end"><strong>19:00</strong><span>Fim do expediente</span></div>');
+  if(focusKey)[...box.querySelectorAll("[data-focus-key]")].find(e=>e.dataset.focusKey===focusKey)?.focus({preventScroll:true});
+}
+function renderNext62(){
+  if(!todayAppointments62)return;
+  const now=Date.now();
+  const next=todayAppointments62.find(a=>["pending","confirmed"].includes(a.status)&&+new Date(a.ends_at)>now);
+  const box=el62("nextAppointment546");
+  if(!next){box.innerHTML='<p class="ops-empty">Nenhum próximo atendimento hoje. Consulte os horários abaixo.</p>';return}
+  const sub=summaryReady62?adminSubscriptions62.find(s=>s.id===next.subscription_id):null;
+  box.innerHTML=`<div class="next-appointment-time">${time62(next.starts_at)}</div><div class="next-appointment-main"><button class="client-name" data-client-id="${text62(next.user_id)}">${text62(next.profiles?.full_name||"Cliente")}</button><span>${text62(next.services?.name||"Serviço")} · ${text62(statusLabel546(next.status))}</span><small>${next.billing_mode==="plan"?text62(sub?.plans?.name||"Atendimento pelo plano"):"Atendimento avulso"}</small></div><div class="next-actions"><button class="btn btn-light" data-client-id="${text62(next.user_id)}">Ver cliente</button>${next.status==="confirmed"||next.operational_stage==="in_service"?`<button class="btn btn-gold" onclick="agendaSetStatus543('${text62(next.id)}','completed')">Concluir</button>`:`<button class="btn btn-gold" onclick="agendaSetStatus543('${text62(next.id)}','confirmed')">Confirmar</button>`}</div>`;
+}
+function birthdays62(){
+  const today=localKey546(),dates=[];
+  for(let i=0;i<7;i++){const day=new Date(`${today}T12:00:00-03:00`);day.setUTCDate(day.getUTCDate()+i);dates.push(localKey546(day).slice(5))}
+  return rows.filter(p=>p.role==="client"&&p.birth_date&&dates.includes(p.birth_date.slice(5,10)));
+}
+function renderAttention62(){
+  const pending=(todayAppointments62||[]).filter(a=>a.status==="pending").length;
+  const plans=summaryReady62?adminSubscriptions62.filter(s=>s.status==="pending").length:0;
+  const birthdays=birthdays62();
+  const items=[];
+  if(pending)items.push(`<button data-attention="appointments">${pending} agendamento(s) aguardando confirmação hoje <span>→</span></button>`);
+  if(plans)items.push(`<button data-attention="plans">${plans} plano(s) aguardando ativação <span>→</span></button>`);
+  if(birthdays.length)items.push(`<details><summary>${birthdays.length} aniversário(s) nos próximos 7 dias</summary><div>${birthdays.map(p=>`<button data-client-id="${text62(p.id)}">${text62(p.full_name||"Cliente")} · ${text62(formatBirthdayAdmin547(p.birth_date))}</button>`).join("")}</div></details>`);
+  el62("attentionBox").hidden=!items.length;el62("attentionItems").innerHTML=items.join("");
+}
+function renderGlobalSearch62(){
+  const input=el62("globalClientSearch"),box=el62("globalClientResults"),q=input.value.trim();
+  box.hidden=!q;input.setAttribute("aria-expanded",String(!!q));if(!q)return;
+  const results=rows.filter(p=>p.role==="client"&&clientMatches62(p,q));
+  box.innerHTML=results.length?results.map(p=>`<button data-client-id="${text62(p.id)}"><strong>${text62(p.full_name||"Cliente")}</strong><small>${text62(p.phone||p.email||"Sem contato informado")}</small></button>`).join(""):'<p>Nenhum cliente encontrado.</p>';
+}
+async function openClient62(id,focus=true){
+  const request=++drawerRequest62,p=rows.find(p=>p.id===id),dialog=el62("clientDrawer");
+  if(!p){feedback62("Cliente não encontrado. Atualize a página.",true);return}
+  drawerClient62=id;
+  if(!dialog.open){drawerOpener62=document.activeElement;dialog.showModal();document.body.classList.add("drawer-open")}
+  el62("clientDrawerTitle").textContent=p.full_name||"Cliente";
+  el62("clientDrawerBody").innerHTML='<p class="empty" role="status">Carregando ficha rápida...</p>';
+  el62("globalClientResults").hidden=true;el62("globalClientSearch").setAttribute("aria-expanded","false");
+  if(focus)el62("closeClientDrawer").focus();
+  try{
+    const [sr,next,last]=await Promise.all([
+      sb.from("subscriptions").select("*,plans(*)").eq("user_id",id).in("status",["pending","active","suspended"]).order("selected_at",{ascending:false}).limit(1).maybeSingle(),
+      sb.from("appointments").select("starts_at,services(name)").eq("user_id",id).in("status",["pending","confirmed"]).gte("starts_at",new Date().toISOString()).order("starts_at").limit(1).maybeSingle(),
+      sb.from("appointments").select("starts_at,services(name)").eq("user_id",id).eq("status","completed").lte("starts_at",new Date().toISOString()).order("starts_at",{ascending:false}).limit(1).maybeSingle()
+    ]);
+    if(sr.error||next.error||last.error)throw sr.error||next.error||last.error;
+    const sub=sr.data;
+    let reserved=0;
+    if(sub){
+      const reservations=await allRows62(()=>sb.from("appointments").select("id,credits_reserved").eq("subscription_id",sub.id).eq("billing_mode","plan").eq("credits_charged",false).in("status",["pending","confirmed"]).order("id"));
+      reserved=reservations.reduce((sum,a)=>sum+Number(a.credits_reserved||0),0);
+    }
+    if(request!==drawerRequest62||!dialog.open)return;
+    const fields=[["WhatsApp",p.phone||"Não informado"],["E-mail",p.email||"Não informado"],["Aniversário",formatBirthdayAdmin547(p.birth_date)],
+      ["Plano",sub?.plans?.name||"Sem plano"],["Status do plano",sub?subscriptionStatusLabelAdmin(sub.status):"Sem plano"],
+      ["Créditos disponíveis",sub&&sub.status!=="pending"?Math.max(0,Number(sub.credits_remaining||0)-reserved):"—"],
+      ["Créditos reservados",sub&&sub.status!=="pending"?reserved:"—"],["Validade",validity62(sub)],
+      ["Próximo agendamento",next.data?`${dateTime62(next.data.starts_at)} · ${next.data.services?.name||"Serviço"}`:"Nenhum agendamento"],
+      ["Último atendimento",last.data?`${dateTime62(last.data.starts_at)} · ${last.data.services?.name||"Serviço"}`:"Nenhum atendimento concluído"]];
+    let phone=String(p.phone||"").replace(/\D/g,"");
+    if(phone.length===10||phone.length===11)phone=`55${phone}`;
+    el62("clientDrawerBody").innerHTML=`<dl class="drawer-fields">${fields.map(([label,value])=>`<div><dt>${label}</dt><dd>${text62(value)}</dd></div>`).join("")}</dl><div class="drawer-actions"><a class="btn btn-gold" href="./cliente-detalhe.html?id=${encodeURIComponent(id)}">Ver ficha completa</a>${phone.length>=10&&phone.length<=15?`<a class="btn btn-light" href="https://wa.me/${phone}" target="_blank" rel="noopener noreferrer">Abrir WhatsApp ↗</a>`:'<span class="field-help">WhatsApp não informado</span>'}</div>`;
+  }catch(error){
+    if(request!==drawerRequest62||!dialog.open)return;
+    el62("clientDrawerBody").innerHTML=`<p class="empty">Não foi possível carregar os dados do cliente.</p><button class="btn btn-light" data-client-id="${text62(id)}">Tentar novamente</button><a class="btn btn-gold" href="./cliente-detalhe.html?id=${encodeURIComponent(id)}">Ver ficha completa</a>`;
+  }
+}
+function syncSidebar62(){
+  const sidebar=el62("adminSidebar"),mobile=matchMedia("(max-width: 820px)").matches,open=sidebar.classList.contains("open");
+  sidebar.inert=mobile&&!open;
+  document.querySelector(".mobile-menu").setAttribute("aria-expanded",String(open));
+}
+function bootAdminUI62(){
+  const date=el62("agendaDate543");date.value=localKey546();
+  date.addEventListener("change",()=>{if(date.value)loadAgenda543()});
+  el62("agendaSearch543").addEventListener("input",renderAgenda543);
+  el62("agendaStatus543").addEventListener("change",renderAgenda543);
+  el62("agendaPrevDay543").addEventListener("click",()=>agendaMove543(-1));
+  el62("agendaNextDay543").addEventListener("click",()=>agendaMove543(1));
+  el62("agendaTodayBtn543").addEventListener("click",()=>{date.value=localKey546();loadAgenda543()});
+  el62("goAgendaToday546").addEventListener("click",()=>{date.value=localKey546();openAdminTab546("agenda");loadAgenda543()});
+  el62("newBlockAgenda546").addEventListener("click",()=>el62("newBlock").click());
+  el62("clientSearch534").addEventListener("input",()=>render(rows));
+  el62("planSearch534").addEventListener("input",renderSubscriptions62);
+  el62("planStatusFilter534").addEventListener("change",renderSubscriptions62);
+  document.querySelectorAll("[data-plan-status]").forEach(b=>b.addEventListener("click",()=>{el62("planStatusFilter534").value=b.dataset.planStatus;renderSubscriptions62()}));
+  el62("globalClientSearch").addEventListener("input",renderGlobalSearch62);
+  el62("globalClientSearch").addEventListener("focus",renderGlobalSearch62);
+  el62("globalClientSearch").addEventListener("keydown",event=>{
+    if(["ArrowDown","Enter"].includes(event.key)){event.preventDefault();el62("globalClientResults").querySelector("button")?.focus()}
+    if(event.key==="Escape"){el62("globalClientResults").hidden=true;event.target.setAttribute("aria-expanded","false")}
+  });
+  el62("globalClientResults").addEventListener("keydown",event=>{
+    const buttons=[...el62("globalClientResults").querySelectorAll("button")],index=buttons.indexOf(document.activeElement);
+    if(event.key==="ArrowDown"||event.key==="ArrowUp"){event.preventDefault();buttons[(index+(event.key==="ArrowDown"?1:buttons.length-1))%buttons.length]?.focus()}
+    if(event.key==="Escape"){el62("globalClientSearch").focus();el62("globalClientResults").hidden=true;el62("globalClientSearch").setAttribute("aria-expanded","false")}
+  });
+  document.addEventListener("click",event=>{
+    const client=event.target.closest("[data-client-id]");if(client){event.preventDefault();openClient62(client.dataset.clientId);}
+    const row=event.target.closest("[data-client-href]");if(row&&!event.target.closest("a,button"))location.href=row.dataset.clientHref;
+    if(!event.target.closest(".global-search")){el62("globalClientResults").hidden=true;el62("globalClientSearch").setAttribute("aria-expanded","false")}
+    const attention=event.target.closest("[data-attention]");
+    if(attention?.dataset.attention==="appointments"){date.value=localKey546();el62("agendaStatus543").value="pending";el62("agendaStatus543").dispatchEvent(new Event("change"));openAdminTab546("agenda");loadAgenda543()}
+    if(attention?.dataset.attention==="plans"){el62("planStatusFilter534").value="pending";renderSubscriptions62();openAdminTab546("planos")}
+  });
+  const drawer=el62("clientDrawer");
+  el62("closeClientDrawer").addEventListener("click",()=>drawer.close());
+  drawer.addEventListener("click",event=>{if(event.target===drawer){const rect=drawer.getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)drawer.close()}});
+  drawer.addEventListener("close",()=>{drawerRequest62++;drawerClient62=null;document.body.classList.remove("drawer-open");if(drawerOpener62?.isConnected)drawerOpener62.focus()});
+  document.querySelector(".sidebar-close").addEventListener("click",()=>{closeMobileSidebar();document.querySelector(".mobile-menu").focus()});
+  new MutationObserver(()=>{syncSidebar62();if(el62("adminSidebar").classList.contains("open"))document.querySelector(".sidebar-close").focus()}).observe(el62("adminSidebar"),{attributes:true,attributeFilter:["class"]});
+  window.addEventListener("resize",syncSidebar62);syncSidebar62();
+  const modal=el62("agendaModal");let modalOpener=null;
+  new MutationObserver(()=>{
+    const open=modal.classList.contains("open");document.body.classList.toggle("modal-open",open);
+    document.querySelector(".app-shell").inert=open;
+    if(open){modalOpener=document.activeElement;modal.querySelector("input,button")?.focus()}
+    else if(modalOpener?.isConnected)modalOpener.focus();
+  }).observe(modal,{attributes:true,attributeFilter:["class"]});
+  document.addEventListener("keydown",event=>{
+    if(event.key==="Escape"&&modal.classList.contains("open"))modal.classList.remove("open");
+    const container=modal.classList.contains("open")?modal:el62("adminSidebar").classList.contains("open")?el62("adminSidebar"):null;
+    if(event.key!=="Tab"||!container)return;
+    const focusable=[...container.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled])')].filter(e=>e.getClientRects().length);
+    const first=focusable[0],last=focusable.at(-1);
+    if(event.shiftKey&&document.activeElement===first){event.preventDefault();last?.focus()}
+    if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first?.focus()}
+  });
 }

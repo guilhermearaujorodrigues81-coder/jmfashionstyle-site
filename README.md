@@ -26,6 +26,17 @@ Site oficial do Studio JM.
 Antes de usar os novos controles, execute no SQL Editor do Supabase:
 `supabase/fase_6_0_agenda_operacional.sql`
 
+## Notificações 6.1
+
+- E-mail automático para o Cristiano quando um agendamento é criado
+- Conteúdo com cliente, serviço, data, horário, origem e link do painel
+- Registro de envio, falha ou canal ainda não configurado
+- Proteção contra avisos duplicados
+- Integração preparada para a WhatsApp Cloud API oficial
+- WhatsApp permanece desativado até a conta Meta Business ser configurada
+
+Consulte `supabase/CONFIGURACAO_NOTIFICACOES.md` para ativação segura.
+
 ## Como publicar no GitHub
 
 1. Extraia o ZIP.
