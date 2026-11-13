@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="./css/style.css">
   <link rel="stylesheet" href="./css/responsive.css">
   <link rel="stylesheet" href="./css/premium-2026.css">
+  <link rel="stylesheet" href="./css/galeria-2026.css">
   <title>Studio JM | Centro de Beleza</title>
 </head>
 <body>
@@ -314,27 +315,33 @@
   </section>
 
 
-  <section id="galeria">
+  <section id="galeria" class="studio-gallery-section" aria-labelledby="studioGalleryTitle">
     <div class="container">
       <div class="section-heading">
-        <span class="eyebrow">Nosso espaço</span>
-        <h2>Conheça o Studio JM</h2>
+        <span class="eyebrow">Trabalhos reais</span>
+        <h2 id="studioGalleryTitle">Nosso trabalho, seu estilo</h2>
+        <p class="studio-gallery-intro">Cortes, barbas e tranças feitos com atenção aos detalhes. Conheça um pouco do que acontece aqui no Studio JM.</p>
       </div>
-
-      <div class="gallery-track" id="galleryTrack">
-        <img src="./img/gallery/salao-1.jpg" alt="Salão Studio JM">
-        <img src="./img/gallery/salao-2.jpg" alt="Interior do Studio JM">
-        <img src="./img/gallery/salao-1.jpg" alt="Ambiente do Studio JM">
-        <img src="./img/gallery/salao-2.jpg" alt="Estações de atendimento">
+      <div class="studio-gallery-filters" role="group" aria-label="Filtrar trabalhos">
+        <button class="studio-gallery-filter" type="button" data-studio-gallery-filter="todos" aria-pressed="true">Todos</button>
+        <button class="studio-gallery-filter" type="button" data-studio-gallery-filter="cortes" aria-pressed="false">Cortes</button>
+        <button class="studio-gallery-filter" type="button" data-studio-gallery-filter="barba" aria-pressed="false">Barbas</button>
+        <button class="studio-gallery-filter" type="button" data-studio-gallery-filter="trancas" aria-pressed="false">Tranças</button>
+        <button class="studio-gallery-filter" type="button" data-studio-gallery-filter="atendimento" aria-pressed="false">No salão</button>
       </div>
-
+      <div class="gallery-track studio-gallery-track" id="galleryTrack" aria-label="Galeria dos trabalhos do Studio JM"></div>
       <div class="gallery-controls">
-        <button id="prevGallery" aria-label="Foto anterior">‹</button>
-        <button id="nextGallery" aria-label="Próxima foto">›</button>
+        <button id="prevGallery" type="button" aria-label="Ver fotos anteriores">‹</button>
+        <button id="nextGallery" type="button" aria-label="Ver próximas fotos">›</button>
       </div>
+      <p class="studio-gallery-note">Fotos reais dos serviços realizados no Studio JM.</p>
     </div>
   </section>
-
+  <dialog id="studioGalleryLightbox" class="studio-gallery-lightbox" aria-label="Visualização da foto">
+    <button id="studioGalleryClose" class="studio-gallery-close" type="button" aria-label="Fechar foto ampliada">×</button>
+    <img id="studioGalleryImage" alt="">
+    <p id="studioGalleryDescription"></p>
+  </dialog>
 
   <section class="testimonials-section">
     <div class="container">
@@ -620,5 +627,6 @@
   <script src="./app/config.js"></script>
   <script src="./js/public-auth.js"></script>
   <script src="./js/script.js"></script>
+  <script src="./js/galeria-2026.js"></script>
 </body>
 </html>
