@@ -1,0 +1,91 @@
+/* Studio JM | Galeria real de trabalhos - 2026
+ * Cores integradas ao visual escuro/dourado do site.
+ */
+.studio-gallery-section {
+  padding: 88px 0 84px;
+  background: radial-gradient(circle at 8% 0%, #242019 0%, #0b0a0a 45%, #090909 100%);
+  color: #f7f2e8;
+}
+.studio-gallery-section .section-heading { margin-bottom: 26px; }
+.studio-gallery-section .section-heading h2 { color: #fff; }
+.studio-gallery-section .section-heading .eyebrow { color: #d5a448; }
+.studio-gallery-intro { max-width: 640px; color: #d8d1c5; margin: 12px auto 0; line-height: 1.7; }
+.studio-gallery-filters { display: flex; flex-wrap: wrap; gap: 9px; justify-content: center; margin: 24px 0 28px; }
+.studio-gallery-filter {
+  border: 1px solid rgba(218,173,80,.36);
+  background: rgba(255,255,255,.045);
+  color: #eee5d5;
+  border-radius: 999px;
+  padding: 10px 17px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .2s, transform .2s;
+}
+.studio-gallery-filter:hover { background: rgba(218,173,80,.14); }
+.studio-gallery-filter[aria-pressed="true"] { background: linear-gradient(115deg,#efd38e,#c58c30); color: #1f1708; border-color: transparent; }
+.studio-gallery-track.gallery-track { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 2px 3px 18px; }
+.studio-gallery-card {
+  flex: 0 0 calc(25% - 12px);
+  min-width: 0;
+  scroll-snap-align: start;
+  background: #1b1917;
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 17px;
+  overflow: hidden;
+}
+.studio-gallery-card[hidden] { display: none; }
+.studio-gallery-card button {
+  display: block; padding: 0; margin: 0; border: 0; width: 100%; background: none; cursor: zoom-in;
+}
+.studio-gallery-card img {
+  display: block; width: 100%; height: 360px; object-fit: cover; object-position: center;
+  border-radius: 0; transform: scale(1); transition: transform .32s ease; 
+}
+.studio-gallery-card button:hover img { transform: scale(1.035); }
+.studio-gallery-card figcaption { padding: 14px 14px 17px; }
+.studio-gallery-card .studio-gallery-category {
+  display: block; font-size: .67rem; letter-spacing: .1em; text-transform: uppercase; color: #dab16a; font-weight: 800; margin-bottom: 5px;
+}
+.studio-gallery-card .studio-gallery-caption { display: block; font-size: .91rem; color: #f8f3ed; line-height: 1.4; }
+.studio-gallery-section .gallery-controls { margin-top: 17px; }
+.studio-gallery-section .gallery-controls button { background: #25211b; color: #f7d691; border-color: rgba(239,211,142,.5); }
+.studio-gallery-note { margin: 18px auto 0; max-width: 700px; text-align: center; font-size: .82rem; color: #b4a999; }
+.studio-gallery-lightbox {
+  width: min(94vw,840px);
+  max-height: 94vh;
+  border: 1px solid rgba(238,203,133,.35);
+  border-radius: 16px;
+  background: #141311;
+  padding: 20px;
+  color: white;
+  text-align: center;
+  overflow: auto;
+}
+.studio-gallery-lightbox::backdrop { background: rgba(0,0,0,.91); }
+.studio-gallery-lightbox img { display: block; width: auto; max-width: 100%; max-height: 73vh; margin: 0 auto; object-fit: contain; border-radius: 9px; }
+.studio-gallery-lightbox p { margin: 11px 34px 2px; color: #e9dbbf; }
+.studio-gallery-close {
+  position: absolute; top: 8px; right: 9px; display: grid; place-items: center;
+  width: 38px; height: 38px; border: none; border-radius: 50%;
+  color: #fff; background: rgba(0,0,0,.66); cursor: pointer; font-size: 25px;
+}
+.studio-gallery-filter:focus-visible, .studio-gallery-card button:focus-visible,
+.studio-gallery-close:focus-visible { outline: 3px solid #f2cc77; outline-offset: 3px; }
+@media (max-width: 1024px) {
+ .studio-gallery-card { flex-basis: calc(33.333% - 11px); }
+}
+@media (max-width: 760px) {
+ .studio-gallery-section { padding: 56px 0; }
+ .studio-gallery-filters { justify-content: start; overflow-x: auto; flex-wrap: nowrap; padding: 0 0 5px; }
+ .studio-gallery-filter { white-space: nowrap; flex-shrink: 0; padding: 9px 13px; font-size: .85rem; }
+ .studio-gallery-card { flex-basis: 72%; }
+ .studio-gallery-card img { height: 360px; }
+}
+@media (max-width: 420px) {
+ .studio-gallery-card { flex-basis: 83%; }
+ .studio-gallery-card img { height: 335px; }
+}
+@media (prefers-reduced-motion: reduce) {
+ .studio-gallery-card img, .studio-gallery-filter { transition: none; }
+}
