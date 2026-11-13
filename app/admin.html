@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Admin | Studio JM</title>
+<link rel="manifest" href="../manifest.json">
 <link rel="stylesheet" href="./app.css">
 <link rel="stylesheet" href="./admin-premium.css">
 </head>
@@ -51,6 +52,12 @@
     </div>
   </div>
 
+  
+    <section id="pushNotificationPanel" class="card" hidden aria-label="Notificações do Android" style="margin: 16px 0; padding: 18px;">
+      <strong>🔔 Avisos de novos agendamentos</strong>
+      <p id="pushStatus" role="status" style="margin: 8px 0;">Configure este Android para receber os avisos do Studio JM.</p>
+      <button class="btn btn-gold" id="enablePushNotifications" type="button">Ativar notificações neste celular</button>
+    </section>
   <div id="adminFeedback" class="admin-feedback" role="status" hidden></div>
   <section class="admin-tab-panel active" data-admin-panel="hoje">
     <div class="today-hero card dark">
@@ -147,5 +154,6 @@
 <script src="./config.js"></script>
 <script src="./common.js"></script>
 <script src="./admin.js"></script>
+<script src="./admin-push.js"></script>
 </body>
 </html>
