@@ -1,2 +1,5 @@
 [functions.notify-new-appointment]
 verify_jwt = false
+
+[functions.appointment-push]
+verify_jwt = false # GET publica a VAPID publica; POST exige x-webhook-secret
